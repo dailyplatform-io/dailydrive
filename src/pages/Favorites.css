@@ -1,0 +1,28 @@
+.favorites-page {
+  background: #f5f7fb;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.favorites-page h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1f2b3d;
+}
+
+.favorites-grid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.empty-state {
+  margin-top: 20px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px dashed #dfe6f0;
+  border-radius: 14px;
+  color: #6b7686;
+}

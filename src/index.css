@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+:root {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: #1f2b3d;
+  background-color: #f5f7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f7fb;
+}
+
+.muted {
+  color: #8c97a8;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Remove number input spinners (Chrome/Safari/Edge/Firefox). */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* Password Requirements Styling */
+.password-requirements {
+  margin-top: 0.5rem;
+}
+
+.requirement {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 2px 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.requirement-met {
+  color: #10b981 !important;
+}
+
+/* Location Info Styling */
+.owner-auth-location-info {
+  padding: 8px 12px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+
+.owner-auth-location-info p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #0369a1;
+}

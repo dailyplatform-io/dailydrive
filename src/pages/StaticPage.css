@@ -1,0 +1,29 @@
+.static-page {
+  background: #f5f7fb;
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.static-page h2 {
+  margin-top: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: #1f2b3d;
+}
+
+.static-page p {
+  color: #4b5b75;
+  line-height: 1.6;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.contact-grid h4 {
+  margin: 0 0 6px;
+  color: #2f80ed;
+}

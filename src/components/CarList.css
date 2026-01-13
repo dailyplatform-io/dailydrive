@@ -1,0 +1,72 @@
+.car-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.car-list__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.car-list__count h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #1f2b3d;
+  font-weight: 800;
+}
+
+.car-list__count .muted {
+  margin: 0;
+  color: #8c97a8;
+}
+
+.sort {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  color: #4b5b75;
+}
+
+.sort label {
+  display: none;
+}
+
+.sort__select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid #dfe6f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.sort select {
+  border: none;
+  background: transparent;
+  font-weight: 700;
+  color: #2f80ed;
+  appearance: none;
+  padding-right: 18px;
+}
+
+.sort select:focus {
+  outline: none;
+}
+
+.car-list__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 1024px) {
+  .car-list__grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}

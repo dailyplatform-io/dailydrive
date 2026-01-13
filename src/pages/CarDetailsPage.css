@@ -1,0 +1,28 @@
+.details-page {
+  background: #f5f7fb;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.details-page__bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.back-button {
+  border: 1px solid #dfe6f0;
+  background: #ffffff;
+  color: #1f2b3d;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.back-button:hover {
+  transform: translateY(-1px);
+  border-color: #c6d4eb;
+  box-shadow: 0 8px 18px rgba(24, 49, 86, 0.12);
+}

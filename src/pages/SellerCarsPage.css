@@ -1,0 +1,118 @@
+.layout--seller {
+  padding-top: 8px;
+}
+
+.seller-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 16px;
+  background: linear-gradient(140deg, #ffffff, #f2f6ff);
+  border: 1px solid #e3e9f3;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+  margin-bottom: 16px;
+}
+
+.seller-hero__kicker {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2f80ed;
+}
+
+.seller-hero__title {
+  margin: 0 0 8px;
+  font-size: 28px;
+  color: #0f172a;
+  font-weight: 900;
+}
+
+.seller-hero__subtitle {
+  margin: 0;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.seller-hero__contact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.seller-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #1f2b3d;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.seller-contact__icon {
+  display: inline-flex;
+  color: #2f80ed;
+}
+
+.seller-contact:hover {
+  border-color: #2f80ed;
+  color: #2f80ed;
+  box-shadow: 0 6px 14px rgba(47, 128, 237, 0.15);
+}
+
+.seller-contact--empty {
+  border-style: dashed;
+  background: #f8fafc;
+  color: #94a3b8;
+}
+
+.seller-mode-toggle {
+  display: inline-flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.seller-mode-toggle__button {
+  border: 1px solid #d7e1f0;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  color: #1f2b3d;
+  transition: all 0.2s ease;
+}
+
+.seller-mode-toggle__button.is-active {
+  border-color: #2f80ed;
+  background: #2f80ed;
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(47, 128, 237, 0.28);
+}
+
+@media (max-width: 900px) {
+  .seller-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .seller-hero__contact {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .seller-hero__title {
+    font-size: 22px;
+  }
+}
