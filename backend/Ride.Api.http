@@ -1,6 +1,0 @@
-@Ride.Api_HostAddress = http://localhost:5170
-
-GET {{Ride.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
