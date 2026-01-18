@@ -26,7 +26,7 @@ export const Navbar: React.FC = () => {
   const { brandName } = useBrand();
   const pathParts = useMemo(() => location.pathname.split('/').filter(Boolean), [location.pathname]);
   const isSellerSlug = useMemo(() => {
-    if (pathParts[0] !== 'cars' || !pathParts[1]) return false;
+    if (pathParts[0] !== 'dealer' || !pathParts[1]) return false;
     const slug = pathParts[1];
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     return !uuidRegex.test(slug);

@@ -121,7 +121,7 @@ export const DashboardCars: React.FC = () => {
 
   const sellerName = user.sellerName?.trim();
   const sellerSlug = user.sellerSlug?.trim() || (sellerName ? slugifySellerName(sellerName) : '');
-  const shareUrl = sellerSlug ? `${window.location.origin}/cars/${encodeURIComponent(sellerSlug)}` : '';
+  const shareUrl = sellerSlug ? `${window.location.origin}/dealer/${encodeURIComponent(sellerSlug)}` : '';
 
   const onToggleActive = async (car: Car) => {
     if (car.listingStatus === 'sold') return;

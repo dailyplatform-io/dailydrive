@@ -273,13 +273,7 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
             </div>
 
             <div className="hero-stats">
-              <Stat label={t('home.hero.statTotal')} value={t('home.hero.valueCars', { count: `${totals.total}+` })} />
-              {rentEnabled && (
-                <Stat label={t('home.hero.statRent')} value={t('home.hero.valueOptions', { count: `${totals.rent}+` })} />
-              )}
-              {buyEnabled && (
-                <Stat label={t('home.hero.statBuy')} value={t('home.hero.valueListings', { count: `${totals.buy}+` })} />
-              )}
+              <Stat label={t('home.hero.statBuy')} value={t('home.hero.valueCars', { count: `${totals.total}+` })} />
             </div>
           </div>
           {buyEnabled && (

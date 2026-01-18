@@ -23,6 +23,7 @@ import { DashboardReservations } from './pages/dashboard/DashboardReservations';
 import { DashboardAuctions } from './pages/dashboard/DashboardAuctions';
 import { DashboardAnalytics } from './pages/dashboard/DashboardAnalytics';
 import { DashboardRevenue } from './pages/dashboard/DashboardRevenue';
+import { DealerPage } from './pages/DealerPage';
 import { RequireOwnerAuth } from './components/RequireOwnerAuth';
 
 function App() {
@@ -75,6 +76,7 @@ function AppRoutes({ defaultBrowsePath }: { defaultBrowsePath: string }) {
         ) : (
           <Route path="/auction/:id" element={<Navigate to={defaultBrowsePath} replace />} />
         )}
+        <Route path="/dealer/:slug" element={<DealerPage />} />
         <Route path="/cars/:id" element={<CarDetailsPage />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/about" element={<About />} />

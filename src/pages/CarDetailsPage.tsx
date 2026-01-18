@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { CarDetailsPanel } from '../components/CarDetailsPanel';
 import { fetchCarByIdFromAPI } from '../service/carService';
 import './CarDetailsPage.css';
@@ -59,7 +59,7 @@ export const CarDetailsPage: React.FC = () => {
   }, [id]);
 
   if (showSellerPage && id) {
-    return <SellerCarsPage sellerName={id} />;
+    return <Navigate to={`/dealer/${encodeURIComponent(id)}`} replace />;
   }
 
   return (

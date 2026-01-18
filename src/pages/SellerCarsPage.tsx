@@ -221,7 +221,7 @@ export const SellerCarsPage: React.FC<SellerCarsPageProps> = ({ sellerName }) =>
   const handleModeChange = (nextMode: 'rent' | 'buy') => {
     if (nextMode === mode) return;
     setMode(nextMode);
-    navigate(`/cars/${encodeURIComponent(sellerName)}?mode=${nextMode}`, { replace: true });
+    navigate(`/dealer/${encodeURIComponent(sellerName)}?mode=${nextMode}`, { replace: true });
     setSelectedCarId(undefined);
   };
 
