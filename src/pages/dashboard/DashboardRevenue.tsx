@@ -56,7 +56,7 @@ export const DashboardRevenue: React.FC = () => {
           <h3>{t('dashboard.revenue.total')}</h3>
           <p className="dashboard-revenue__amount">€{data.totalRevenue.toFixed(2)}</p>
           <p className="muted">
-            {t('dashboard.revenue.totalReservations', { count: data.totalReservations })}
+            {t('dashboard.revenue.totalSold', { count: data.carStatus.sold })}
           </p>
         </div>
         <div className="dashboard-revenue__card">
