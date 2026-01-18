@@ -13,6 +13,7 @@ import { TrialStatusBanner, SubscriptionStatus } from '../components/TrialStatus
 import { Car, BodyStyle, FuelType, Transmission } from '../models/Car';
 import { CarMake, CarModel } from '../models/CarMakeModel';
 import { fetchCarMakes, fetchCarModelsByMake } from '../service/carMakeModelService';
+import { featureGroupTitleKey, featureOptions, selectOptionGroups as selectCatalog, optionGroupTitleLookup } from '../constants/optionCatalog';
 import { PasswordValidator } from '../utils/passwordValidator';
 import { TokenErrorTypes, detectTokenExpirationFromResponse } from '../utils/tokenUtils';
 import {
@@ -44,63 +45,14 @@ const bodyStyleOptions: BodyStyle[] = ['Hatchback', 'SUV', 'Sedan', 'Sport coupe
 const fuelTypeOptions: FuelType[] = ['Gasoline', 'Diesel', 'Hybrid', 'Electric'];
 const transmissionOptions: Transmission[] = ['Manual', 'Automatic', 'CVT'];
 
-const defaultOptionGroups: { title: string; items: string[] }[] = [
+const featureOptionGroups: { titleKey: string; items: { value: string; labelKey: string }[] }[] = [
   {
-    title: 'Opsionet',
-    items: [
-      'Distronic Plus',
-      'Ruajtja e Korsise',
-      'Vetparkim',
-      'Tavan Panoramik',
-      'Ndezje me Buton',
-      'Fenere Xenon',
-      'Pasqyra me Ngrohje',
-      'Pasqyra Elektrike',
-      'Sedilje me Masazh',
-      'Ngrohje & Ftohje Sediljesh',
-      'Kroskot Dixhital',
-      'TV Mbrapa',
-      'Tavan Kamosh',
-      'Bagazh me Buton',
-      'Ndricim Ambienti',
-      'Fenere Full LED',
-      'Xhama te Zi',
-      'Sensor Shiu',
-      'Sensor Dritash',
-      'Komanda ne Timon',
-      'Distance Display',
-      'Trekendesh ne pasqyre',
-      'Navigator',
-      'Sensor Parkimi',
-      'Goma te Reja',
-      'Cruise Control',
-      'Eco Mode',
-    ],
+    titleKey: featureGroupTitleKey,
+    items: [...featureOptions],
   },
 ];
 
-const selectOptionGroups: { title: string; options: string[] }[] = [
-  {
-    title: 'Klima',
-    options: ['2 zona', '4 zona'],
-  },
-  {
-    title: 'Sallon',
-    options: ['Sallon Lekure', 'Sallon Robe', 'Sallon Kamosh'],
-  },
-  {
-    title: 'Traksioni',
-    options: ['Traksioni 4x4 (4 matic)', 'Diferencial mbrapa (RWD)', 'Diferencial para'],
-  },
-  {
-    title: 'Sedilje me ngrohje',
-    options: ['Jo', 'Para', 'Mbrapa', 'Para dhe Mbrapa'],
-  },
-  {
-    title: 'Leje/Targa',
-    options: ['Me letra/Targa', 'Me targa', 'Me dogane', 'Pa dogane'],
-  },
-];
+const selectOptionGroups = [...selectCatalog];
 
 function emptyCarDraft(profileType: OwnerProfileType, ownerId: string, ownerAddress: { city: string; address: string }): Car {
   const isForRent = profileType === 'rent';
@@ -134,7 +86,10 @@ function emptyCarDraft(profileType: OwnerProfileType, ownerId: string, ownerAddr
     ownersCount: 1,
     serviceHistory: '',
     description: '',
-    optionsGroups: [...defaultOptionGroups, ...selectOptionGroups.map((g) => ({ title: g.title, items: [] }))],
+    optionsGroups: [
+      ...featureOptionGroups.map((g) => ({ title: g.titleKey, items: [] })),
+      ...selectOptionGroups.map((g) => ({ title: g.titleKey, items: [] })),
+    ],
     fees: 0,
     taxes: 0,
     rating: 4.8,
@@ -923,6 +878,12 @@ function CarEditorModal({
   const setField = <K extends keyof Car>(key: K, value: Car[K]) => setDraft((d) => ({ ...d, [key]: value }));
 
   const optionGroups = draft.optionsGroups ?? [];
+  const resolveGroupItems = (titleKey: string) => {
+    const match = optionGroups.find(
+      (group) => group.title === titleKey || optionGroupTitleLookup.get(group.title) === titleKey
+    );
+    return match?.items ?? [];
+  };
 
   const validateDraft = (nextDraft: Car) => {
     const next: Record<string, string> = {};
@@ -1408,63 +1369,67 @@ function CarEditorModal({
 
           <div className="owner-options">
             <p className="owner-options__title">{t('dashboard.form.options')}</p>
-            {selectOptionGroups.map((group) => {
-              const selected = optionGroups.find((g) => g.title === group.title)?.items?.[0] ?? '';
+            <div className="owner-options__grid owner-options__grid--select">
+              {selectOptionGroups.map((group) => {
+                const selected = resolveGroupItems(group.titleKey)?.[0] ?? '';
+                return (
+                  <label key={group.titleKey} className="owner-field">
+                    <span>{t(group.titleKey)}</span>
+                    <select
+                      value={selected}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setDraft((d) => {
+                          const groups = d.optionsGroups ?? [];
+                          const rest = groups.filter(
+                            (g) => g.title !== group.titleKey && optionGroupTitleLookup.get(g.title) !== group.titleKey
+                          );
+                          const nextItems = value ? [value] : [];
+                          return { ...d, optionsGroups: [...rest, { title: group.titleKey, items: nextItems }] };
+                        });
+                      }}
+                    >
+                      <option value="">{t('dashboard.form.select')}</option>
+                      {group.options.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {t(opt.labelKey)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                );
+              })}
+            </div>
+            {featureOptionGroups.map((group) => {
+              const current = resolveGroupItems(group.titleKey);
               return (
-                <div key={group.title} className="owner-options__group">
-                  <p className="owner-options__groupTitle">{group.title}</p>
-                  <div className="owner-options__grid">
-                    <label className="owner-field">
-                      <select
-                        value={selected}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setDraft((d) => {
-                            const groups = d.optionsGroups ?? [];
-                            const rest = groups.filter((g) => g.title !== group.title);
-                            const nextItems = value ? [value] : [];
-                            return { ...d, optionsGroups: [...rest, { title: group.title, items: nextItems }] };
-                          });
-                        }}
-                      >
-                        <option value="">{t('dashboard.form.select')}</option>
-                        {group.options.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
-                </div>
-              );
-            })}
-            {defaultOptionGroups.map((group) => {
-              const current = optionGroups.find((g) => g.title === group.title)?.items ?? [];
-              return (
-                <div key={group.title} className="owner-options__group">
-                  <p className="owner-options__groupTitle">{group.title}</p>
+                <div key={group.titleKey} className="owner-options__group">
+                  <p className="owner-options__groupTitle">{t(group.titleKey)}</p>
                   <div className="owner-options__grid">
                     {group.items.map((item) => {
-                      const checked = current.includes(item);
+                      const checked = current.includes(item.value);
                       return (
-                        <label key={item} className="owner-check owner-check--box">
+                        <label key={item.value} className="owner-check owner-check--box">
                           <input
                             type="checkbox"
                             checked={checked}
                             onChange={(e) => {
                               setDraft((d) => {
                                 const groups = d.optionsGroups ?? [];
-                                const existing = groups.find((g) => g.title === group.title) ?? { title: group.title, items: [] as string[] };
-                                const rest = groups.filter((g) => g.title !== group.title);
+                                const existing = groups.find(
+                                  (g) => g.title === group.titleKey || optionGroupTitleLookup.get(g.title) === group.titleKey
+                                ) ?? { title: group.titleKey, items: [] as string[] };
+                                const rest = groups.filter(
+                                  (g) => g.title !== group.titleKey && optionGroupTitleLookup.get(g.title) !== group.titleKey
+                                );
                                 const nextItems = e.target.checked
-                                  ? Array.from(new Set([...existing.items, item]))
-                                  : existing.items.filter((i) => i !== item);
-                                return { ...d, optionsGroups: [...rest, { title: group.title, items: nextItems }] };
+                                  ? Array.from(new Set([...existing.items, item.value]))
+                                  : existing.items.filter((i) => i !== item.value);
+                                return { ...d, optionsGroups: [...rest, { title: group.titleKey, items: nextItems }] };
                               });
                             }}
                           />
-                          <span>{item}</span>
+                          <span>{t(item.labelKey)}</span>
                         </label>
                       );
                     })}

@@ -8,6 +8,7 @@ import { AddressPicker } from '../../components/AddressPicker';
 import { Field } from './Field';
 import { ImagesField } from './ImagesField';
 import { bodyStyleOptions, fuelTypeOptions, transmissionOptions, featureOptionGroups, selectOptionGroups } from './dashboardUtils';
+import { optionGroupTitleLookup } from '../../constants/optionCatalog';
 import '../OwnerDashboard.css';
 
 interface CarEditorModalProps {
@@ -176,6 +177,12 @@ export const CarEditorModal: React.FC<CarEditorModalProps> = ({
     setDraft((d) => ({ ...d, [key]: value as Car[K] }));
 
   const optionGroups = draft.optionsGroups ?? [];
+  const resolveGroupItems = (titleKey: string) => {
+    const match = optionGroups.find(
+      (group) => group.title === titleKey || optionGroupTitleLookup.get(group.title) === titleKey
+    );
+    return match?.items ?? [];
+  };
 
   const validateDraft = (nextDraft: Car) => {
     const next: Record<string, string> = {};
@@ -687,63 +694,67 @@ export const CarEditorModal: React.FC<CarEditorModalProps> = ({
 
           <div className="owner-options">
             <p className="owner-options__title">{t('dashboard.form.options')}</p>
-            {selectOptionGroups.map((group) => {
-              const selected = optionGroups.find((g) => g.title === group.title)?.items?.[0] ?? '';
-              return (
-                <div key={group.title} className="owner-options__group">
-                  <p className="owner-options__groupTitle">{group.title}</p>
-                  <div className="owner-options__grid">
-                    <label className="owner-field">
-                      <select
-                        value={selected}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setDraft((d) => {
-                            const groups = d.optionsGroups ?? [];
-                            const rest = groups.filter((g) => g.title !== group.title);
-                            const nextItems = value ? [value] : [];
-                            return { ...d, optionsGroups: [...rest, { title: group.title, items: nextItems }] };
-                          });
-                        }}
-                      >
-                        <option value="">{t('dashboard.form.select')}</option>
-                        {group.options.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
-                </div>
-              );
-            })}
+            <div className="owner-options__grid owner-options__grid--select">
+              {selectOptionGroups.map((group) => {
+                const selected = resolveGroupItems(group.titleKey)?.[0] ?? '';
+                return (
+                  <label key={group.titleKey} className="owner-field">
+                    <span>{t(group.titleKey)}</span>
+                    <select
+                      value={selected}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setDraft((d) => {
+                          const groups = d.optionsGroups ?? [];
+                          const rest = groups.filter(
+                            (g) => g.title !== group.titleKey && optionGroupTitleLookup.get(g.title) !== group.titleKey
+                          );
+                          const nextItems = value ? [value] : [];
+                          return { ...d, optionsGroups: [...rest, { title: group.titleKey, items: nextItems }] };
+                        });
+                      }}
+                    >
+                      <option value="">{t('dashboard.form.select')}</option>
+                      {group.options.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {t(opt.labelKey)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                );
+              })}
+            </div>
             {featureOptionGroups.map((group) => {
-              const current = optionGroups.find((g) => g.title === group.title)?.items ?? [];
+              const current = resolveGroupItems(group.titleKey);
               return (
-                <div key={group.title} className="owner-options__group">
-                  <p className="owner-options__groupTitle">{group.title}</p>
+                <div key={group.titleKey} className="owner-options__group">
+                  <p className="owner-options__groupTitle">{t(group.titleKey)}</p>
                   <div className="owner-options__grid">
                     {group.items.map((item) => {
-                      const checked = current.includes(item);
+                      const checked = current.includes(item.value);
                       return (
-                        <label key={item} className="owner-check owner-check--box">
+                        <label key={item.value} className="owner-check owner-check--box">
                           <input
                             type="checkbox"
                             checked={checked}
                             onChange={(e) => {
                               setDraft((d) => {
                                 const groups = d.optionsGroups ?? [];
-                                const existing = groups.find((g) => g.title === group.title) ?? { title: group.title, items: [] as string[] };
-                                const rest = groups.filter((g) => g.title !== group.title);
+                                const existing = groups.find(
+                                  (g) => g.title === group.titleKey || optionGroupTitleLookup.get(g.title) === group.titleKey
+                                ) ?? { title: group.titleKey, items: [] as string[] };
+                                const rest = groups.filter(
+                                  (g) => g.title !== group.titleKey && optionGroupTitleLookup.get(g.title) !== group.titleKey
+                                );
                                 const nextItems = e.target.checked
-                                  ? Array.from(new Set([...existing.items, item]))
-                                  : existing.items.filter((i) => i !== item);
-                                return { ...d, optionsGroups: [...rest, { title: group.title, items: nextItems }] };
+                                  ? Array.from(new Set([...existing.items, item.value]))
+                                  : existing.items.filter((i) => i !== item.value);
+                                return { ...d, optionsGroups: [...rest, { title: group.titleKey, items: nextItems }] };
                               });
                             }}
                           />
-                          <span>{item}</span>
+                          <span>{t(item.labelKey)}</span>
                         </label>
                       );
                     })}

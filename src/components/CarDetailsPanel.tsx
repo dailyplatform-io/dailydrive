@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Car } from '../models/Car';
 import { formatPrice } from '../utils/formatting';
 import { useLanguage } from '../context/LanguageContext';
+import { optionGroupTitleLookup, optionLabelLookup } from '../constants/optionCatalog';
 import {
   MapPinIcon,
   NavigationIcon,
@@ -875,18 +876,28 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
                   <div className="options-groups">
                     {car.optionsGroups
                       .filter((group) => group.items.length > 0)
-                      .map((group) => (
-                        <div key={group.title} className="option-group">
-                          <p className="option-group__title">{group.title}</p>
-                          <div className="option-chip-grid">
-                            {group.items.map((item) => (
-                              <span key={item} className="option-chip">
-                                {item}
-                              </span>
-                            ))}
+                      .map((group) => {
+                        const titleKey = optionGroupTitleLookup.get(group.title) ?? group.title;
+                        const titleLabel = t(titleKey);
+                        const resolvedTitle = titleLabel === titleKey ? group.title : titleLabel;
+                        return (
+                          <div key={group.title} className="option-group">
+                            <p className="option-group__title">{resolvedTitle}</p>
+                            <div className="option-chip-grid">
+                              {group.items.map((item) => {
+                                const labelKey = optionLabelLookup.get(item) ?? item;
+                                const label = t(labelKey);
+                                const resolved = label === labelKey ? item : label;
+                                return (
+                                  <span key={item} className="option-chip">
+                                    {resolved}
+                                  </span>
+                                );
+                              })}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                   </div>
                 ) : (
                   <p className="muted">{t('details.options.empty')}</p>

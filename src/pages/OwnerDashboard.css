@@ -813,6 +813,10 @@
   gap: 8px;
 }
 
+.owner-options__grid--select {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .owner-form__actions {
   display: flex;
   justify-content: flex-end;
@@ -838,6 +842,10 @@
 
   .owner-profile-card--wide {
     grid-column: auto;
+  }
+
+  .owner-options__grid--select {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
