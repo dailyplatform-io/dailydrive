@@ -58,16 +58,6 @@ export const selectOptionGroups = [
     ],
   },
   {
-    key: 'heated_seats',
-    titleKey: 'options.group.heatedSeats',
-    options: [
-      { value: 'none', labelKey: 'options.heatedSeats.none' },
-      { value: 'front', labelKey: 'options.heatedSeats.front' },
-      { value: 'rear', labelKey: 'options.heatedSeats.rear' },
-      { value: 'front_rear', labelKey: 'options.heatedSeats.front_rear' },
-    ],
-  },
-  {
     key: 'registration',
     titleKey: 'options.group.registration',
     options: [
@@ -117,10 +107,6 @@ export const optionLabelLookup = new Map<string, string>([
   ['Traksioni 4x4 (4 matic)', 'options.drivetrain.awd_4matic'],
   ['Diferencial mbrapa (RWD)', 'options.drivetrain.rwd'],
   ['Diferencial para', 'options.drivetrain.fwd'],
-  ['Jo', 'options.heatedSeats.none'],
-  ['Para', 'options.heatedSeats.front'],
-  ['Mbrapa', 'options.heatedSeats.rear'],
-  ['Para dhe Mbrapa', 'options.heatedSeats.front_rear'],
   ['Me letra/Targa', 'options.registration.with_documents_plate'],
   ['Me targa', 'options.registration.with_plate'],
   ['Me dogane', 'options.registration.with_customs'],
@@ -134,6 +120,5 @@ export const optionGroupTitleLookup = new Map<string, string>([
   ['Klima', 'options.group.climate'],
   ['Sallon', 'options.group.interior'],
   ['Traksioni', 'options.group.drivetrain'],
-  ['Sedilje me ngrohje', 'options.group.heatedSeats'],
   ['Leje/Targa', 'options.group.registration'],
 ]);
