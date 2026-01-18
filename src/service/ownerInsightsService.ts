@@ -11,7 +11,7 @@ export interface CarMetric {
 
 export interface OwnerAnalyticsResponse {
   topInterest: CarMetric[];
-  topReserved: CarMetric[];
+  topActive: CarMetric[];
   topSold: CarMetric[];
 }
 

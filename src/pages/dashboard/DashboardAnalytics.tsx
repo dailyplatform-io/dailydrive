@@ -13,7 +13,7 @@ export const DashboardAnalytics: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [topInterest, setTopInterest] = useState<CarMetric[]>([]);
-  const [topReserved, setTopReserved] = useState<CarMetric[]>([]);
+  const [topActive, setTopActive] = useState<CarMetric[]>([]);
   const [topSold, setTopSold] = useState<CarMetric[]>([]);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export const DashboardAnalytics: React.FC = () => {
       try {
         const data = await fetchOwnerAnalytics();
         setTopInterest(data.topInterest ?? []);
-        setTopReserved(data.topReserved ?? []);
+        setTopActive(data.topActive ?? []);
         setTopSold(data.topSold ?? []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load analytics.');
@@ -37,10 +37,10 @@ export const DashboardAnalytics: React.FC = () => {
   const sections = useMemo<MetricSection[]>(
     () => [
       { title: t('dashboard.analytics.mostInterested'), items: topInterest },
-      { title: t('dashboard.analytics.mostReserved'), items: topReserved },
+      { title: t('dashboard.analytics.mostActive'), items: topActive },
       { title: t('dashboard.analytics.mostSold'), items: topSold },
     ],
-    [t, topInterest, topReserved, topSold]
+    [t, topInterest, topActive, topSold]
   );
 
   if (loading) {
