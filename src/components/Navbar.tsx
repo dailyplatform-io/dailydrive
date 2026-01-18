@@ -31,7 +31,7 @@ export const Navbar: React.FC = () => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     return !uuidRegex.test(slug);
   }, [pathParts]);
-  const isAuctionPage = location.pathname.startsWith('/auctions');
+  const isAuctionPage = location.pathname.startsWith('/auctions') || location.pathname.startsWith('/auction/');
 
   const isOwnerDashboard = location.pathname.startsWith('/dashboard');
   const ownerLinks = useMemo<OwnerNavItem[]>(() => {
@@ -47,7 +47,7 @@ export const Navbar: React.FC = () => {
         tab: 'reservations',
         label: t('dashboard.tabs.reservations'),
       });
-    } else if (user?.profileType === 'buy') {
+    } else if (user?.profileType === 'buy' && features.auctions) {
       base.splice(1, 0, {
         type: 'link',
         to: '/dashboard/auctions',
@@ -66,12 +66,8 @@ export const Navbar: React.FC = () => {
     const links: PublicNavItem[] = [
       { to: '/', key: 'nav.home' },
       ...(features.rent ? [{ to: '/rent', key: 'nav.rent' as const }] : []),
-      ...(features.buy
-        ? [
-            { to: '/buy', key: 'nav.buy' as const },
-            { to: '/auctions', label: 'Auctions' },
-          ]
-        : []),
+      ...(features.buy ? [{ to: '/buy', key: 'nav.buy' as const }] : []),
+      ...(features.auctions ? [{ to: '/auctions', label: 'Auctions' }] : []),
       { to: '/favorites', key: 'nav.favorites' },
       { to: '/about', key: 'nav.about' },
       { to: '/contact', key: 'nav.contact' },

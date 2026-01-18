@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Car } from '../models/Car';
-import { formatDistance, formatPrice } from '../utils/formatting';
+import { formatPrice } from '../utils/formatting';
 import { useLanguage } from '../context/LanguageContext';
-import { HeartIcon, MapPinIcon, StarIcon } from './Icons';
+import { HeartIcon } from './Icons';
 import { getImageUrl } from '../service/imageService';
 import './CarCard.css';
 
@@ -64,6 +64,7 @@ export const CarCard: React.FC<CarCardProps> = ({ car, selected, onSelect, onTog
 
     void loadImageUrls();
   }, [car?.id, car?.imageIds, car?.imageUrl]);
+
 
   const goToImage = (index: number) => {
     if (index >= 0 && index < imageUrls.length) {

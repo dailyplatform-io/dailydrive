@@ -63,12 +63,12 @@ function AppRoutes({ defaultBrowsePath }: { defaultBrowsePath: string }) {
         ) : (
           <Route path="/buy" element={<Navigate to={defaultBrowsePath} replace />} />
         )}
-        {features.buy ? (
+        {features.auctions ? (
           <Route path="/auctions" element={<AuctionsPage />} />
         ) : (
           <Route path="/auctions" element={<Navigate to={defaultBrowsePath} replace />} />
         )}
-        {features.buy ? (
+        {features.auctions ? (
           <Route path="/auction/:id" element={<CarDetailsPage />} />
         ) : (
           <Route path="/auction/:id" element={<Navigate to={defaultBrowsePath} replace />} />
@@ -91,7 +91,11 @@ function AppRoutes({ defaultBrowsePath }: { defaultBrowsePath: string }) {
         >
           <Route index element={<Navigate to="/dashboard/cars" replace />} />
           <Route path="cars" element={<DashboardCars />} />
-          <Route path="auctions" element={<DashboardAuctions />} />
+          {features.auctions ? (
+            <Route path="auctions" element={<DashboardAuctions />} />
+          ) : (
+            <Route path="auctions" element={<Navigate to="/dashboard/cars" replace />} />
+          )}
           <Route path="profile" element={<DashboardProfile />} />
           <Route path="reservations" element={<DashboardReservations />} />
         </Route>

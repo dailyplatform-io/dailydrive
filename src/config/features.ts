@@ -7,6 +7,7 @@ const readFlag = (value: string | undefined, fallback: boolean) => {
 export const features = {
   rent: readFlag(import.meta.env.VITE_FEATURE_RENT, false),
   buy: readFlag(import.meta.env.VITE_FEATURE_BUY, true),
+  auctions: readFlag(import.meta.env.VITE_FEATURE_AUCTIONS, false),
   trial: readFlag(import.meta.env.VITE_FEATURE_TRIAL, true),
   subscriptions: readFlag(import.meta.env.VITE_FEATURE_SUBSCRIPTIONS, true),
 } as const;
