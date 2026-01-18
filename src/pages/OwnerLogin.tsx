@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { OwnerAccount, OwnerProfileType, SubscriptionTier, annualPriceEur, useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { features } from '../config/features';
 import { authService } from '../services/authService';
 import { slugifySellerName } from '../utils/slug';
 import { getCurrentAuthToken } from '../utils/tokenUtils';
@@ -312,9 +313,11 @@ export const OwnerLogin: React.FC = () => {
             <Link to="/register" className="owner-auth-link">
               {t('ownerLogin.register')}
             </Link>
-            <span style={{ display: 'block', marginTop: '8px', fontSize: '12px', color: '#10b981', fontWeight: 'bold' }}>
-              ✨ Start with 7-day free trial
-            </span>
+            {features.subscriptions && features.trial ? (
+              <span style={{ display: 'block', marginTop: '8px', fontSize: '12px', color: '#10b981', fontWeight: 'bold' }}>
+                ✨ Start with 7-day free trial
+              </span>
+            ) : null}
           </p>
         </form>
       </section>

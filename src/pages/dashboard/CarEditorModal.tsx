@@ -7,7 +7,7 @@ import { fetchCarMakes, fetchCarModelsByMake } from '../../service/carMakeModelS
 import { AddressPicker } from '../../components/AddressPicker';
 import { Field } from './Field';
 import { ImagesField } from './ImagesField';
-import { bodyStyleOptions, fuelTypeOptions, transmissionOptions, defaultOptionGroups } from './dashboardUtils';
+import { bodyStyleOptions, fuelTypeOptions, transmissionOptions, featureOptionGroups, selectOptionGroups } from './dashboardUtils';
 import '../OwnerDashboard.css';
 
 interface CarEditorModalProps {
@@ -687,7 +687,38 @@ export const CarEditorModal: React.FC<CarEditorModalProps> = ({
 
           <div className="owner-options">
             <p className="owner-options__title">{t('dashboard.form.options')}</p>
-            {defaultOptionGroups.map((group) => {
+            {selectOptionGroups.map((group) => {
+              const selected = optionGroups.find((g) => g.title === group.title)?.items?.[0] ?? '';
+              return (
+                <div key={group.title} className="owner-options__group">
+                  <p className="owner-options__groupTitle">{group.title}</p>
+                  <div className="owner-options__grid">
+                    <label className="owner-field">
+                      <select
+                        value={selected}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setDraft((d) => {
+                            const groups = d.optionsGroups ?? [];
+                            const rest = groups.filter((g) => g.title !== group.title);
+                            const nextItems = value ? [value] : [];
+                            return { ...d, optionsGroups: [...rest, { title: group.title, items: nextItems }] };
+                          });
+                        }}
+                      >
+                        <option value="">{t('dashboard.form.select')}</option>
+                        {group.options.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                </div>
+              );
+            })}
+            {featureOptionGroups.map((group) => {
               const current = optionGroups.find((g) => g.title === group.title)?.items ?? [];
               return (
                 <div key={group.title} className="owner-options__group">

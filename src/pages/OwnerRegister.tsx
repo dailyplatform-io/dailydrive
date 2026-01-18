@@ -57,14 +57,15 @@ export const OwnerRegister: React.FC = () => {
   const [emailTaken, setEmailTaken] = useState(false);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
-  const [showTrialNotification, setShowTrialNotification] = useState(features.trial);
+  const [showTrialNotification, setShowTrialNotification] = useState(features.trial && features.subscriptions);
   const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com', '@yahoo.com'];
 
   // Show trial notification on mount
   useEffect(() => {
+    if (!showTrialNotification) return;
     const timer = setTimeout(() => setShowTrialNotification(false), 10000); // Hide after 10 seconds
     return () => clearTimeout(timer);
-  }, []);
+  }, [showTrialNotification]);
 
   useEffect(() => {
     if (!features.rent && profileType === 'rent' && features.buy) {
@@ -256,11 +257,13 @@ export const OwnerRegister: React.FC = () => {
       }
 
       // Navigate to login page with success message (7-day trial activated)
-      navigate('/login', { 
+      const successMessage = features.subscriptions && features.trial
+        ? '🎉 Registration successful! Your 7-day free trial is now active. Please log in to continue.'
+        : '🎉 Registration successful! Please log in to continue.';
+
+      navigate('/login', {
         replace: true,
-        state: {
-          message: '🎉 Registration successful! Your 7-day free trial is now active. Please log in to continue.'
-        }
+        state: { message: successMessage }
       });
     } catch (error: any) {
       if (error?.message?.toLowerCase().includes('email')) {
@@ -593,9 +596,11 @@ export const OwnerRegister: React.FC = () => {
             {loading ? 'Processing...' : (
               <>
                 {t('ownerRegister.submit', { price: `${selectedPrice}€ / year` })}
-                <span style={{ display: 'block', fontSize: '11px', marginTop: '4px', opacity: 0.9 }}>
-                  ✨ Start 7-day free trial
-                </span>
+                {features.subscriptions && features.trial ? (
+                  <span style={{ display: 'block', fontSize: '11px', marginTop: '4px', opacity: 0.9 }}>
+                    ✨ Start 7-day free trial
+                  </span>
+                ) : null}
               </>
             )}
           </button>

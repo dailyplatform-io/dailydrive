@@ -46,16 +46,59 @@ const transmissionOptions: Transmission[] = ['Manual', 'Automatic', 'CVT'];
 
 const defaultOptionGroups: { title: string; items: string[] }[] = [
   {
-    title: 'Options',
-    items: ['Park Assist Sensor', 'Steering Remocon'],
+    title: 'Opsionet',
+    items: [
+      'Distronic Plus',
+      'Ruajtja e Korsise',
+      'Vetparkim',
+      'Tavan Panoramik',
+      'Ndezje me Buton',
+      'Fenere Xenon',
+      'Pasqyra me Ngrohje',
+      'Pasqyra Elektrike',
+      'Sedilje me Masazh',
+      'Ngrohje & Ftohje Sediljesh',
+      'Kroskot Dixhital',
+      'TV Mbrapa',
+      'Tavan Kamosh',
+      'Bagazh me Buton',
+      'Ndricim Ambienti',
+      'Fenere Full LED',
+      'Xhama te Zi',
+      'Sensor Shiu',
+      'Sensor Dritash',
+      'Komanda ne Timon',
+      'Distance Display',
+      'Trekendesh ne pasqyre',
+      'Navigator',
+      'Sensor Parkimi',
+      'Goma te Reja',
+      'Cruise Control',
+      'Eco Mode',
+    ],
+  },
+];
+
+const selectOptionGroups: { title: string; options: string[] }[] = [
+  {
+    title: 'Klima',
+    options: ['2 zona', '4 zona'],
   },
   {
-    title: 'Safety Device',
-    items: ['Blind Spot Monitor', 'Auto Emergency Braking', 'Lane Assist', 'Rear Camera'],
+    title: 'Sallon',
+    options: ['Sallon Lekure', 'Sallon Robe', 'Sallon Kamosh'],
   },
   {
-    title: 'Interior Option',
-    items: ['Full Auto Air Conditioner', 'Heating Seat', 'Memory Seat', 'Power Seat', 'Vent Seat'],
+    title: 'Traksioni',
+    options: ['Traksioni 4x4 (4 matic)', 'Diferencial mbrapa (RWD)', 'Diferencial para'],
+  },
+  {
+    title: 'Sedilje me ngrohje',
+    options: ['Jo', 'Para', 'Mbrapa', 'Para dhe Mbrapa'],
+  },
+  {
+    title: 'Leje/Targa',
+    options: ['Me letra/Targa', 'Me targa', 'Me dogane', 'Pa dogane'],
   },
 ];
 
@@ -91,7 +134,7 @@ function emptyCarDraft(profileType: OwnerProfileType, ownerId: string, ownerAddr
     ownersCount: 1,
     serviceHistory: '',
     description: '',
-    optionsGroups: defaultOptionGroups.map((g) => ({ title: g.title, items: [] })),
+    optionsGroups: [...defaultOptionGroups, ...selectOptionGroups.map((g) => ({ title: g.title, items: [] }))],
     fees: 0,
     taxes: 0,
     rating: 4.8,
@@ -1365,6 +1408,37 @@ function CarEditorModal({
 
           <div className="owner-options">
             <p className="owner-options__title">{t('dashboard.form.options')}</p>
+            {selectOptionGroups.map((group) => {
+              const selected = optionGroups.find((g) => g.title === group.title)?.items?.[0] ?? '';
+              return (
+                <div key={group.title} className="owner-options__group">
+                  <p className="owner-options__groupTitle">{group.title}</p>
+                  <div className="owner-options__grid">
+                    <label className="owner-field">
+                      <select
+                        value={selected}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setDraft((d) => {
+                            const groups = d.optionsGroups ?? [];
+                            const rest = groups.filter((g) => g.title !== group.title);
+                            const nextItems = value ? [value] : [];
+                            return { ...d, optionsGroups: [...rest, { title: group.title, items: nextItems }] };
+                          });
+                        }}
+                      >
+                        <option value="">{t('dashboard.form.select')}</option>
+                        {group.options.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                </div>
+              );
+            })}
             {defaultOptionGroups.map((group) => {
               const current = optionGroups.find((g) => g.title === group.title)?.items ?? [];
               return (

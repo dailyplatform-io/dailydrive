@@ -7,19 +7,67 @@ export const bodyStyleOptions: BodyStyle[] = ['Hatchback', 'SUV', 'Sedan', 'Spor
 export const fuelTypeOptions: FuelType[] = ['Gasoline', 'Diesel', 'Hybrid', 'Electric'];
 export const transmissionOptions: Transmission[] = ['Manual', 'Automatic', 'CVT'];
 
+export const featureOptionGroups: { title: string; items: string[] }[] = [
+  {
+    title: 'Opsionet',
+    items: [
+      'Distronic Plus',
+      'Ruajtja e Korsise',
+      'Vetparkim',
+      'Tavan Panoramik',
+      'Ndezje me Buton',
+      'Fenere Xenon',
+      'Pasqyra me Ngrohje',
+      'Pasqyra Elektrike',
+      'Sedilje me Masazh',
+      'Ngrohje & Ftohje Sediljesh',
+      'Kroskot Dixhital',
+      'TV Mbrapa',
+      'Tavan Kamosh',
+      'Bagazh me Buton',
+      'Ndricim Ambienti',
+      'Fenere Full LED',
+      'Xhama te Zi',
+      'Sensor Shiu',
+      'Sensor Dritash',
+      'Komanda ne Timon',
+      'Distance Display',
+      'Trekendesh ne pasqyre',
+      'Navigator',
+      'Sensor Parkimi',
+      'Goma te Reja',
+      'Cruise Control',
+      'Eco Mode',
+    ],
+  },
+];
+
+export const selectOptionGroups: { title: string; options: string[] }[] = [
+  {
+    title: 'Klima',
+    options: ['2 zona', '4 zona'],
+  },
+  {
+    title: 'Sallon',
+    options: ['Sallon Lekure', 'Sallon Robe', 'Sallon Kamosh'],
+  },
+  {
+    title: 'Traksioni',
+    options: ['Traksioni 4x4 (4 matic)', 'Diferencial mbrapa (RWD)', 'Diferencial para'],
+  },
+  {
+    title: 'Sedilje me ngrohje',
+    options: ['Jo', 'Para', 'Mbrapa', 'Para dhe Mbrapa'],
+  },
+  {
+    title: 'Leje/Targa',
+    options: ['Me letra/Targa', 'Me targa', 'Me dogane', 'Pa dogane'],
+  },
+];
+
 export const defaultOptionGroups: { title: string; items: string[] }[] = [
-  {
-    title: 'Options',
-    items: ['Park Assist Sensor', 'Steering Remocon'],
-  },
-  {
-    title: 'Safety Device',
-    items: ['Blind Spot Monitor', 'Auto Emergency Braking', 'Lane Assist', 'Rear Camera'],
-  },
-  {
-    title: 'Interior Option',
-    items: ['Full Auto Air Conditioner', 'Heating Seat', 'Memory Seat', 'Power Seat', 'Vent Seat'],
-  },
+  ...featureOptionGroups,
+  ...selectOptionGroups.map((group) => ({ title: group.title, items: [] })),
 ];
 
 export function emptyCarDraft(profileType: OwnerProfileType, ownerId: string, ownerAddress: { city: string; address: string }): Car {
