@@ -61,7 +61,12 @@ export const DashboardRevenue: React.FC = () => {
         </div>
         <div className="dashboard-revenue__card">
           <h3>{t('dashboard.revenue.carStatus')}</h3>
-          <div className="dashboard-revenue__pie" style={{ background: pieBackground }} />
+          <div className="dashboard-revenue__pie" style={{ background: pieBackground }}>
+            <div className="dashboard-revenue__pie-center">
+              <span className="value">{data.carStatus.active + data.carStatus.sold + data.carStatus.inactive}</span>
+              <span className="label">{t('dashboard.revenue.cars')}</span>
+            </div>
+          </div>
           <div className="dashboard-revenue__legend">
             <span>
               <i className="dot dot--active" />
