@@ -21,6 +21,8 @@ import { DashboardCars } from './pages/dashboard/DashboardCars';
 import { DashboardProfile } from './pages/dashboard/DashboardProfile';
 import { DashboardReservations } from './pages/dashboard/DashboardReservations';
 import { DashboardAuctions } from './pages/dashboard/DashboardAuctions';
+import { DashboardAnalytics } from './pages/dashboard/DashboardAnalytics';
+import { DashboardRevenue } from './pages/dashboard/DashboardRevenue';
 import { RequireOwnerAuth } from './components/RequireOwnerAuth';
 
 function App() {
@@ -98,6 +100,8 @@ function AppRoutes({ defaultBrowsePath }: { defaultBrowsePath: string }) {
           )}
           <Route path="profile" element={<DashboardProfile />} />
           <Route path="reservations" element={<DashboardReservations />} />
+          <Route path="analytics" element={<DashboardAnalytics />} />
+          <Route path="revenue" element={<DashboardRevenue />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

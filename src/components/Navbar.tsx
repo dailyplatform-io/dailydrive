@@ -38,6 +38,8 @@ export const Navbar: React.FC = () => {
     if (!isOwnerDashboard) return [];
     const base: OwnerNavItem[] = [
       { type: 'link', to: '/dashboard/cars', tab: 'cars', label: t('dashboard.tabs.cars') },
+      { type: 'link', to: '/dashboard/analytics', tab: 'analytics', label: t('dashboard.tabs.analytics') },
+      { type: 'link', to: '/dashboard/revenue', tab: 'revenue', label: t('dashboard.tabs.revenue') },
       { type: 'link', to: '/dashboard/profile', tab: 'profile', label: t('dashboard.tabs.profile') },
     ];
     if (user?.profileType === 'rent') {

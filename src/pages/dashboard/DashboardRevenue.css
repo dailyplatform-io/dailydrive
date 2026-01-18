@@ -1,0 +1,106 @@
+.dashboard-revenue {
+  display: grid;
+  gap: 18px;
+}
+
+.dashboard-revenue__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.dashboard-revenue__card {
+  background: #ffffff;
+  border: 1px solid #e6eef8;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 12px 30px rgba(24, 49, 86, 0.08);
+}
+
+.dashboard-revenue__card h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #1f2b3d;
+}
+
+.dashboard-revenue__amount {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: #1b2533;
+}
+
+.dashboard-revenue__pie {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 8px 0 12px;
+}
+
+.dashboard-revenue__legend {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+  color: #2b3a4f;
+  font-size: 13px;
+}
+
+.dashboard-revenue__legend .dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.dot--active {
+  background: #2f80ed;
+}
+
+.dot--sold {
+  background: #22c55e;
+}
+
+.dot--inactive {
+  background: #f59e0b;
+}
+
+.dashboard-revenue__bars {
+  display: grid;
+  gap: 10px;
+}
+
+.dashboard-revenue__bar {
+  display: grid;
+  grid-template-columns: 100px 1fr 90px;
+  gap: 12px;
+  align-items: center;
+  font-weight: 600;
+  color: #2b3a4f;
+}
+
+.dashboard-revenue__bar .track {
+  background: #eef2f7;
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.dashboard-revenue__bar .fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2f80ed, #6aa8ff);
+  border-radius: 999px;
+}
+
+.dashboard-revenue__status {
+  color: #5c6b82;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .dashboard-revenue__bar {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
