@@ -54,12 +54,9 @@ export const DashboardRevenue: React.FC = () => {
       <div className="dashboard-revenue__summary">
         <div className="dashboard-revenue__card">
           <h3>{t('dashboard.revenue.total')}</h3>
-          <p className="dashboard-revenue__amount">€{data.totalRevenue.toFixed(2)}</p>
+          <p className="dashboard-revenue__amount">€{(data.totalRevenue + data.soldRevenue).toFixed(2)}</p>
           <p className="muted">
             {t('dashboard.revenue.totalSold', { count: data.carStatus.sold })}
-          </p>
-          <p className="muted">
-            {t('dashboard.revenue.soldRevenue')}: €{data.soldRevenue.toFixed(2)}
           </p>
         </div>
         <div className="dashboard-revenue__card">
