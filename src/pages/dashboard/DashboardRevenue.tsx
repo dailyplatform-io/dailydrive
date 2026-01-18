@@ -58,6 +58,9 @@ export const DashboardRevenue: React.FC = () => {
           <p className="muted">
             {t('dashboard.revenue.totalSold', { count: data.carStatus.sold })}
           </p>
+          <p className="muted">
+            {t('dashboard.revenue.soldRevenue')}: €{data.soldRevenue.toFixed(2)}
+          </p>
         </div>
         <div className="dashboard-revenue__card">
           <h3>{t('dashboard.revenue.carStatus')}</h3>

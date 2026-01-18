@@ -22,6 +22,7 @@ export interface MonthlyRevenue {
 
 export interface OwnerRevenueResponse {
   totalRevenue: number;
+  soldRevenue: number;
   monthlyRevenue: MonthlyRevenue[];
   carStatus: { active: number; sold: number; inactive: number };
   totalReservations: number;
