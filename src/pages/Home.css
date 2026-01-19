@@ -191,16 +191,18 @@
 }
 
 .panel-grid--wide {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
 .panel-card {
+  --panel-image-width: 180px;
+  --panel-image-height: 72px;
   background: #f7f9fd;
   border: 1px solid #e6eef8;
   border-radius: 14px;
   padding: 10px;
   display: grid;
-  grid-template-columns: 120px 1fr;
+  grid-template-columns: var(--panel-image-width) 1fr;
   gap: 10px;
   align-items: center;
   cursor: pointer;
@@ -219,8 +221,8 @@
 }
 
 .panel-card img {
-  width: 120px;
-  height: 72px;
+  width: var(--panel-image-width);
+  height: var(--panel-image-height);
   object-fit: cover;
   border-radius: 12px;
   max-width: 100%;
@@ -511,15 +513,11 @@
   }
 
   .panel-card {
-    grid-template-columns: 100px 1fr;
+    --panel-image-width: 150px;
+    --panel-image-height: 62px;
     gap: 8px;
     padding: 8px;
     min-height: 84px;
-  }
-
-  .panel-card img {
-    width: 100px;
-    height: 62px;
   }
 
   .hero-copy h1 {
@@ -585,22 +583,19 @@
   }
 
   .panel-card {
-    grid-template-columns: 92px 1fr;
+    --panel-image-width: 120px;
+    --panel-image-height: 56px;
     gap: 10px;
     padding: 10px;
   }
 
   /* Smaller cards for 3-column layout */
   .panel-grid--count-3 .panel-card {
-    grid-template-columns: 78px 1fr;
+    --panel-image-width: 108px;
+    --panel-image-height: 48px;
     gap: 6px;
     padding: 8px;
     min-height: 72px;
-  }
-
-  .panel-grid--count-3 .panel-card img {
-    width: 78px;
-    height: 48px;
   }
 
   .panel-grid--count-3 .panel-name {
@@ -611,10 +606,6 @@
     font-size: 11px;
   }
 
-  .panel-card img {
-    width: 92px;
-    height: 56px;
-  }
 
   .panel-name {
     font-size: 14px;
