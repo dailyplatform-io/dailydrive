@@ -7,6 +7,7 @@ import { PasswordChanger } from './PasswordChanger';
 import { SubscriptionManager } from './SubscriptionManager';
 import { getOwnerBillingCount } from './dashboardUtils';
 import { useDashboardCars } from './useDashboardCars';
+import { features } from '../../config/features';
 import '../OwnerDashboard.css';
 
 export const DashboardProfile: React.FC = () => {
@@ -93,82 +94,88 @@ export const DashboardProfile: React.FC = () => {
           <span className={`pill pill--mode ${user.profileType}`}>
             {user.profileType === 'rent' ? t('dashboard.profileType.rent') : t('dashboard.profileType.buy')}
           </span>
-          <span className="pill pill--tier">{t('dashboard.profile.tierLabel', { tier: user.subscriptionTier })}</span>
+          {features.subscriptions && (
+            <span className="pill pill--tier">{t('dashboard.profile.tierLabel', { tier: user.subscriptionTier })}</span>
+          )}
         </div>
       </div>
 
       <div className="owner-profile-grid">
-        <div className="owner-profile-card owner-profile-card--accent">
-          <div className="owner-profile-card__head">
-            <p className="owner-profile-card__title">{t('dashboard.profile.planDetails')}</p>
-            <div className="owner-profile-card__meta">
-              <span className="muted">{t('dashboard.subscription')}</span>
-              <strong>{`${subscriptionPrice}€ / year`}</strong>
+        {features.subscriptions && (
+          <div className="owner-profile-card owner-profile-card--accent">
+            <div className="owner-profile-card__head">
+              <p className="owner-profile-card__title">{t('dashboard.profile.planDetails')}</p>
+              <div className="owner-profile-card__meta">
+                <span className="muted">{t('dashboard.subscription')}</span>
+                <strong>{`${subscriptionPrice}€ / year`}</strong>
+              </div>
             </div>
-          </div>
-          <div className="owner-profile-kv">
-            <span className="muted">{t('dashboard.profile.subscriptionTier')}</span>
+            <div className="owner-profile-kv">
+              <span className="muted">{t('dashboard.profile.subscriptionTier')}</span>
+                <strong>
+                {user.subscriptionTier === 'free'
+                  ? 'Free (2 cars)'
+                  : user.subscriptionTier === 'basic5'
+                    ? 'Basic 5'
+                    : user.subscriptionTier === 'plus10'
+                      ? 'Plus 10'
+                      : user.subscriptionTier === 'standard20'
+                        ? 'Standard 20'
+                        : 'Pro 20+'}
+                </strong>
+              </div>
+            <div className="owner-profile-kv">
+              <span className="muted">{t('dashboard.profile.currentPlan')}</span>
+              <strong>{user.subscriptionTier}</strong>
+            </div>
+            <div className="owner-profile-kv">
+              <span className="muted">{t('dashboard.profile.renewal')}</span>
+              <strong>{new Date(user.subscriptionEndsAt).toLocaleDateString()}</strong>
+            </div>
+            <div className="owner-profile-kv">
+              <span className="muted">{t('dashboard.carsCount')}</span>
               <strong>
-              {user.subscriptionTier === 'free'
-                ? 'Free (2 cars)'
-                : user.subscriptionTier === 'basic5'
-                  ? 'Basic 5'
-                  : user.subscriptionTier === 'plus10'
-                    ? 'Plus 10'
-                    : user.subscriptionTier === 'standard20'
-                      ? 'Standard 20'
-                      : 'Pro 20+'}
+                {maxAllowedCars === Number.POSITIVE_INFINITY
+                  ? t('dashboard.profile.carsUsedUnlimited', { used: billingCount })
+                  : t('dashboard.profile.carsUsed', { used: billingCount, max: maxAllowedCars })}
               </strong>
             </div>
-          <div className="owner-profile-kv">
-            <span className="muted">{t('dashboard.profile.currentPlan')}</span>
-            <strong>{user.subscriptionTier}</strong>
+            <div className="owner-profile-progress" aria-hidden="true">
+              <div
+                className="owner-profile-progress__bar"
+                style={{
+                  width:
+                    maxAllowedCars === Number.POSITIVE_INFINITY
+                      ? '20%'
+                      : `${Math.min(100, (billingCount / Math.max(1, maxAllowedCars)) * 100)}%`,
+                }}
+              />
+            </div>
+            {user.subscriptionPendingTier && (
+              <div className="owner-profile-callout">
+                <p className="muted">
+                  {t('dashboard.profile.pendingChange', {
+                    tier: user.subscriptionPendingTier,
+                    date: user.subscriptionPendingStartsAt
+                      ? new Date(user.subscriptionPendingStartsAt).toLocaleDateString()
+                      : '',
+                  })}
+                </p>
+              </div>
+            )}
           </div>
-          <div className="owner-profile-kv">
-            <span className="muted">{t('dashboard.profile.renewal')}</span>
-            <strong>{new Date(user.subscriptionEndsAt).toLocaleDateString()}</strong>
-          </div>
-          <div className="owner-profile-kv">
-            <span className="muted">{t('dashboard.carsCount')}</span>
-            <strong>
-              {maxAllowedCars === Number.POSITIVE_INFINITY
-                ? t('dashboard.profile.carsUsedUnlimited', { used: billingCount })
-                : t('dashboard.profile.carsUsed', { used: billingCount, max: maxAllowedCars })}
-            </strong>
-          </div>
-          <div className="owner-profile-progress" aria-hidden="true">
-            <div
-              className="owner-profile-progress__bar"
-              style={{
-                width:
-                  maxAllowedCars === Number.POSITIVE_INFINITY
-                    ? '20%'
-                    : `${Math.min(100, (billingCount / Math.max(1, maxAllowedCars)) * 100)}%`,
-              }}
+        )}
+
+        {features.subscriptions && (
+          <div className="owner-profile-card">
+            <p className="owner-profile-card__title">{t('dashboard.profile.subscriptionManage')}</p>
+            <SubscriptionManager
+              billingCount={billingCount}
+              maxAllowed={maxAllowedCars}
+              annualPrice={subscriptionPrice}
             />
           </div>
-          {user.subscriptionPendingTier && (
-            <div className="owner-profile-callout">
-              <p className="muted">
-                {t('dashboard.profile.pendingChange', {
-                  tier: user.subscriptionPendingTier,
-                  date: user.subscriptionPendingStartsAt
-                    ? new Date(user.subscriptionPendingStartsAt).toLocaleDateString()
-                    : '',
-                })}
-              </p>
-            </div>
-          )}
-        </div>
-
-        <div className="owner-profile-card">
-          <p className="owner-profile-card__title">{t('dashboard.profile.subscriptionManage')}</p>
-          <SubscriptionManager
-            billingCount={billingCount}
-            maxAllowed={maxAllowedCars}
-            annualPrice={subscriptionPrice}
-          />
-        </div>
+        )}
 
         <div className="owner-profile-card">
           <p className="owner-profile-card__title">{t('dashboard.profile.company')}</p>

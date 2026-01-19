@@ -1,5 +1,5 @@
 import { Car, BodyStyle } from '../models/Car';
-import { detectTokenExpirationFromResponse, clearAuthTokens } from '../utils/tokenUtils';
+import { detectTokenExpirationFromResponse, clearAuthTokens, handleApiError } from '../utils/tokenUtils';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
@@ -157,9 +157,7 @@ const getApiError = async (response: Response) => {
     const message = data?.message || 'Request failed';
     
     // Check for token expiration using enhanced detection with response
-    const { isTokenExpired } = await import('../utils/tokenUtils').then(utils => 
-      utils.handleApiError(message, undefined, response)
-    );
+    const { isTokenExpired } = handleApiError(message, undefined, response);
     
     if (isTokenExpired) {
       return `401: ${message}`;
@@ -175,9 +173,7 @@ const getApiError = async (response: Response) => {
     const statusText = response.statusText || 'Request failed';
     
     // Check for token expiration in status text with response headers
-    const { isTokenExpired } = await import('../utils/tokenUtils').then(utils => 
-      utils.handleApiError(statusText, undefined, response)
-    );
+    const { isTokenExpired } = handleApiError(statusText, undefined, response);
     
     if (isTokenExpired) {
       return `401: ${statusText}`;

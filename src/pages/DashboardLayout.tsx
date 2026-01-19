@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useTrialManagement } from '../hooks/useTrialManagement';
 import { TrialStatusBanner, SubscriptionStatus } from '../components/TrialStatus';
+import { features } from '../config/features';
 import './OwnerDashboard.css';
 
 export const DashboardLayout: React.FC = () => {
@@ -50,14 +51,14 @@ export const DashboardLayout: React.FC = () => {
         </div>
       )}
       
-      {subscription.hasActiveSubscription && (
+      {features.subscriptions && subscription.hasActiveSubscription && (
         <SubscriptionStatus
           subscriptionTier={subscription.subscriptionTier}
           paymentMethod={subscription.paymentMethod}
         />
       )}
       
-      {trial.isInTrial && trial.daysLeft > 0 && (
+      {features.subscriptions && features.trial && trial.isInTrial && trial.daysLeft > 0 && (
         <TrialStatusBanner
           daysLeft={trial.daysLeft}
           onUpgradeClick={() => navigateToPayment(false)}

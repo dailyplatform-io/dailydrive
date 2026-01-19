@@ -12,6 +12,7 @@ import {
 import { CarEditorModal } from './CarEditorModal';
 import { emptyCarDraft, getOwnerBillingCount } from './dashboardUtils';
 import { slugifySellerName } from '../../utils/slug';
+import { features } from '../../config/features';
 import '../OwnerDashboard.css';
 
 type CarsSubtab = 'all' | 'active' | 'inactive' | 'deleted' | 'sold';
@@ -115,7 +116,7 @@ export const DashboardCars: React.FC = () => {
     return maxCarsForTier(user.subscriptionTier);
   }, [user]);
 
-  const addDisabled = billingCount >= maxAllowedCars;
+  const addDisabled = features.subscriptions ? billingCount >= maxAllowedCars : false;
 
   if (!user) return null;
 
@@ -125,7 +126,7 @@ export const DashboardCars: React.FC = () => {
 
   const onToggleActive = async (car: Car) => {
     if (car.listingStatus === 'sold') return;
-    if (car.listingStatus === 'inactive' && billingCount >= maxAllowedCars) {
+    if (features.subscriptions && car.listingStatus === 'inactive' && billingCount >= maxAllowedCars) {
       alert(t('dashboard.cars.limitReached'));
       return;
     }
