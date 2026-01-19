@@ -236,7 +236,6 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
       <main className="layout layout--home">
         <section className="home-hero">
           <div className="hero-copy">
-            <span className="hero-pill">{t('home.hero.brand')}</span>
             <h1>{t(rentEnabled && buyEnabled ? 'home.hero.title' : 'home.hero.title.general')}</h1>
             <p className="hero-subtitle">
               {t(rentEnabled && buyEnabled ? 'home.hero.subtitle' : 'home.hero.subtitle.general')}
