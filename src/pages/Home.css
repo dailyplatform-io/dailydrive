@@ -191,18 +191,16 @@
 }
 
 .panel-grid--wide {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .panel-card {
-  --panel-image-width: 180px;
-  --panel-image-height: 72px;
   background: #f7f9fd;
   border: 1px solid #e6eef8;
   border-radius: 14px;
   padding: 10px;
   display: grid;
-  grid-template-columns: var(--panel-image-width) 1fr;
+  grid-template-columns: 1fr;
   gap: 10px;
   align-items: center;
   cursor: pointer;
@@ -220,9 +218,16 @@
   box-shadow: 0 10px 24px rgba(24, 49, 86, 0.12);
 }
 
+.panel-card__content {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
 .panel-card img {
-  width: var(--panel-image-width);
-  height: var(--panel-image-height);
+  width: 92px;
+  height: 64px;
   object-fit: cover;
   border-radius: 12px;
   max-width: 100%;
@@ -513,11 +518,16 @@
   }
 
   .panel-card {
-    --panel-image-width: 150px;
-    --panel-image-height: 62px;
     gap: 8px;
     padding: 8px;
     min-height: 84px;
+  }
+  .panel-card__content {
+    grid-template-columns: 80px 1fr;
+  }
+  .panel-card img {
+    width: 80px;
+    height: 56px;
   }
 
   .hero-copy h1 {
@@ -583,19 +593,30 @@
   }
 
   .panel-card {
-    --panel-image-width: 120px;
-    --panel-image-height: 56px;
     gap: 10px;
     padding: 10px;
+  }
+  .panel-card__content {
+    grid-template-columns: 72px 1fr;
   }
 
   /* Smaller cards for 3-column layout */
   .panel-grid--count-3 .panel-card {
-    --panel-image-width: 108px;
-    --panel-image-height: 48px;
     gap: 6px;
     padding: 8px;
     min-height: 72px;
+  }
+  .panel-grid--count-3 .panel-card__content {
+    grid-template-columns: 64px 1fr;
+  }
+  .panel-grid--count-3 .panel-card img {
+    width: 64px;
+    height: 44px;
+  }
+
+  .panel-card img {
+    width: 72px;
+    height: 50px;
   }
 
   .panel-grid--count-3 .panel-name {

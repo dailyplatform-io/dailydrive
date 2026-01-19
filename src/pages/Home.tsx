@@ -293,12 +293,14 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
                     onClick={() => navigate(`/cars/${car.id}`)}
                   >
                     <p className="panel-pill panel-pill--green">{t('home.spotlight.badgeBuy')}</p>
-                    <img src={car.imageUrl} alt={car.model} />
-                    <div>
-                      <p className="panel-name">
-                        {car.brand} {car.model}
-                      </p>
-                      {car.subtitle && <p className="panel-meta">{car.subtitle}</p>}
+                    <div className="panel-card__content">
+                      <img src={car.imageUrl} alt={car.model} />
+                      <div>
+                        <p className="panel-name">
+                          {car.brand} {car.model} {car.year}
+                        </p>
+                        {car.subtitle && <p className="panel-meta">{car.subtitle}</p>}
+                      </div>
                     </div>
                   </div>
                 ))}
