@@ -198,14 +198,14 @@
   background: #f7f9fd;
   border: 1px solid #e6eef8;
   border-radius: 14px;
-  padding: 8px;
+  padding: 10px;
   display: grid;
-  grid-template-columns: 70px 1fr;
-  gap: 8px;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
   align-items: center;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  min-height: 78px;
+  min-height: 96px;
 }
 
 .panel-card--accent {
@@ -219,10 +219,10 @@
 }
 
 .panel-card img {
-  width: 70px;
-  height: 50px;
+  width: 92px;
+  height: 64px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 12px;
   max-width: 100%;
   flex-shrink: 0;
 }
@@ -511,15 +511,15 @@
   }
 
   .panel-card {
-    grid-template-columns: 60px 1fr;
-    gap: 6px;
-    padding: 6px;
-    min-height: 68px;
+    grid-template-columns: 80px 1fr;
+    gap: 8px;
+    padding: 8px;
+    min-height: 84px;
   }
 
   .panel-card img {
-    width: 60px;
-    height: 42px;
+    width: 80px;
+    height: 56px;
   }
 
   .hero-copy h1 {
@@ -585,22 +585,22 @@
   }
 
   .panel-card {
-    grid-template-columns: 55px 1fr;
-    gap: 8px;
-    padding: 8px;
+    grid-template-columns: 72px 1fr;
+    gap: 10px;
+    padding: 10px;
   }
 
   /* Smaller cards for 3-column layout */
   .panel-grid--count-3 .panel-card {
-    grid-template-columns: 45px 1fr;
-    gap: 4px;
-    padding: 6px;
-    min-height: 60px;
+    grid-template-columns: 64px 1fr;
+    gap: 6px;
+    padding: 8px;
+    min-height: 72px;
   }
 
   .panel-grid--count-3 .panel-card img {
-    width: 45px;
-    height: 32px;
+    width: 64px;
+    height: 44px;
   }
 
   .panel-grid--count-3 .panel-name {
@@ -612,8 +612,8 @@
   }
 
   .panel-card img {
-    width: 55px;
-    height: 38px;
+    width: 72px;
+    height: 50px;
   }
 
   .panel-name {
