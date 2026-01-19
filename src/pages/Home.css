@@ -203,6 +203,7 @@
   grid-template-columns: 1fr;
   gap: 10px;
   align-items: center;
+  position: relative;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   min-height: 96px;
@@ -219,11 +220,7 @@
 }
 
 .panel-card__content {
-  display: grid;
-  grid-template-columns: 92px 1fr;
-  gap: 10px;
-  align-items: center;
-  min-width: 0;
+  padding-top: 36px;
 }
 
 .panel-card img {
@@ -233,6 +230,9 @@
   border-radius: 12px;
   max-width: 100%;
   flex-shrink: 0;
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
 .panel-pill {
@@ -240,6 +240,9 @@
   font-size: 12px;
   color: #2f80ed;
   font-weight: 800;
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
 
 .panel-pill--green {
@@ -250,8 +253,7 @@
   margin: 0;
   font-weight: 800;
   color: #1f2b3d;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  font-size: 13px;
 }
 
 .panel-meta {
@@ -526,11 +528,13 @@
     min-height: 84px;
   }
   .panel-card__content {
-    grid-template-columns: 80px 1fr;
+    padding-top: 34px;
   }
   .panel-card img {
     width: 80px;
     height: 56px;
+    top: 8px;
+    right: 8px;
   }
 
   .hero-copy h1 {
@@ -600,7 +604,7 @@
     padding: 10px;
   }
   .panel-card__content {
-    grid-template-columns: 72px 1fr;
+    padding-top: 34px;
   }
 
   /* Smaller cards for 3-column layout */
@@ -610,16 +614,20 @@
     min-height: 72px;
   }
   .panel-grid--count-3 .panel-card__content {
-    grid-template-columns: 64px 1fr;
+    padding-top: 30px;
   }
   .panel-grid--count-3 .panel-card img {
     width: 64px;
     height: 44px;
+    top: 8px;
+    right: 8px;
   }
 
   .panel-card img {
     width: 72px;
     height: 50px;
+    top: 8px;
+    right: 8px;
   }
 
   .panel-grid--count-3 .panel-name {

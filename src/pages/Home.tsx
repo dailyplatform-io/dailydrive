@@ -297,7 +297,7 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
                       <img src={car.imageUrl} alt={car.model} />
                       <div>
                         <p className="panel-name">
-                          {car.brand} {car.model} {car.year}
+                          {car.brand} {car.model}
                         </p>
                         {car.subtitle && <p className="panel-meta">{car.subtitle}</p>}
                       </div>
