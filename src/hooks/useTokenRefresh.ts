@@ -1,1 +1,52 @@
-import { useState, useCallback } from 'react';\nimport { authService } from '../services/authService';\nimport { getCurrentAuthToken, TokenErrorTypes } from '../utils/tokenUtils';\n\ninterface UseTokenRefreshResult {\n  isRefreshing: boolean;\n  refreshToken: () => Promise<boolean>;\n  hasValidToken: () => boolean;\n}\n\n/**\n * Hook for managing token refresh state and operations\n */\nexport function useTokenRefresh(): UseTokenRefreshResult {\n  const [isRefreshing, setIsRefreshing] = useState(false);\n\n  const refreshToken = useCallback(async (): Promise<boolean> => {\n    if (isRefreshing) {\n      return false; // Already refreshing\n    }\n\n    setIsRefreshing(true);\n    \n    try {\n      const result = await authService.refreshToken();\n      \n      if (result.success) {\n        console.log('Token refresh successful');\n        return true;\n      } else {\n        console.error('Token refresh failed:', result.error);\n        return false;\n      }\n    } catch (error) {\n      console.error('Token refresh error:', error);\n      return false;\n    } finally {\n      setIsRefreshing(false);\n    }\n  }, [isRefreshing]);\n\n  const hasValidToken = useCallback((): boolean => {\n    const token = getCurrentAuthToken();\n    return !!token;\n  }, []);\n\n  return {\n    isRefreshing,\n    refreshToken,\n    hasValidToken,\n  };\n}
+import { useCallback, useState } from 'react';
+import { authService } from '../services/authService';
+import { getCurrentAuthToken } from '../utils/tokenUtils';
+
+interface UseTokenRefreshResult {
+  isRefreshing: boolean;
+  refreshToken: () => Promise<boolean>;
+  hasValidToken: () => boolean;
+}
+
+/**
+ * Hook for managing token refresh state and operations
+ */
+export function useTokenRefresh(): UseTokenRefreshResult {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const refreshToken = useCallback(async (): Promise<boolean> => {
+    if (isRefreshing) {
+      return false; // Already refreshing
+    }
+
+    setIsRefreshing(true);
+
+    try {
+      const result = await authService.refreshToken();
+
+      if (result.success) {
+        console.log('Token refresh successful');
+        return true;
+      }
+
+      console.error('Token refresh failed:', result.error);
+      return false;
+    } catch (error) {
+      console.error('Token refresh error:', error);
+      return false;
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [isRefreshing]);
+
+  const hasValidToken = useCallback((): boolean => {
+    const token = getCurrentAuthToken();
+    return !!token;
+  }, []);
+
+  return {
+    isRefreshing,
+    refreshToken,
+    hasValidToken,
+  };
+}
