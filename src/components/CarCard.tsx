@@ -277,7 +277,11 @@ export const CarCard: React.FC<CarCardProps> = ({ car, selected, onSelect, onTog
               {mileageLabel}
             </span>
             <span className={`tag ${car.availableNow ? 'tag--success' : 'tag--muted'}`}>
-              {car.availableNow ? t('carCard.availableNow') : t('carCard.booked')}
+              {car.availableNow
+                ? t('carCard.availableNow')
+                : car.isForSale
+                  ? t('carCard.comingSoon')
+                  : t('carCard.booked')}
             </span>
           </div>
           <div className="meta-price">{priceLabel}</div>

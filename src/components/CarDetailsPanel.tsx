@@ -1061,7 +1061,13 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
             <InfoItem label={t('details.info.exterior')} value={car.color} />
             <InfoItem
               label={t('details.location.availability')}
-              value={car.availableNow ? t('carCard.availableNow') : t('carCard.booked')}
+              value={
+                car.availableNow
+                  ? t('carCard.availableNow')
+                  : car.isForSale
+                    ? t('carCard.comingSoon')
+                    : t('carCard.booked')
+              }
             />
             <InfoItem
               label={t('details.location.pricing')}
