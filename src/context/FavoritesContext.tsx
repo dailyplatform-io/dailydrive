@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { Car } from '../models/Car';
 
 interface FavoritesContextValue {
@@ -9,8 +9,25 @@ interface FavoritesContextValue {
 
 const FavoritesContext = createContext<FavoritesContextValue | undefined>(undefined);
 
+const STORAGE_KEY = 'dailydrive.favorites';
+
 export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [favorites, setFavorites] = useState<Car[]>([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return;
+    try {
+      const parsed = JSON.parse(stored) as Car[];
+      if (Array.isArray(parsed)) setFavorites(parsed);
+    } catch {
+      // Ignore malformed data to avoid blocking the UI.
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
+  }, [favorites]);
 
   const toggleFavorite = (car: Car) => {
     setFavorites((prev) => {

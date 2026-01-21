@@ -205,7 +205,7 @@ export const OwnerLogin: React.FC = () => {
           <p className="owner-auth-subtitle">{t('ownerLogin.subtitle')}</p>
         </header>
 
-        <form className="owner-auth-form" onSubmit={onSubmit}>
+        <form className="owner-auth-form" onSubmit={onSubmit} autoComplete="on">
           {successMessage && (
             <div className="owner-auth-success">
               {successMessage}
@@ -239,10 +239,11 @@ export const OwnerLogin: React.FC = () => {
             <span>{t('ownerAuth.email')}</span>
             <input
               type="email"
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              autoComplete="email"
+              autoComplete="username"
               inputMode="email"
             />
             <div className="owner-auth-email-suggestions">
@@ -266,6 +267,7 @@ export const OwnerLogin: React.FC = () => {
             <div className="password-input-wrapper">
               <input
                 type={showPassword ? 'text' : 'password'}
+                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('ownerAuth.password.placeholder')}
