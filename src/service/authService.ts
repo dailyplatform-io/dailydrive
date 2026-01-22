@@ -63,6 +63,16 @@ export interface RegistrationResponse {
   paymentCompleted: boolean;
 }
 
+export interface ConfirmEmailRequest {
+  email: string;
+  code: string;
+}
+
+export interface ConfirmEmailResponse {
+  success: boolean;
+  message?: string;
+}
+
 class AuthService {
   private async request<T>(url: string, options: RequestInit = {}): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${url}`, {
@@ -115,6 +125,13 @@ class AuthService {
     subscriptionPriceEur: number;
   }> {
     return this.request(`/registration/payment-status/${userId}`);
+  }
+
+  async confirmEmail(request: ConfirmEmailRequest): Promise<ConfirmEmailResponse> {
+    return this.request<ConfirmEmailResponse>('/auth/confirm-email', {
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
   }
 }
 

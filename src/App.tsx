@@ -15,6 +15,7 @@ import { Home } from './pages/Home';
 import { AuctionsPage } from './pages/AuctionsPage';
 import { OwnerLogin } from './pages/OwnerLogin';
 import { OwnerRegister } from './pages/OwnerRegister';
+import { OwnerEmailVerification } from './pages/OwnerEmailVerification';
 import { PaymentPage } from './pages/PaymentPage';
 import { DashboardLayout } from './pages/DashboardLayout';
 import { DashboardCars } from './pages/dashboard/DashboardCars';
@@ -48,7 +49,7 @@ function App() {
 
 function AppRoutes({ defaultBrowsePath }: { defaultBrowsePath: string }) {
   const { pathname } = useLocation();
-  const hideNavbar = pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/payment');
+  const hideNavbar = pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/payment') || pathname.startsWith('/verify-email');
 
   return (
     <>
@@ -84,6 +85,7 @@ function AppRoutes({ defaultBrowsePath }: { defaultBrowsePath: string }) {
 
         <Route path="/login" element={<OwnerLogin />} />
         <Route path="/register" element={<OwnerRegister />} />
+        <Route path="/verify-email" element={<OwnerEmailVerification />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route
           path="/dashboard"

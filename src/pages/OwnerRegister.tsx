@@ -256,14 +256,9 @@ export const OwnerRegister: React.FC = () => {
         return;
       }
 
-      // Navigate to login page with success message (7-day trial activated)
-      const successMessage = features.subscriptions && features.trial
-        ? '🎉 Registration successful! Your 7-day free trial is now active. Please log in to continue.'
-        : '🎉 Registration successful! Please log in to continue.';
-
-      navigate('/login', {
+      navigate('/verify-email', {
         replace: true,
-        state: { message: successMessage }
+        state: { email }
       });
     } catch (error: any) {
       if (error?.message?.toLowerCase().includes('email')) {
