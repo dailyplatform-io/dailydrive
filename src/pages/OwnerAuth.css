@@ -57,6 +57,65 @@
   gap: 12px;
 }
 
+.owner-auth-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(47, 128, 237, 0.1), rgba(96, 169, 255, 0.08));
+  border: 1px solid rgba(47, 128, 237, 0.2);
+}
+
+.owner-auth-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2f80ed, #60a9ff);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.08em;
+  box-shadow: 0 10px 20px rgba(47, 128, 237, 0.3);
+}
+
+.owner-auth-identity-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1f2b3d;
+}
+
+.owner-auth-identity-email {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #4b5b75;
+  word-break: break-word;
+}
+
+.owner-auth-identity-label {
+  font-weight: 700;
+  color: #1f2b3d;
+}
+
+.owner-auth-otp {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.owner-auth-otp input {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  height: 52px;
+  padding: 0;
+}
+
 .owner-auth-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -204,6 +263,13 @@
   color: #d14b4b;
 }
 
+.owner-auth-success {
+  margin: 8px 0 0;
+  font-size: 12px;
+  font-weight: 800;
+  color: #166534;
+}
+
 .owner-auth-submit {
   width: 100%;
   border: none;
@@ -229,6 +295,29 @@
   cursor: not-allowed;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transform: none;
+}
+
+.owner-auth-resend {
+  width: 100%;
+  border: 1px solid #dfe6f0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: #ffffff;
+  font-weight: 800;
+  font-size: 13px;
+  color: #2f80ed;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.owner-auth-resend:hover:not(:disabled) {
+  border-color: #2f80ed;
+  box-shadow: 0 6px 16px rgba(47, 128, 237, 0.18);
+}
+
+.owner-auth-resend:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .owner-auth-foot {

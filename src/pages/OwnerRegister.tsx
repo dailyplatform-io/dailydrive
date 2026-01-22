@@ -258,7 +258,7 @@ export const OwnerRegister: React.FC = () => {
 
       navigate('/verify-email', {
         replace: true,
-        state: { email }
+        state: { email, name, surname }
       });
     } catch (error: any) {
       if (error?.message?.toLowerCase().includes('email')) {

@@ -73,6 +73,10 @@ export interface ConfirmEmailResponse {
   message?: string;
 }
 
+export interface ResendConfirmationRequest {
+  email: string;
+}
+
 class AuthService {
   private async request<T>(url: string, options: RequestInit = {}): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${url}`, {
@@ -129,6 +133,13 @@ class AuthService {
 
   async confirmEmail(request: ConfirmEmailRequest): Promise<ConfirmEmailResponse> {
     return this.request<ConfirmEmailResponse>('/auth/confirm-email', {
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
+  }
+
+  async resendConfirmation(request: ResendConfirmationRequest): Promise<ConfirmEmailResponse> {
+    return this.request<ConfirmEmailResponse>('/auth/resend-confirmation', {
       method: 'POST',
       body: JSON.stringify(request),
     });
