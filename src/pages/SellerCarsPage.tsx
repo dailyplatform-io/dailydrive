@@ -334,6 +334,7 @@ export const SellerCarsPage: React.FC<SellerCarsPageProps> = ({ sellerName }) =>
               onToggleFavorite={toggleFavorite}
               isFavorite={isFavorite}
               mode={mode}
+              countLabel={!hasRentCars && !hasBuyCars ? 'all' : undefined}
             />
           )}
         </div>

@@ -16,6 +16,8 @@ import { AuctionsPage } from './pages/AuctionsPage';
 import { OwnerLogin } from './pages/OwnerLogin';
 import { OwnerRegister } from './pages/OwnerRegister';
 import { OwnerEmailVerification } from './pages/OwnerEmailVerification';
+import { OwnerForgotPassword } from './pages/OwnerForgotPassword';
+import { OwnerResetPassword } from './pages/OwnerResetPassword';
 import { PaymentPage } from './pages/PaymentPage';
 import { DashboardLayout } from './pages/DashboardLayout';
 import { DashboardCars } from './pages/dashboard/DashboardCars';
@@ -49,7 +51,13 @@ function App() {
 
 function AppRoutes({ defaultBrowsePath }: { defaultBrowsePath: string }) {
   const { pathname } = useLocation();
-  const hideNavbar = pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/payment') || pathname.startsWith('/verify-email');
+  const hideNavbar =
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/register') ||
+    pathname.startsWith('/payment') ||
+    pathname.startsWith('/verify-email') ||
+    pathname.startsWith('/forgot-password') ||
+    pathname.startsWith('/reset-password');
 
   return (
     <>
@@ -86,6 +94,8 @@ function AppRoutes({ defaultBrowsePath }: { defaultBrowsePath: string }) {
         <Route path="/login" element={<OwnerLogin />} />
         <Route path="/register" element={<OwnerRegister />} />
         <Route path="/verify-email" element={<OwnerEmailVerification />} />
+        <Route path="/forgot-password" element={<OwnerForgotPassword />} />
+        <Route path="/reset-password" element={<OwnerResetPassword />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route
           path="/dashboard"

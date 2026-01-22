@@ -55,7 +55,50 @@ export interface OwnerProfileUpdateRequest {
   facebookName?: string;
 }
 
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface VerifyResetCodeRequest {
+  email: string;
+  code: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  code: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export interface PasswordResetResponse {
+  success: boolean;
+  message?: string;
+}
+
 class AuthService {
+  private async request<T>(url: string, options: RequestInit = {}): Promise<T> {
+    const response = await fetch(`${API_BASE_URL}${url}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      try {
+        const parsed = JSON.parse(errorText);
+        throw new Error(parsed.message || 'Request failed');
+      } catch {
+        throw new Error(errorText || 'Request failed');
+      }
+    }
+
+    return response.json();
+  }
+
   private async makeAuthenticatedRequest<T>(
     url: string, 
     options: RequestInit = {}
@@ -411,6 +454,27 @@ class AuthService {
         error: error instanceof Error ? error.message : 'Failed to update profile'
       };
     }
+  }
+
+  async forgotPassword(request: ForgotPasswordRequest): Promise<PasswordResetResponse> {
+    return this.request<PasswordResetResponse>('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
+  }
+
+  async verifyResetCode(request: VerifyResetCodeRequest): Promise<PasswordResetResponse> {
+    return this.request<PasswordResetResponse>('/auth/verify-reset-code', {
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
+  }
+
+  async resetPassword(request: ResetPasswordRequest): Promise<PasswordResetResponse> {
+    return this.request<PasswordResetResponse>('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
   }
 }
 

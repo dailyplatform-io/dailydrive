@@ -63,7 +63,9 @@ export const Navbar: React.FC = () => {
 
   const publicLinks = useMemo<PublicNavItem[]>(() => {
     if (isSellerSlug) {
-      return [{ to: '/', key: 'nav.home' }];
+      return [
+        { to: '/', label: 'Back to DailyDrive' },
+      ];
     }
     const links: PublicNavItem[] = [
       { to: '/', key: 'nav.home' },

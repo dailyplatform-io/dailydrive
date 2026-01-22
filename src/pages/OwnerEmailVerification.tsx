@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { authService } from '../service/authService';
@@ -24,7 +24,9 @@ export const OwnerEmailVerification: React.FC = () => {
   const [resendStatus, setResendStatus] = useState('');
   const [resendError, setResendError] = useState('');
   const [resendLoading, setResendLoading] = useState(false);
+  const [autoSubmitting, setAutoSubmitting] = useState(false);
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const lastSubmittedCodeRef = useRef('');
 
   const fullName = `${state?.name ?? ''} ${state?.surname ?? ''}`.trim();
   const initials = useMemo(() => {
@@ -78,8 +80,7 @@ export const OwnerEmailVerification: React.FC = () => {
     }
   };
 
-  const onSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const submitVerification = async () => {
     setSubmitted(true);
     setApiError('');
     setResendError('');
@@ -88,9 +89,11 @@ export const OwnerEmailVerification: React.FC = () => {
 
     setLoading(true);
     try {
+      const currentCode = otp.join('');
+      lastSubmittedCodeRef.current = currentCode;
       const response = await authService.confirmEmail({
         email: email.trim(),
-        code: otp.join(''),
+        code: currentCode,
       });
 
       if (!response.success) {
@@ -106,8 +109,25 @@ export const OwnerEmailVerification: React.FC = () => {
       setApiError(error?.message || t('ownerVerify.error.failed'));
     } finally {
       setLoading(false);
+      setAutoSubmitting(false);
     }
   };
+
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (loading) return;
+    await submitVerification();
+  };
+
+  useEffect(() => {
+    const code = otp.join('');
+    if (!email.trim()) return;
+    if (loading || autoSubmitting) return;
+    if (/^\d{6}$/.test(code) && code !== lastSubmittedCodeRef.current) {
+      setAutoSubmitting(true);
+      submitVerification();
+    }
+  }, [otp, email, loading, autoSubmitting]);
 
   const onResend = async () => {
     if (!email.trim()) {
@@ -186,21 +206,22 @@ export const OwnerEmailVerification: React.FC = () => {
             {loading ? t('ownerVerify.submitting') : t('ownerVerify.submit')}
           </button>
 
-          <button
-            className="owner-auth-resend"
-            type="button"
-            onClick={onResend}
-            disabled={resendLoading}
-          >
-            {resendLoading ? t('ownerVerify.resending') : t('ownerVerify.resend')}
-          </button>
-
-          <p className="owner-auth-foot">
-            {t('ownerVerify.backToLogin')}{' '}
-            <Link to="/login" className="owner-auth-link">
-              {t('ownerRegister.goToLogin')}
-            </Link>
-          </p>
+          <div className="owner-auth-footer-row">
+            <p className="owner-auth-foot">
+              {t('ownerVerify.backToLogin')}{' '}
+              <Link to="/login" className="owner-auth-link">
+                {t('ownerRegister.goToLogin')}
+              </Link>
+            </p>
+            <button
+              className="owner-auth-link owner-auth-resend"
+              type="button"
+              onClick={onResend}
+              disabled={resendLoading}
+            >
+              {resendLoading ? t('ownerVerify.resending') : t('ownerVerify.resend')}
+            </button>
+          </div>
         </form>
       </section>
     </main>

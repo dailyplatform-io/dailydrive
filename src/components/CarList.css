@@ -150,6 +150,13 @@
   background: #f9fbff;
 }
 
+@media (max-width: 768px) {
+  .car-list__notify-form input,
+  .car-list__notify-form select {
+    font-size: 16px;
+  }
+}
+
 .car-list__notify-form input:focus,
 .car-list__notify-form select:focus {
   outline: 2px solid #2f80ed;

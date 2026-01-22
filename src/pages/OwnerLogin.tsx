@@ -10,7 +10,7 @@ import './OwnerAuth.css';
 
 export const OwnerLogin: React.FC = () => {
   const { t } = useLanguage();
-  const { setUserFromApi } = useAuth();
+  const { setUserFromApi, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -26,6 +26,27 @@ export const OwnerLogin: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com', '@yahoo.com'];
+
+  useEffect(() => {
+    const token = getCurrentAuthToken();
+    if (!token) return;
+    if (user) {
+      navigate('/dashboard', { replace: true });
+      return;
+    }
+
+    const rawUser = localStorage.getItem('authUser') || sessionStorage.getItem('authUser');
+    if (!rawUser) return;
+    try {
+      const parsed = JSON.parse(rawUser) as Partial<OwnerAccount> | null;
+      if (parsed && parsed.id && parsed.email) {
+        setUserFromApi(parsed as OwnerAccount);
+        navigate('/dashboard', { replace: true });
+      }
+    } catch {
+      // Ignore malformed cache
+    }
+  }, [navigate, setUserFromApi, user]);
 
   // Check for success message from registration
   useEffect(() => {
@@ -80,7 +101,12 @@ export const OwnerLogin: React.FC = () => {
       console.log('Login response:', response);
       
       if (!response.success) {
-        setInvalid(true);
+        const message = response.error || response.message || '';
+        if (message.toLowerCase().includes('invalid')) {
+          setInvalid(true);
+        } else {
+          setApiError(message || 'Login failed.');
+        }
         return;
       }
       
@@ -293,6 +319,16 @@ export const OwnerLogin: React.FC = () => {
             </div>
             {passwordError && <p className="owner-auth-error">{passwordError}</p>}
           </label>
+
+          <div className="owner-auth-row">
+            <button
+              type="button"
+              className="owner-auth-link owner-auth-link--muted"
+              onClick={() => navigate('/forgot-password')}
+            >
+              {t('ownerLogin.forgotPassword')}
+            </button>
+          </div>
 
           {invalid && <p className="owner-auth-error">{t('ownerLogin.error.invalidCredentials')}</p>}
           {apiError && <p className="owner-auth-error">{apiError}</p>}

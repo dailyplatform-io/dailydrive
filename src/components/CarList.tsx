@@ -17,9 +17,18 @@ interface CarListProps {
   onToggleFavorite: (car: Car) => void;
   isFavorite: (id: string) => boolean;
   mode: 'rent' | 'buy';
+  countLabel?: 'rent' | 'buy' | 'all';
 }
 
-export const CarList: React.FC<CarListProps> = ({ cars, onSelect, selectedId, onToggleFavorite, isFavorite, mode }) => {
+export const CarList: React.FC<CarListProps> = ({
+  cars,
+  onSelect,
+  selectedId,
+  onToggleFavorite,
+  isFavorite,
+  mode,
+  countLabel
+}) => {
   const [sort, setSort] = useState<SortOption>('closest');
   const [notifyOpen, setNotifyOpen] = useState(false);
   const [notifyStatus, setNotifyStatus] = useState<'idle' | 'loading' | 'submitting' | 'success' | 'error'>('idle');
@@ -146,9 +155,13 @@ export const CarList: React.FC<CarListProps> = ({ cars, onSelect, selectedId, on
       <div className="car-list__top">
         <div className="car-list__count">
           <h2>
-            {mode === 'rent'
-              ? t('cars.count.rent', { count: cars.length })
-              : t('cars.count.buy', { count: cars.length })}
+            {(() => {
+              const label = countLabel ?? mode;
+              if (label === 'all') return t('cars.count.all', { count: cars.length });
+              return label === 'rent'
+                ? t('cars.count.rent', { count: cars.length })
+                : t('cars.count.buy', { count: cars.length });
+            })()}
           </h2>
           <p className="muted">{t('cars.subtitle')}</p>
         </div>

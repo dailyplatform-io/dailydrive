@@ -298,16 +298,20 @@
 }
 
 .owner-auth-resend {
-  width: 100%;
-  border: 1px solid #dfe6f0;
-  border-radius: 12px;
-  padding: 10px 14px;
-  background: #ffffff;
-  font-weight: 800;
-  font-size: 13px;
+  border: none;
+  background: none;
+  padding: 0;
+  font-weight: 900;
+  font-size: 12px;
   color: #2f80ed;
   cursor: pointer;
-  transition: all 0.2s ease;
+}
+
+.owner-auth-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .owner-auth-resend:hover:not(:disabled) {
@@ -331,6 +335,16 @@
   color: #2f80ed;
   font-weight: 900;
   text-decoration: none;
+}
+
+.owner-auth-link--muted {
+  font-weight: 700;
+  color: #6b7686;
+}
+
+.owner-auth-row {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .owner-auth-success {
