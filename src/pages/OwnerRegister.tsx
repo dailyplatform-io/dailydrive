@@ -60,7 +60,7 @@ export const OwnerRegister: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const [showTrialNotification, setShowTrialNotification] = useState(features.trial && features.subscriptions);
-  const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com', '@yahoo.com'];
+  const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com'];
 
   // Show trial notification on mount
   useEffect(() => {
@@ -384,6 +384,31 @@ export const OwnerRegister: React.FC = () => {
             </label>
           )}
 
+          {sellerType === 'dealer' && (
+            <div className="owner-auth-grid">
+              <label className="owner-auth-field">
+                <span>{t('ownerRegister.instagram')}</span>
+                <input
+                  value={instagramName}
+                  onChange={(e) => setInstagramName(e.target.value)}
+                  placeholder={capitalize(t('ownerRegister.instagram.placeholder'))}
+                  autoComplete="off"
+                />
+                <p style={{ marginTop: '4px', color: '#64748b', fontSize: '12px' }}>@example_name1</p>
+                {errors.instagramName && <p className="owner-auth-error">{errors.instagramName}</p>}
+              </label>
+              <label className="owner-auth-field">
+                <span>{t('ownerRegister.facebook')}</span>
+                <input
+                  value={facebookName}
+                  onChange={(e) => setFacebookName(e.target.value)}
+                  placeholder={capitalize(t('ownerRegister.facebook.placeholder'))}
+                  autoComplete="off"
+                />
+              </label>
+            </div>
+          )}
+
           <label className="owner-auth-field">
             <span>{t('ownerAuth.email')}</span>
             <input
@@ -410,33 +435,6 @@ export const OwnerRegister: React.FC = () => {
             {emailTaken && <p className="owner-auth-error">{t('ownerRegister.error.emailTaken')}</p>}
           </label>
 
-          {sellerType === 'dealer' && (
-            <div className="owner-auth-grid">
-              <label className="owner-auth-field">
-                <span>{t('ownerRegister.instagram')}</span>
-                <input
-                  value={instagramName}
-                  onChange={(e) => setInstagramName(e.target.value)}
-                  placeholder={capitalize(t('ownerRegister.instagram.placeholder'))}
-                  autoComplete="off"
-                />
-                <p style={{ marginTop: '4px', color: '#64748b', fontSize: '12px' }}>
-                  Use letters, numbers, dots, underscores. Example: @example_name1
-                </p>
-                {errors.instagramName && <p className="owner-auth-error">{errors.instagramName}</p>}
-              </label>
-              <label className="owner-auth-field">
-                <span>{t('ownerRegister.facebook')}</span>
-                <input
-                  value={facebookName}
-                  onChange={(e) => setFacebookName(e.target.value)}
-                  placeholder={capitalize(t('ownerRegister.facebook.placeholder'))}
-                  autoComplete="off"
-                />
-              </label>
-            </div>
-          )}
-
           <label className="owner-auth-field">
             <span>{t('ownerRegister.phone')}</span>
             <PhoneInput
@@ -451,13 +449,15 @@ export const OwnerRegister: React.FC = () => {
           </label>
 
           <div className="owner-auth-grid">
-            <label className="owner-auth-field">
-              <span>{t('ownerRegister.profileType')}</span>
-              <select value={profileType} onChange={(e) => setProfileType(e.target.value as OwnerProfileType)}>
-                {features.rent && <option value="rent">{t('ownerRegister.profileType.rent')}</option>}
-                {features.buy && <option value="buy">{t('ownerRegister.profileType.buy')}</option>}
-              </select>
-            </label>
+            {features.rent && features.buy && (
+              <label className="owner-auth-field">
+                <span>{t('ownerRegister.profileType')}</span>
+                <select value={profileType} onChange={(e) => setProfileType(e.target.value as OwnerProfileType)}>
+                  {features.rent && <option value="rent">{t('ownerRegister.profileType.rent')}</option>}
+                  {features.buy && <option value="buy">{t('ownerRegister.profileType.buy')}</option>}
+                </select>
+              </label>
+            )}
             {features.subscriptions && (
               <label className="owner-auth-field">
                 <span>{t('ownerRegister.subscription')}</span>
@@ -484,9 +484,6 @@ export const OwnerRegister: React.FC = () => {
                   {t('ownerRegister.useManualAddress')}
                 </button>
               )}
-              <a className="owner-auth-mini owner-auth-mini--link" href={mapsLink} target="_blank" rel="noreferrer">
-                {t('ownerRegister.openMap')}
-              </a>
             </div>
           </div>
 

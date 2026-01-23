@@ -329,6 +329,17 @@ export const OwnerDashboard: React.FC = () => {
   );
   const maxAllowedCars = useMemo(() => (user ? maxCarsForTier(user.subscriptionTier) : 0), [user]);
   const addDisabled = billingCount >= maxAllowedCars;
+  const sanitizeOwnerField = (value?: string) => {
+    const trimmed = value?.trim();
+    return trimmed && trimmed !== '—' ? trimmed : '';
+  };
+  const ownerAddress = user
+    ? {
+        ...user.location,
+        address: sanitizeOwnerField(user.location.address),
+        city: sanitizeOwnerField(user.location.city),
+      }
+    : { address: '', city: '', lat: 0, lng: 0 };
 
   if (!user) return null;
 
@@ -447,7 +458,7 @@ export const OwnerDashboard: React.FC = () => {
               title={addDisabled ? t('dashboard.cars.limitReached') : undefined}
               onClick={() => {
                 if (addDisabled) return;
-                setEditing(emptyCarDraft(user.profileType, user.id, { city: user.location.city, address: user.location.address }));
+                setEditing(emptyCarDraft(user.profileType, user.id, { city: ownerAddress.city, address: ownerAddress.address }));
                 setOpenForm(true);
               }}
             >
@@ -727,7 +738,7 @@ export const OwnerDashboard: React.FC = () => {
       {openForm && editing && (
         <CarEditorModal
           profileType={user.profileType}
-          ownerAddress={user.location}
+          ownerAddress={ownerAddress}
           billingCount={billingCount}
           maxAllowedCars={maxAllowedCars}
           initial={editing}

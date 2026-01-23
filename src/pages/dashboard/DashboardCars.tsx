@@ -118,6 +118,15 @@ export const DashboardCars: React.FC = () => {
 
   const addDisabled = features.subscriptions ? billingCount >= maxAllowedCars : false;
   const canShareProfile = !user.isPrivateOwner;
+  const sanitizeOwnerField = (value?: string) => {
+    const trimmed = value?.trim();
+    return trimmed && trimmed !== '—' ? trimmed : '';
+  };
+  const ownerAddress = {
+    ...user.location,
+    address: sanitizeOwnerField(user.location.address),
+    city: sanitizeOwnerField(user.location.city),
+  };
 
   if (!user) return null;
 
@@ -226,7 +235,7 @@ export const DashboardCars: React.FC = () => {
               title={addDisabled ? t('dashboard.cars.limitReached') : undefined}
               onClick={() => {
                 if (addDisabled) return;
-                setEditing(emptyCarDraft(user.profileType, user.id, { city: user.location.city, address: user.location.address }));
+                setEditing(emptyCarDraft(user.profileType, user.id, { city: ownerAddress.city, address: ownerAddress.address }));
                 setOpenForm(true);
               }}
             >
@@ -363,7 +372,7 @@ export const DashboardCars: React.FC = () => {
       {openForm && editing && (
         <CarEditorModal
           profileType={user.profileType}
-          ownerAddress={user.location}
+          ownerAddress={ownerAddress}
           billingCount={billingCount}
           maxAllowedCars={maxAllowedCars}
           initial={editing}

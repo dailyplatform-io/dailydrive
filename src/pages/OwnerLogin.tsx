@@ -25,7 +25,7 @@ export const OwnerLogin: React.FC = () => {
   const [invalid, setInvalid] = useState(false);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
-  const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com', '@yahoo.com'];
+  const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com'];
 
   useEffect(() => {
     const token = getCurrentAuthToken();
@@ -203,8 +203,8 @@ export const OwnerLogin: React.FC = () => {
         PaymentMethod: (response as any).paymentMethod,
         SubscriptionPriceEur: response.subscriptionPriceEur,
         location: {
-          city: response.city || '—',
-          address: response.address || '—',
+          city: response.city || '',
+          address: response.address || '',
           lat: normalizeNumber(response.latitude),
           lng: normalizeNumber(response.longitude),
         },

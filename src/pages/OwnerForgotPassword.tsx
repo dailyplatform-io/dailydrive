@@ -19,7 +19,7 @@ export const OwnerForgotPassword: React.FC = () => {
   const [resendLoading, setResendLoading] = useState(false);
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const lastSubmittedCodeRef = useRef('');
-  const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com', '@yahoo.com'];
+  const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com'];
 
   const applyEmailSuggestion = (domain: string) => {
     setEmail((current) => {
