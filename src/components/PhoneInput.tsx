@@ -33,6 +33,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const prevDialCodeRef = useRef(selectedDialCode);
 
   const selectedCountry = findDialCodeFromValue(selectedDialCode);
 
@@ -86,8 +87,22 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     });
   }, [searchTerm]);
 
+  useEffect(() => {
+    if (prevDialCodeRef.current === selectedDialCode) return;
+    prevDialCodeRef.current = selectedDialCode;
+    if (!isOpen) return;
+    setIsOpen(false);
+    setSearchTerm('');
+  }, [selectedDialCode, isOpen]);
+
   const handleDialCodeSelect = (code: PhoneDialCode) => {
     onDialCodeChange(code.dialCode);
+    setIsOpen(false);
+    setSearchTerm('');
+  };
+
+  const closeDropdown = () => {
+    if (!isOpen) return;
     setIsOpen(false);
     setSearchTerm('');
   };
@@ -173,6 +188,8 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
           pattern="[0-9]*"
           value={value}
           onChange={handlePhoneChange}
+          onFocus={closeDropdown}
+          onClick={closeDropdown}
           placeholder={placeholder}
           required={required}
           className="phone-input-number"

@@ -209,40 +209,46 @@ export const DashboardProfile: React.FC = () => {
             )}
 
             <div className="owner-profile-card">
-              <p className="owner-profile-card__title">{t('dashboard.profile.company')}</p>
+              <p className="owner-profile-card__title">
+                {user.isPrivateOwner ? t('dashboard.profile.phone') : t('dashboard.profile.company')}
+              </p>
               <div className="owner-profile-form">
-                <label className="owner-field">
-                  <span>{t('dashboard.profile.companyName')}</span>
-                  <input
-                    value={sellerName}
-                    onChange={(e) => setSellerName(e.target.value)}
-                    placeholder={t('dashboard.profile.companyName.placeholder')}
-                    autoComplete="organization"
-                  />
-                </label>
-                <div className="owner-form__grid">
+                {!user.isPrivateOwner && (
                   <label className="owner-field">
-                    <span>{t('dashboard.profile.instagram')}</span>
+                    <span>{t('dashboard.profile.companyName')}</span>
                     <input
-                      value={instagramName}
-                      onChange={(e) => setInstagramName(e.target.value)}
-                      placeholder={capitalize(t('dashboard.profile.instagram.placeholder'))}
-                      autoComplete="off"
-                    />
-                    <p style={{ marginTop: '4px', color: '#94a3b8', fontSize: '12px' }}>
-                      Use letters, numbers, dots, underscores. Example: @juxhinxhihani3
-                    </p>
-                  </label>
-                  <label className="owner-field">
-                    <span>{t('dashboard.profile.facebook')}</span>
-                    <input
-                      value={facebookName}
-                      onChange={(e) => setFacebookName(e.target.value)}
-                      placeholder={capitalize(t('dashboard.profile.facebook.placeholder'))}
-                      autoComplete="off"
+                      value={sellerName}
+                      onChange={(e) => setSellerName(e.target.value)}
+                      placeholder={t('dashboard.profile.companyName.placeholder')}
+                      autoComplete="organization"
                     />
                   </label>
-                </div>
+                )}
+                {!user.isPrivateOwner && (
+                  <div className="owner-form__grid">
+                    <label className="owner-field">
+                      <span>{t('dashboard.profile.instagram')}</span>
+                      <input
+                        value={instagramName}
+                        onChange={(e) => setInstagramName(e.target.value)}
+                        placeholder={capitalize(t('dashboard.profile.instagram.placeholder'))}
+                        autoComplete="off"
+                      />
+                      <p style={{ marginTop: '4px', color: '#94a3b8', fontSize: '12px' }}>
+                        Use letters, numbers, dots, underscores. Example: @juxhinxhihani3
+                      </p>
+                    </label>
+                    <label className="owner-field">
+                      <span>{t('dashboard.profile.facebook')}</span>
+                      <input
+                        value={facebookName}
+                        onChange={(e) => setFacebookName(e.target.value)}
+                        placeholder={capitalize(t('dashboard.profile.facebook.placeholder'))}
+                        autoComplete="off"
+                      />
+                    </label>
+                  </div>
+                )}
                 <label className="owner-field">
                   <span>{t('dashboard.profile.phone')}</span>
                   <input
@@ -262,12 +268,12 @@ export const DashboardProfile: React.FC = () => {
               onClick={async () => {
                 setProfileError('');
                 setProfileSaved(false);
-                const trimmedSellerName = sellerName.trim();
-                if (!trimmedSellerName) {
+                const trimmedSellerName = sellerName.trim() || user.sellerName || 'Private Cars';
+                if (!user.isPrivateOwner && !trimmedSellerName) {
                   setProfileError(t('dashboard.profile.companyRequired'));
                   return;
                 }
-                if (instagramName.trim() && !isValidInstagramHandle(instagramName)) {
+                if (!user.isPrivateOwner && instagramName.trim() && !isValidInstagramHandle(instagramName)) {
                   setProfileError(t('dashboard.profile.instagramInvalid'));
                   return;
                 }
@@ -276,8 +282,8 @@ export const DashboardProfile: React.FC = () => {
                 try {
                   const response = await authService.updateOwnerProfile({
                     sellerName: trimmedSellerName,
-                    instagramName: normalizeInstagramHandle(instagramName) || undefined,
-                    facebookName: facebookName.trim() || undefined,
+                    instagramName: user.isPrivateOwner ? undefined : normalizeInstagramHandle(instagramName) || undefined,
+                    facebookName: user.isPrivateOwner ? undefined : facebookName.trim() || undefined,
                     phone: phone.trim() || undefined,
                       });
                       if (response.success === false) {
@@ -290,8 +296,8 @@ export const DashboardProfile: React.FC = () => {
                         ...user,
                         sellerName: trimmedSellerName,
                         sellerSlug: nextSlug,
-                        instagramName: normalizeInstagramHandle(instagramName) || undefined,
-                        facebookName: facebookName.trim() || undefined,
+                        instagramName: user.isPrivateOwner ? undefined : normalizeInstagramHandle(instagramName) || undefined,
+                        facebookName: user.isPrivateOwner ? undefined : facebookName.trim() || undefined,
                         phone: phone.trim(),
                   });
                   setProfileSaved(true);

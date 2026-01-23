@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { OwnerProfileType, SubscriptionTier } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import type { Language } from '../i18n/translations';
 import { features } from '../config/features';
 import { authService } from '../service/authService';
 import { validatePassword } from '../utils/passwordValidator';
@@ -27,7 +28,7 @@ function priceFor(profileType: OwnerProfileType, tier: SubscriptionTier) {
 }
 
 export const OwnerRegister: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language, setLanguage, languageLabels } = useLanguage();
   const navigate = useNavigate();
   const capitalize = (value: string) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
   const privateSellerName = 'Private Cars';
@@ -60,6 +61,8 @@ export const OwnerRegister: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const [showTrialNotification, setShowTrialNotification] = useState(features.trial && features.subscriptions);
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
   const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com'];
 
   // Show trial notification on mount
@@ -68,6 +71,23 @@ export const OwnerRegister: React.FC = () => {
     const timer = setTimeout(() => setShowTrialNotification(false), 10000); // Hide after 10 seconds
     return () => clearTimeout(timer);
   }, [showTrialNotification]);
+
+  useEffect(() => {
+    if (!langOpen) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (!langRef.current || !(event.target instanceof Node)) return;
+      if (!langRef.current.contains(event.target)) setLangOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setLangOpen(false);
+    };
+    window.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('mousedown', onPointerDown);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [langOpen]);
 
   useEffect(() => {
     if (!features.rent && profileType === 'rent' && features.buy) {
@@ -294,9 +314,44 @@ export const OwnerRegister: React.FC = () => {
     <main className="owner-auth-page">
       <section className="owner-auth-card">
         <header className="owner-auth-head">
-          <p className="owner-auth-kicker">{t('ownerAuth.kicker')}</p>
+          <div className="owner-auth-head-row">
+            <p className="owner-auth-kicker">{t('ownerAuth.kicker')}</p>
+            <div className="owner-auth-lang" ref={langRef}>
+              <button
+                className="owner-auth-lang-button"
+                type="button"
+                aria-label={t('language.label')}
+                aria-haspopup="menu"
+                aria-expanded={langOpen}
+                onClick={() => setLangOpen((open) => !open)}
+              >
+                {languageLabels[language]}
+              </button>
+              {langOpen && (
+                <div className="owner-auth-lang-popover" role="menu" aria-label={t('language.label')}>
+                  {(Object.keys(languageLabels) as Language[]).map((code) => (
+                    <button
+                      key={code}
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked={code === language}
+                      className={`owner-auth-lang-item ${code === language ? 'is-active' : ''}`}
+                      onClick={() => {
+                        setLanguage(code);
+                        setLangOpen(false);
+                      }}
+                    >
+                      {languageLabels[code]}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
           <h2 className="owner-auth-title">{t('ownerRegister.title')}</h2>
-          <p className="owner-auth-subtitle">{t('ownerRegister.subtitle')}</p>
+          <p className="owner-auth-subtitle">
+            {features.rent ? t('ownerRegister.subtitle.rent') : t('ownerRegister.subtitle.buy')}
+          </p>
         </header>
         
         {showTrialNotification && (

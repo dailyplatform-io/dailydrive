@@ -29,6 +29,13 @@
   margin-bottom: 14px;
 }
 
+.owner-auth-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .owner-auth-kicker {
   margin: 0 0 6px;
   font-size: 12px;
@@ -49,6 +56,60 @@
   margin: 8px 0 0;
   color: #4b5b75;
   line-height: 1.55;
+}
+
+.owner-auth-lang {
+  position: relative;
+}
+
+.owner-auth-lang-button {
+  border: 1px solid #dfe6f0;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #1f2b3d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.owner-auth-lang-button:hover,
+.owner-auth-lang-button:focus {
+  border-color: #2f80ed;
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.15);
+}
+
+.owner-auth-lang-popover {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  background: #ffffff;
+  border: 1px solid #e6edf6;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 18px 40px rgba(24, 49, 86, 0.18);
+  z-index: 5;
+  min-width: 120px;
+}
+
+.owner-auth-lang-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2b3d;
+}
+
+.owner-auth-lang-item:hover,
+.owner-auth-lang-item.is-active {
+  background: #f0f4f9;
+  font-weight: 800;
 }
 
 .owner-auth-form {
@@ -620,6 +681,7 @@
   min-width: 75px;
   max-width: 75px;
   flex-shrink: 0;
+  line-height: 1;
 }
 
 .phone-input-code-button:hover {
@@ -636,6 +698,8 @@
 .phone-input-code-number {
   font-weight: 700;
   color: #1f2b3d;
+  line-height: 1;
+  transform: translateY(1px);
 }
 
 .phone-input-code-iso {
@@ -644,12 +708,15 @@
   letter-spacing: 0.5px;
   color: #6b7686;
   font-weight: 500;
+  line-height: 1;
+  transform: translateY(1px);
 }
 
 .phone-input-chevron {
   width: 16px;
   height: 16px;
   color: #6b7686;
+  transform: translateY(1px);
 }
 
 .phone-input-dropdown {

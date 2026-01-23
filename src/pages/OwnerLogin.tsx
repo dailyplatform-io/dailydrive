@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { OwnerAccount, OwnerProfileType, SubscriptionTier, annualPriceEur, useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import type { Language } from '../i18n/translations';
 import { features } from '../config/features';
 import { authService } from '../services/authService';
 import { slugifySellerName } from '../utils/slug';
@@ -9,13 +10,15 @@ import { getCurrentAuthToken } from '../utils/tokenUtils';
 import './OwnerAuth.css';
 
 export const OwnerLogin: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language, setLanguage, languageLabels } = useLanguage();
   const { setUserFromApi, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const successMessage = searchParams.get('message');
   const [registrationSuccess, setRegistrationSuccess] = useState('');
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,6 +29,23 @@ export const OwnerLogin: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com'];
+
+  useEffect(() => {
+    if (!langOpen) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (!langRef.current || !(event.target instanceof Node)) return;
+      if (!langRef.current.contains(event.target)) setLangOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setLangOpen(false);
+    };
+    window.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('mousedown', onPointerDown);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [langOpen]);
 
   useEffect(() => {
     const token = getCurrentAuthToken();
@@ -228,7 +248,40 @@ export const OwnerLogin: React.FC = () => {
     <main className="owner-auth-page">
       <section className="owner-auth-card">
         <header className="owner-auth-head">
-          <p className="owner-auth-kicker">{t('ownerAuth.kicker')}</p>
+          <div className="owner-auth-head-row">
+            <p className="owner-auth-kicker">{t('ownerAuth.kicker')}</p>
+            <div className="owner-auth-lang" ref={langRef}>
+              <button
+                className="owner-auth-lang-button"
+                type="button"
+                aria-label={t('language.label')}
+                aria-haspopup="menu"
+                aria-expanded={langOpen}
+                onClick={() => setLangOpen((open) => !open)}
+              >
+                {languageLabels[language]}
+              </button>
+              {langOpen && (
+                <div className="owner-auth-lang-popover" role="menu" aria-label={t('language.label')}>
+                  {(Object.keys(languageLabels) as Language[]).map((code) => (
+                    <button
+                      key={code}
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked={code === language}
+                      className={`owner-auth-lang-item ${code === language ? 'is-active' : ''}`}
+                      onClick={() => {
+                        setLanguage(code);
+                        setLangOpen(false);
+                      }}
+                    >
+                      {languageLabels[code]}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
           <h2 className="owner-auth-title">{t('ownerLogin.title')}</h2>
           <p className="owner-auth-subtitle">{t('ownerLogin.subtitle')}</p>
         </header>
@@ -323,7 +376,20 @@ export const OwnerLogin: React.FC = () => {
           </label>
 
           {invalid && <p className="owner-auth-error">{t('ownerLogin.error.invalidCredentials')}</p>}
-          {apiError && <p className="owner-auth-error">{apiError}</p>}
+          {apiError && apiError.toLowerCase().includes('confirm your email') ? (
+            <p className="owner-auth-error">
+              {apiError}{' '}
+              <Link
+                to="/verify-email"
+                className="owner-auth-link"
+                state={{ email }}
+              >
+                Confirm email
+              </Link>
+            </p>
+          ) : (
+            apiError && <p className="owner-auth-error">{apiError}</p>
+          )}
 
           <div className="owner-auth-remember-row">
             <label className="remember-me-field">
