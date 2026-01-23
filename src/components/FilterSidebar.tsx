@@ -5,6 +5,7 @@ import { fetchCarMakes, fetchCarModelsByMake } from '../service/carMakeModelServ
 import { FilterBounds, FilterState } from '../hooks/useFilters';
 import { ChevronDownIcon, CloseIcon } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
+import { selectOptionGroups } from '../constants/optionCatalog';
 import './FilterSidebar.css';
 
 interface FilterSidebarProps {
@@ -77,6 +78,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   const selectedMake = carMakes.find(make => make.id === selectedMakeId);
   const selectedModel = carModels.find(model => model.id === selectedModelId);
   const priceMax = mode === 'buy' ? bounds.priceMaxBuy : bounds.priceMaxRent;
+  const registrationGroup = selectOptionGroups.find((group) => group.key === 'registration');
 
   // Load car makes on component mount
   useEffect(() => {
@@ -276,8 +278,11 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   const selectMake = (makeId: number | null) => {
     if (!makeId) {
       onUpdate('selectedMakeIds', []);
+      onUpdate('selectedBrands', []);
     } else {
       onUpdate('selectedMakeIds', [makeId]);
+      const makeName = carMakes.find((make) => make.id === makeId)?.name;
+      onUpdate('selectedBrands', makeName ? [makeName] : []);
     }
     // Clear selected model when make changes
     onUpdate('selectedModelIds', []);
@@ -701,6 +706,28 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
           </div>
         </>
+      )}
+
+      {mode === 'buy' && registrationGroup && (
+        <div className="filter-panel__group">
+          <div className="filter-panel__label-row">
+            <span className="filter-panel__label">{t(registrationGroup.titleKey)}</span>
+          </div>
+          <div className="chip-grid">
+            {registrationGroup.options.map((option) => (
+              <button
+                key={option.value}
+                className={`chip ${filters.selectedRegistration.includes(option.value) ? 'is-active' : ''}`}
+                onClick={() =>
+                  onUpdate('selectedRegistration', toggleArrayValue(filters.selectedRegistration, option.value))
+                }
+                type="button"
+              >
+                {t(option.labelKey)}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       <div className="filter-panel__group">

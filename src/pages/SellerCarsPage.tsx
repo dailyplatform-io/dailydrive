@@ -7,6 +7,7 @@ import { FacebookIcon, InstagramIcon, PhoneIcon } from '../components/Icons';
 import { useFavorites } from '../context/FavoritesContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useBrand } from '../context/BrandContext';
+import { useAuth } from '../context/AuthContext';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useFilters } from '../hooks/useFilters';
 import { fetchCarsFromAPI } from '../service/carService';
@@ -54,6 +55,7 @@ const formatSocialLabel = (platform: 'instagram' | 'facebook', value: string) =>
 export const SellerCarsPage: React.FC<SellerCarsPageProps> = ({ sellerName }) => {
   const { t } = useLanguage();
   const { setBrandName } = useBrand();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { toggleFavorite, isFavorite } = useFavorites();
@@ -87,8 +89,14 @@ export const SellerCarsPage: React.FC<SellerCarsPageProps> = ({ sellerName }) =>
     const phone = sellerCars.find((car) => car.ownerPhone)?.ownerPhone;
     const instagram = sellerCars.find((car) => car.ownerInstagram)?.ownerInstagram;
     const facebook = sellerCars.find((car) => car.ownerFacebook)?.ownerFacebook;
-    return { displayName: displayName || rawName, phone, instagram, facebook };
-  }, [sellerCars, sellerName]);
+    const fallbackPhone =
+      !phone &&
+      user?.sellerSlug &&
+      normalizeSellerSlug(user.sellerSlug) === normalizedSellerName
+        ? user.phone
+        : undefined;
+    return { displayName: displayName || rawName, phone: phone || fallbackPhone, instagram, facebook };
+  }, [sellerCars, sellerName, user?.phone, user?.sellerSlug, normalizedSellerName]);
 
   const { filters, updateFilter, resetFilters, filtered, bounds } = useFilters(sellerCars, mode, carMakes, carModels);
 

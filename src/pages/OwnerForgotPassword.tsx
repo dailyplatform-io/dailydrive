@@ -14,8 +14,23 @@ export const OwnerForgotPassword: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const [autoSubmitting, setAutoSubmitting] = useState(false);
+  const [resendStatus, setResendStatus] = useState('');
+  const [resendError, setResendError] = useState('');
+  const [resendLoading, setResendLoading] = useState(false);
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const lastSubmittedCodeRef = useRef('');
+  const emailSuggestions = ['@gmail.com', '@outlook.com', '@hotmail.com', '@yahoo.com'];
+
+  const applyEmailSuggestion = (domain: string) => {
+    setEmail((current) => {
+      const trimmed = current.trim();
+      if (!trimmed) return current;
+      const atIndex = trimmed.indexOf('@');
+      const localPart = atIndex === -1 ? trimmed : trimmed.slice(0, atIndex);
+      if (!localPart) return current;
+      return `${localPart}${domain}`;
+    });
+  };
 
   const emailError = useMemo(() => {
     if (!submitted) return '';
@@ -68,6 +83,8 @@ export const OwnerForgotPassword: React.FC = () => {
   const submitEmail = async () => {
     setSubmitted(true);
     setApiError('');
+    setResendError('');
+    setResendStatus('');
     if (emailError) return;
 
     setLoading(true);
@@ -90,6 +107,8 @@ export const OwnerForgotPassword: React.FC = () => {
   const submitCode = async () => {
     setSubmitted(true);
     setApiError('');
+    setResendError('');
+    setResendStatus('');
     if (codeError) return;
 
     setLoading(true);
@@ -116,6 +135,28 @@ export const OwnerForgotPassword: React.FC = () => {
     }
   };
 
+  const resendCode = async () => {
+    if (!email.trim()) {
+      setResendError(t('ownerForgot.error.required'));
+      return;
+    }
+    setResendLoading(true);
+    setResendError('');
+    setResendStatus('');
+    try {
+      const response = await authService.forgotPassword({ email: email.trim() });
+      if (!response.success) {
+        setResendError(response.message || t('ownerForgot.error.failed'));
+        return;
+      }
+      setResendStatus(t('ownerForgot.resendSuccess'));
+    } catch (error: any) {
+      setResendError(error?.message || t('ownerForgot.error.failed'));
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (step !== 'code') return;
     const code = otp.join('');
@@ -132,7 +173,9 @@ export const OwnerForgotPassword: React.FC = () => {
         <header className="owner-auth-head">
           <p className="owner-auth-kicker">{t('ownerAuth.kicker')}</p>
           <h2 className="owner-auth-title">{t('ownerForgot.title')}</h2>
-          <p className="owner-auth-subtitle">{t('ownerForgot.subtitle')}</p>
+          <p className="owner-auth-subtitle">
+            {step === 'email' ? t('ownerForgot.subtitle') : t('ownerForgot.subtitleCode')}
+          </p>
         </header>
 
         <form
@@ -157,6 +200,19 @@ export const OwnerForgotPassword: React.FC = () => {
                 autoComplete="email"
                 inputMode="email"
               />
+              <div className="owner-auth-email-suggestions">
+                {emailSuggestions.map((domain) => (
+                  <button
+                    key={domain}
+                    type="button"
+                    className="owner-auth-email-suggestion"
+                    onClick={() => applyEmailSuggestion(domain)}
+                    aria-label={`Use ${domain} for email`}
+                  >
+                    {domain}
+                  </button>
+                ))}
+              </div>
               {emailError && <p className="owner-auth-error">{emailError}</p>}
             </label>
           ) : (
@@ -184,6 +240,8 @@ export const OwnerForgotPassword: React.FC = () => {
           )}
 
           {apiError && <p className="owner-auth-error">{apiError}</p>}
+          {resendError && <p className="owner-auth-error">{resendError}</p>}
+          {resendStatus && <p className="owner-auth-success">{resendStatus}</p>}
 
           <button className="owner-auth-submit" type="submit" disabled={loading}>
             {loading
@@ -193,12 +251,33 @@ export const OwnerForgotPassword: React.FC = () => {
                 : t('ownerForgot.submitCode')}
           </button>
 
-          <p className="owner-auth-foot">
-            {t('ownerForgot.backToLogin')}{' '}
-            <Link to="/login" className="owner-auth-link">
-              {t('ownerRegister.goToLogin')}
-            </Link>
-          </p>
+          {step === 'code' && (
+            <div className="owner-auth-footer-row">
+              <p className="owner-auth-foot">
+                {t('ownerForgot.backToLogin')}{' '}
+                <Link to="/login" className="owner-auth-link">
+                  {t('ownerRegister.goToLogin')}
+                </Link>
+              </p>
+              <button
+                className="owner-auth-resend"
+                type="button"
+                onClick={resendCode}
+                disabled={resendLoading}
+              >
+                {resendLoading ? t('ownerForgot.resending') : t('ownerForgot.resend')}
+              </button>
+            </div>
+          )}
+
+          {step === 'email' && (
+            <p className="owner-auth-foot">
+              {t('ownerForgot.backToLogin')}{' '}
+              <Link to="/login" className="owner-auth-link">
+                {t('ownerRegister.goToLogin')}
+              </Link>
+            </p>
+          )}
         </form>
       </section>
     </main>

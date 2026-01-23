@@ -215,8 +215,8 @@
   border: 1px solid #dfe6f0;
   background: #ffffff;
   border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 12px;
+  padding: 4px 8px;
+  font-size: 11px;
   font-weight: 700;
   color: #3a4a63;
   cursor: pointer;
@@ -337,14 +337,26 @@
   text-decoration: none;
 }
 
-.owner-auth-link--muted {
+.owner-auth-forgot {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 12px;
   font-weight: 700;
   color: #6b7686;
+  cursor: pointer;
+  text-decoration: none;
 }
 
-.owner-auth-row {
+.owner-auth-forgot:hover {
+  color: #2f80ed;
+}
+
+.owner-auth-remember-row {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .owner-auth-success {

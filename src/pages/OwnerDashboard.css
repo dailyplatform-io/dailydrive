@@ -399,6 +399,79 @@
   color: #1f2b3d;
 }
 
+.owner-dashboard__panel {
+  position: relative;
+}
+
+.owner-panel__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(241, 245, 249, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  border-radius: 16px;
+}
+
+.owner-panel__overlay-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: #ffffff;
+  border-radius: 999px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.2);
+  font-weight: 800;
+  color: #1f2b3d;
+}
+
+.owner-panel__spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(47, 128, 237, 0.2);
+  border-top-color: #2f80ed;
+  animation: ownerSpin 0.8s linear infinite;
+}
+
+@keyframes ownerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.owner-profile-tabs {
+  display: inline-flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 6px;
+  background: #f1f5f9;
+  border-radius: 999px;
+}
+
+.owner-profile-tab {
+  border: none;
+  background: transparent;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 800;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.owner-profile-tab.is-active {
+  background: #ffffff;
+  color: #1f2b3d;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+}
+
+.owner-profile-tab:focus-visible {
+  outline: 2px solid rgba(47, 128, 237, 0.6);
+  outline-offset: 2px;
+}
+
 .owner-primary {
   border: none;
   border-radius: 14px;
@@ -429,6 +502,17 @@
   font-weight: 900;
   cursor: pointer;
   color: #1f2b3d;
+}
+
+.owner-mini--share {
+  background: #f3f4f6;
+}
+
+@media (max-width: 600px) {
+  .owner-mini--share {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
 }
 
 .owner-mini--danger {
@@ -576,12 +660,14 @@
 .owner-modal__card {
   width: min(900px, 100%);
   max-height: 92vh;
-  overflow: auto;
+  overflow: hidden;
   background: #ffffff;
   border-radius: 18px;
   border: 1px solid #e8eef6;
   box-shadow: 0 22px 60px rgba(24, 49, 86, 0.22);
   padding: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .owner-modal__head {
@@ -602,6 +688,10 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  padding-bottom: 16px;
 }
 
 .owner-form__grid {
@@ -821,10 +911,12 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  padding-right: 16px;
   padding-top: 12px;
   border-top: 1px solid #e8eef6;
   flex-wrap: wrap;
   align-items: center;
+  background: transparent;
 }
 
 @media (max-width: 900px) {

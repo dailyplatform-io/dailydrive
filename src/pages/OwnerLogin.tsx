@@ -320,27 +320,26 @@ export const OwnerLogin: React.FC = () => {
             {passwordError && <p className="owner-auth-error">{passwordError}</p>}
           </label>
 
-          <div className="owner-auth-row">
+          {invalid && <p className="owner-auth-error">{t('ownerLogin.error.invalidCredentials')}</p>}
+          {apiError && <p className="owner-auth-error">{apiError}</p>}
+
+          <div className="owner-auth-remember-row">
+            <label className="remember-me-field">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <span>{t('ownerLogin.rememberMe') || 'Remember me'}</span>
+            </label>
             <button
               type="button"
-              className="owner-auth-link owner-auth-link--muted"
+              className="owner-auth-forgot"
               onClick={() => navigate('/forgot-password')}
             >
               {t('ownerLogin.forgotPassword')}
             </button>
           </div>
-
-          {invalid && <p className="owner-auth-error">{t('ownerLogin.error.invalidCredentials')}</p>}
-          {apiError && <p className="owner-auth-error">{apiError}</p>}
-
-          <label className="remember-me-field">
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-            />
-            <span>{t('ownerLogin.rememberMe') || 'Remember me'}</span>
-          </label>
 
           <button className="owner-auth-submit" type="submit" disabled={loading}>
             {loading ? 'Signing in...' : t('ownerLogin.submit')}

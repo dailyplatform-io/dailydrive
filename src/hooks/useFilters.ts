@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { BodyStyle, Car, FuelType, Transmission } from '../models/Car';
 import { CarMake, CarModel } from '../models/CarMakeModel';
+import { optionGroupTitleLookup, optionLabelLookup } from '../constants/optionCatalog';
 
 export interface FilterState {
   search: string;
@@ -20,6 +21,7 @@ export interface FilterState {
   minSeats: number;
   selectedExteriorColors: string[];
   selectedInteriorColors: string[];
+  selectedRegistration: string[];
 }
 
 export interface FilterBounds {
@@ -67,6 +69,7 @@ const initialFilterState = (mode: 'rent' | 'buy', bounds: FilterBounds): FilterS
   minSeats: 0,
   selectedExteriorColors: [],
   selectedInteriorColors: [],
+  selectedRegistration: [],
 });
 
 export const useFilters = (allCars: Car[], mode: 'rent' | 'buy', carMakes: CarMake[] = [], carModels: CarModel[] = []) => {
@@ -163,6 +166,20 @@ export const useFilters = (allCars: Car[], mode: 'rent' | 'buy', carMakes: CarMa
       const matchesInterior =
         filters.selectedInteriorColors.length === 0 || (interiorColor && filters.selectedInteriorColors.includes(interiorColor));
 
+      const matchesRegistration = (() => {
+        if (filters.selectedRegistration.length === 0) return true;
+        const registrationGroup = car.optionsGroups?.find((group) => {
+          const normalized = optionGroupTitleLookup.get(group.title) ?? group.title;
+          return normalized === 'options.group.registration';
+        });
+        if (!registrationGroup) return false;
+        const selectedKeys = filters.selectedRegistration.map((value) => optionLabelLookup.get(value) ?? value);
+        return registrationGroup.items.some((item) => {
+          const itemKey = optionLabelLookup.get(item) ?? item;
+          return selectedKeys.includes(itemKey);
+        });
+      })();
+
       return (
         matchesSearch &&
         matchesRentalType &&
@@ -177,7 +194,8 @@ export const useFilters = (allCars: Car[], mode: 'rent' | 'buy', carMakes: CarMa
         matchesTransmission &&
         matchesSeats &&
         matchesExterior &&
-        matchesInterior
+        matchesInterior &&
+        matchesRegistration
       );
     });
   }, [allCars, filters, mode, carMakes, carModels]);

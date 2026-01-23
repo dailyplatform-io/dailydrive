@@ -53,6 +53,7 @@ export interface OwnerProfileUpdateRequest {
   sellerName: string;
   instagramName?: string;
   facebookName?: string;
+  phone?: string;
 }
 
 export interface ForgotPasswordRequest {
@@ -77,6 +78,28 @@ export interface PasswordResetResponse {
 }
 
 class AuthService {
+  private extractErrorMessage(rawText: string): string {
+    try {
+      const parsed = JSON.parse(rawText) as {
+        message?: string;
+        title?: string;
+        detail?: string;
+        errors?: Record<string, string[]>;
+      };
+      if (parsed.message) return parsed.message;
+      if (parsed.detail) return parsed.detail;
+      if (parsed.title) return parsed.title;
+      if (parsed.errors) {
+        const firstKey = Object.keys(parsed.errors)[0];
+        const firstValue = firstKey ? parsed.errors[firstKey]?.[0] : undefined;
+        if (firstValue) return firstValue;
+      }
+    } catch {
+      // fall through
+    }
+    return rawText || 'Request failed';
+  }
+
   private async request<T>(url: string, options: RequestInit = {}): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${url}`, {
       ...options,
@@ -88,12 +111,7 @@ class AuthService {
 
     if (!response.ok) {
       const errorText = await response.text();
-      try {
-        const parsed = JSON.parse(errorText);
-        throw new Error(parsed.message || 'Request failed');
-      } catch {
-        throw new Error(errorText || 'Request failed');
-      }
+      throw new Error(this.extractErrorMessage(errorText));
     }
 
     return response.json();

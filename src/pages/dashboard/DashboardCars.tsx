@@ -184,7 +184,7 @@ export const DashboardCars: React.FC = () => {
           </div>
           <div className="owner-panel__actions">
             <button
-              className="owner-mini"
+              className="owner-mini owner-mini--share"
               type="button"
               disabled={sharing}
               title={!sellerSlug ? t('dashboard.share.missingSeller') : undefined}
