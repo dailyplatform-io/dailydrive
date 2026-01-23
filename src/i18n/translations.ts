@@ -375,6 +375,7 @@ export const translations: Record<Language, TranslationDict> = {
     'home.assurance.li1': 'Concierge pickup or delivery windows that fit your schedule.',
     'home.assurance.li2': 'Transparent pricing with taxes and protections surfaced upfront.',
     'home.assurance.li3': 'Favorites sync across devices so you never lose a short list.',
+    'home.assurance.li4': 'Fast support for any questions during the process.',
     'home.assistance.title': 'Need a hand?',
     'home.assistance.body':
       'Tell us what you need and we will suggest three options that match.',
@@ -1022,6 +1023,7 @@ export const translations: Record<Language, TranslationDict> = {
     'home.assurance.li1': 'Ritiro o consegna su misura per il tuo orario.',
     'home.assurance.li2': 'Prezzi trasparenti con tasse e protezioni visibili.',
     'home.assurance.li3': 'Preferiti sincronizzati per non perdere la shortlist.',
+    'home.assurance.li4': 'Supporto rapido per qualsiasi domanda durante il processo.',
     'home.assistance.title': 'Serve una mano?',
     'home.assistance.body':
       'Dicci cosa ti serve e ti proponiamo tre opzioni che fanno al caso tuo.',
@@ -2290,6 +2292,7 @@ export const translations: Record<Language, TranslationDict> = {
     'home.assurance.li1': 'Παραλαβή ή παράδοση στο πρόγραμμά σου.',
     'home.assurance.li2': 'Διαφανείς τιμές με ξεκάθαρες χρεώσεις.',
     'home.assurance.li3': 'Αγαπημένα συγχρονισμένα για τη λίστα σου.',
+    'home.assurance.li4': 'Γρήγορη υποστήριξη για κάθε απορία κατά τη διαδικασία.',
     'home.assistance.title': 'Χρειάζεσαι βοήθεια;',
     'home.assistance.body': 'Πες μας τι χρειάζεσαι και θα προτείνουμε 3 επιλογές που σου ταιριάζουν.',
     'home.assistance.ctaRent': 'Ξεκίνα με ενοικίαση',
