@@ -345,7 +345,7 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
             <p className="assurance-title">{t('home.assistance.title')}</p>
             <p className="assurance-body">{t('home.assistance.body')}</p>
             <div className="hero-actions">
-              <button className="hero-button hero-button--primary" onClick={() => navigate('/contact')}>
+              <button className="hero-button hero-button--primary" onClick={() => navigate('/about')}>
                 {t('common.contact')}
               </button>
             </div>
