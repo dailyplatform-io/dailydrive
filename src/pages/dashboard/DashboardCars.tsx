@@ -117,6 +117,7 @@ export const DashboardCars: React.FC = () => {
   }, [user]);
 
   const addDisabled = features.subscriptions ? billingCount >= maxAllowedCars : false;
+  const canShareProfile = !user.isPrivateOwner;
 
   if (!user) return null;
 
@@ -183,39 +184,41 @@ export const DashboardCars: React.FC = () => {
             <p className="muted">{t('dashboard.cars.subtitle')}</p>
           </div>
           <div className="owner-panel__actions">
-            <button
-              className="owner-mini owner-mini--share"
-              type="button"
-              disabled={sharing}
-              title={!sellerSlug ? t('dashboard.share.missingSeller') : undefined}
-              onClick={async () => {
-                if (!sellerSlug) {
-                  setShareMessage(t('dashboard.share.missingSeller'));
-                  return;
-                }
-                setSharing(true);
-                try {
-                  if (navigator.share) {
-                    await navigator.share({ title: sellerName, url: shareUrl });
-                    setShareMessage(t('dashboard.share.shared'));
+            {canShareProfile && (
+              <button
+                className="owner-mini owner-mini--share"
+                type="button"
+                disabled={sharing}
+                title={!sellerSlug ? t('dashboard.share.missingSeller') : undefined}
+                onClick={async () => {
+                  if (!sellerSlug) {
+                    setShareMessage(t('dashboard.share.missingSeller'));
                     return;
                   }
-                  if (navigator.clipboard?.writeText) {
-                    await navigator.clipboard.writeText(shareUrl);
-                    setShareMessage(t('dashboard.share.copied'));
-                    return;
+                  setSharing(true);
+                  try {
+                    if (navigator.share) {
+                      await navigator.share({ title: sellerName, url: shareUrl });
+                      setShareMessage(t('dashboard.share.shared'));
+                      return;
+                    }
+                    if (navigator.clipboard?.writeText) {
+                      await navigator.clipboard.writeText(shareUrl);
+                      setShareMessage(t('dashboard.share.copied'));
+                      return;
+                    }
+                    setShareMessage(t('dashboard.share.failed'));
+                  } catch (error) {
+                    console.error('Share failed', error);
+                    setShareMessage(t('dashboard.share.failed'));
+                  } finally {
+                    setSharing(false);
                   }
-                  setShareMessage(t('dashboard.share.failed'));
-                } catch (error) {
-                  console.error('Share failed', error);
-                  setShareMessage(t('dashboard.share.failed'));
-                } finally {
-                  setSharing(false);
-                }
-              }}
-            >
-              {t('dashboard.share.button')}
-            </button>
+                }}
+              >
+                {t('dashboard.share.button')}
+              </button>
+            )}
             <button
               className="owner-primary"
               type="button"

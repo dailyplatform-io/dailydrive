@@ -30,6 +30,7 @@ export const OwnerRegister: React.FC = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const capitalize = (value: string) => (value ? value.charAt(0).toUpperCase() + value.slice(1) : value);
+  const privateSellerName = 'Private Cars';
 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
@@ -51,6 +52,7 @@ export const OwnerRegister: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [instagramName, setInstagramName] = useState('');
   const [facebookName, setFacebookName] = useState('');
+  const [sellerType, setSellerType] = useState<'dealer' | 'private'>('dealer');
   const [confirmPasswordBlurred, setConfirmPasswordBlurred] = useState(false);
   const [useLocationInstead, setUseLocationInstead] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -80,6 +82,16 @@ export const OwnerRegister: React.FC = () => {
       setSubscriptionTier('free');
     }
   }, []);
+
+  useEffect(() => {
+    if (sellerType === 'private') {
+      setSellerName(privateSellerName);
+      setInstagramName('');
+      setFacebookName('');
+    } else if (sellerName === privateSellerName) {
+      setSellerName('');
+    }
+  }, [sellerType, sellerName, privateSellerName]);
 
   const applyEmailSuggestion = (domain: string) => {
     setEmail((current) => {
@@ -156,10 +168,10 @@ export const OwnerRegister: React.FC = () => {
     const next: Record<string, string> = {};
     if (!name.trim()) next.name = t('ownerRegister.error.required');
     if (!surname.trim()) next.surname = t('ownerRegister.error.required');
-    if (!sellerName.trim()) next.sellerName = t('ownerRegister.error.required');
+    if (sellerType === 'dealer' && !sellerName.trim()) next.sellerName = t('ownerRegister.error.required');
     if (!email.trim()) next.email = t('ownerRegister.error.required');
     else if (!/^\S+@\S+\.\S+$/.test(email.trim())) next.email = t('ownerAuth.error.emailInvalid');
-    if (instagramName.trim() && !isValidInstagramHandle(instagramName)) {
+    if (sellerType === 'dealer' && instagramName.trim() && !isValidInstagramHandle(instagramName)) {
       next.instagramName = t('ownerRegister.error.instagramInvalid');
     }
     if (!phone.trim()) next.phone = t('ownerRegister.error.required');
@@ -178,7 +190,7 @@ export const OwnerRegister: React.FC = () => {
     if (!confirmPassword) next.confirmPassword = t('ownerRegister.error.confirmPasswordRequired');
     else if (password !== confirmPassword) next.confirmPassword = t('ownerRegister.error.passwordsDoNotMatch');
     return next;
-  }, [submitted, name, surname, sellerName, email, phone, instagramName, address, lat, lng, password, confirmPassword, useLocationInstead, t]);
+  }, [submitted, name, surname, sellerName, sellerType, email, phone, instagramName, address, lat, lng, password, confirmPassword, useLocationInstead, t]);
 
   // Show password mismatch error immediately when user leaves confirm password field
   const confirmPasswordError = useMemo(() => {
@@ -192,7 +204,7 @@ export const OwnerRegister: React.FC = () => {
     // Check if all required fields are filled
     // Address is only required if not using GPS location
     const addressRequired = !useLocationInstead && !address.trim();
-    if (!name.trim() || !surname.trim() || !sellerName.trim() || !email.trim() || !phone.trim() || addressRequired || !password || !confirmPassword) {
+    if (!name.trim() || !surname.trim() || (sellerType === 'dealer' && !sellerName.trim()) || !email.trim() || !phone.trim() || addressRequired || !password || !confirmPassword) {
       return false;
     }
     
@@ -218,7 +230,7 @@ export const OwnerRegister: React.FC = () => {
     }
     
     return true;
-  }, [name, surname, sellerName, email, phone, address, lat, lng, password, confirmPassword, useLocationInstead]);
+  }, [name, surname, sellerName, sellerType, email, phone, address, lat, lng, password, confirmPassword, useLocationInstead]);
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -236,8 +248,9 @@ export const OwnerRegister: React.FC = () => {
         email,
         phone: `+${selectedDialCode}${phone}`,
         sellerName: sellerName.trim(),
-        instagramName: normalizeInstagramHandle(instagramName) || undefined,
-        facebookName: facebookName.trim() || undefined,
+        instagramName: sellerType === 'dealer' ? normalizeInstagramHandle(instagramName) || undefined : undefined,
+        facebookName: sellerType === 'dealer' ? facebookName.trim() || undefined : undefined,
+        isPrivateOwner: sellerType === 'private',
         profileType,
         subscriptionTier,
         city,
@@ -330,16 +343,46 @@ export const OwnerRegister: React.FC = () => {
             </label>
           </div>
 
-          <label className="owner-auth-field">
-            <span>{t('ownerRegister.sellerName')}</span>
-            <input
-              value={sellerName}
-              onChange={(e) => setSellerName(e.target.value)}
-              autoComplete="organization"
-              placeholder={t('ownerRegister.sellerName.placeholder')}
-            />
-            {errors.sellerName && <p className="owner-auth-error">{errors.sellerName}</p>}
-          </label>
+          <div className="owner-auth-choice">
+            <p className="owner-auth-choice__label">{t('ownerRegister.sellerType.title')}</p>
+            <div className="owner-auth-choice__grid" role="radiogroup" aria-label={t('ownerRegister.sellerType.title')}>
+              <label className={`owner-auth-choice__card ${sellerType === 'dealer' ? 'is-active' : ''}`}>
+                <input
+                  type="radio"
+                  name="sellerType"
+                  value="dealer"
+                  checked={sellerType === 'dealer'}
+                  onChange={() => setSellerType('dealer')}
+                />
+                <span className="owner-auth-choice__title">{t('ownerRegister.sellerType.dealer.title')}</span>
+                <span className="owner-auth-choice__desc">{t('ownerRegister.sellerType.dealer.desc')}</span>
+              </label>
+              <label className={`owner-auth-choice__card ${sellerType === 'private' ? 'is-active' : ''}`}>
+                <input
+                  type="radio"
+                  name="sellerType"
+                  value="private"
+                  checked={sellerType === 'private'}
+                  onChange={() => setSellerType('private')}
+                />
+                <span className="owner-auth-choice__title">{t('ownerRegister.sellerType.private.title')}</span>
+                <span className="owner-auth-choice__desc">{t('ownerRegister.sellerType.private.desc')}</span>
+              </label>
+            </div>
+          </div>
+
+          {sellerType === 'dealer' && (
+            <label className="owner-auth-field">
+              <span>{t('ownerRegister.sellerName')}</span>
+              <input
+                value={sellerName}
+                onChange={(e) => setSellerName(e.target.value)}
+                autoComplete="organization"
+                placeholder={t('ownerRegister.sellerName.placeholder')}
+              />
+              {errors.sellerName && <p className="owner-auth-error">{errors.sellerName}</p>}
+            </label>
+          )}
 
           <label className="owner-auth-field">
             <span>{t('ownerAuth.email')}</span>
@@ -367,30 +410,32 @@ export const OwnerRegister: React.FC = () => {
             {emailTaken && <p className="owner-auth-error">{t('ownerRegister.error.emailTaken')}</p>}
           </label>
 
-          <div className="owner-auth-grid">
-            <label className="owner-auth-field">
-              <span>{t('ownerRegister.instagram')}</span>
-              <input
-                value={instagramName}
-                onChange={(e) => setInstagramName(e.target.value)}
-                placeholder={capitalize(t('ownerRegister.instagram.placeholder'))}
-                autoComplete="off"
-              />
-              <p style={{ marginTop: '4px', color: '#64748b', fontSize: '12px' }}>
-                Use letters, numbers, dots, underscores. Example: @example_name1
-              </p>
-              {errors.instagramName && <p className="owner-auth-error">{errors.instagramName}</p>}
-            </label>
-            <label className="owner-auth-field">
-              <span>{t('ownerRegister.facebook')}</span>
-              <input
-                value={facebookName}
-                onChange={(e) => setFacebookName(e.target.value)}
-                placeholder={capitalize(t('ownerRegister.facebook.placeholder'))}
-                autoComplete="off"
-              />
-            </label>
-          </div>
+          {sellerType === 'dealer' && (
+            <div className="owner-auth-grid">
+              <label className="owner-auth-field">
+                <span>{t('ownerRegister.instagram')}</span>
+                <input
+                  value={instagramName}
+                  onChange={(e) => setInstagramName(e.target.value)}
+                  placeholder={capitalize(t('ownerRegister.instagram.placeholder'))}
+                  autoComplete="off"
+                />
+                <p style={{ marginTop: '4px', color: '#64748b', fontSize: '12px' }}>
+                  Use letters, numbers, dots, underscores. Example: @example_name1
+                </p>
+                {errors.instagramName && <p className="owner-auth-error">{errors.instagramName}</p>}
+              </label>
+              <label className="owner-auth-field">
+                <span>{t('ownerRegister.facebook')}</span>
+                <input
+                  value={facebookName}
+                  onChange={(e) => setFacebookName(e.target.value)}
+                  placeholder={capitalize(t('ownerRegister.facebook.placeholder'))}
+                  autoComplete="off"
+                />
+              </label>
+            </div>
+          )}
 
           <label className="owner-auth-field">
             <span>{t('ownerRegister.phone')}</span>

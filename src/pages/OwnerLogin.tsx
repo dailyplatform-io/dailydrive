@@ -149,7 +149,8 @@ export const OwnerLogin: React.FC = () => {
         sellerName: response.sellerName,
         sellerSlug: response.sellerSlug ?? (response.sellerName ? slugifySellerName(response.sellerName) : undefined),
         instagramName: response.instagramName,
-        facebookName: response.facebookName
+        facebookName: response.facebookName,
+        isPrivateOwner: response.isPrivateOwner
       }));
 
       const normalizeNumber = (value: unknown) => {
@@ -173,6 +174,7 @@ export const OwnerLogin: React.FC = () => {
         sellerSlug: response.sellerSlug ?? (response.sellerName ? slugifySellerName(response.sellerName) : undefined),
         instagramName: response.instagramName,
         facebookName: response.facebookName,
+        isPrivateOwner: response.isPrivateOwner,
         profileType,
         subscriptionTier,
         subscriptionStartedAt: now.toISOString(),

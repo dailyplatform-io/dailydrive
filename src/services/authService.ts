@@ -30,6 +30,7 @@ export interface AuthResponse {
   sellerSlug?: string;
   instagramName?: string;
   facebookName?: string;
+  isPrivateOwner?: boolean;
   profileType?: 'rent' | 'buy';
   city?: string;
   address?: string;

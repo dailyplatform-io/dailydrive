@@ -25,6 +25,7 @@ export interface OwnerAccount {
   sellerSlug?: string;
   instagramName?: string;
   facebookName?: string;
+  isPrivateOwner?: boolean;
   profileType: OwnerProfileType;
   subscriptionTier: SubscriptionTier;
   subscriptionStartedAt: string;

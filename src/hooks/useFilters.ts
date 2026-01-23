@@ -22,6 +22,7 @@ export interface FilterState {
   selectedExteriorColors: string[];
   selectedInteriorColors: string[];
   selectedRegistration: string[];
+  selectedSellerTypes: Array<'dealer' | 'private'>;
 }
 
 export interface FilterBounds {
@@ -70,6 +71,7 @@ const initialFilterState = (mode: 'rent' | 'buy', bounds: FilterBounds): FilterS
   selectedExteriorColors: [],
   selectedInteriorColors: [],
   selectedRegistration: [],
+  selectedSellerTypes: [],
 });
 
 export const useFilters = (allCars: Car[], mode: 'rent' | 'buy', carMakes: CarMake[] = [], carModels: CarModel[] = []) => {
@@ -180,6 +182,12 @@ export const useFilters = (allCars: Car[], mode: 'rent' | 'buy', carMakes: CarMa
         });
       })();
 
+      const matchesSellerType = (() => {
+        if (filters.selectedSellerTypes.length === 0) return true;
+        const ownerType = car.ownerIsPrivate ? 'private' : 'dealer';
+        return filters.selectedSellerTypes.includes(ownerType);
+      })();
+
       return (
         matchesSearch &&
         matchesRentalType &&
@@ -195,7 +203,8 @@ export const useFilters = (allCars: Car[], mode: 'rent' | 'buy', carMakes: CarMa
         matchesSeats &&
         matchesExterior &&
         matchesInterior &&
-        matchesRegistration
+        matchesRegistration &&
+        matchesSellerType
       );
     });
   }, [allCars, filters, mode, carMakes, carModels]);

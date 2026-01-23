@@ -20,6 +20,7 @@ export interface Car {
   ownerId?: string;
   ownerName?: string;
   ownerProfileType?: string;
+  ownerIsPrivate?: boolean;
   ownerPhone?: string;
   ownerSlug?: string;
   ownerInstagram?: string;

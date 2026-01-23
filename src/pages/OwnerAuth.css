@@ -122,6 +122,65 @@
   gap: 10px;
 }
 
+.owner-auth-choice {
+  margin: 6px 0 8px;
+}
+
+.owner-auth-choice__label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #3a4a63;
+  margin-bottom: 8px;
+}
+
+.owner-auth-choice__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.owner-auth-choice__card {
+  border: 1px solid #dfe6f0;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #f9fbff;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.owner-auth-choice__card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.owner-auth-choice__title {
+  font-size: 14px;
+  font-weight: 900;
+  color: #1f2b3d;
+}
+
+.owner-auth-choice__desc {
+  font-size: 12px;
+  color: #6b7686;
+  line-height: 1.4;
+}
+
+.owner-auth-choice__card.is-active {
+  border-color: #2f80ed;
+  background: linear-gradient(135deg, rgba(47, 128, 237, 0.08), rgba(47, 128, 237, 0.02));
+  box-shadow: 0 10px 24px rgba(47, 128, 237, 0.15);
+}
+
+.owner-auth-choice__card:focus-within {
+  border-color: #2f80ed;
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.15);
+}
+
 .owner-auth-field span {
   display: block;
   font-size: 13px;

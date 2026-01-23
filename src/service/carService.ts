@@ -84,6 +84,12 @@ const mapApiCarToModel = (apiCar: any): Car => {
       apiCar.owner?.companyName ||
       apiCar.owner?.name,
     ownerProfileType: apiCar.ownerProfileType,
+    ownerIsPrivate:
+      typeof apiCar.ownerIsPrivate === 'boolean'
+        ? apiCar.ownerIsPrivate
+        : typeof apiCar.owner?.isPrivateOwner === 'boolean'
+          ? apiCar.owner.isPrivateOwner
+          : undefined,
     ownerPhone: apiCar.ownerPhone || apiCar.phone || apiCar.owner?.phoneNumber,
     ownerSlug:
       apiCar.ownerSlug ||

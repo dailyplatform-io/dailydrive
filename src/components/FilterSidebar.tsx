@@ -347,6 +347,24 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
       <div className="filter-panel__group">
         <div className="filter-panel__label-row">
+          <span className="filter-panel__label">{t('filters.sellerType')}</span>
+        </div>
+        <div className="chip-grid">
+          {(['dealer', 'private'] as const).map((type) => (
+            <button
+              key={type}
+              className={`chip ${filters.selectedSellerTypes.includes(type) ? 'is-active' : ''}`}
+              onClick={() => onUpdate('selectedSellerTypes', toggleArrayValue(filters.selectedSellerTypes, type))}
+              type="button"
+            >
+              {t(`filters.sellerType.${type}`)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="filter-panel__group">
+        <div className="filter-panel__label-row">
           <span className="filter-panel__label">{t('filters.brand')}</span>
         </div>
         <div className="search-select" ref={brandPickerRef}>
