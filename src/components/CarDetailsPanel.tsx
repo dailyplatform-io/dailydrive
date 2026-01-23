@@ -753,41 +753,25 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
               </button>
             )}
             {contactHref ? (
-              <a
-                className="primary-btn secondary contact-btn contact-btn--icon"
-                href={contactHref}
-                aria-label={t('common.contact')}
-              >
+              <a className="primary-btn secondary contact-btn" href={contactHref}>
                 <PhoneIcon size={16} className="contact-btn__icon" />
+                {t('common.contact')}
               </a>
             ) : (
-              <button
-                className="primary-btn secondary contact-btn contact-btn--icon"
-                type="button"
-                disabled
-                aria-label={t('common.contact')}
-              >
+              <button className="primary-btn secondary contact-btn" type="button" disabled>
                 <PhoneIcon size={16} className="contact-btn__icon" />
+                {t('common.contact')}
               </button>
             )}
             {whatsappHref ? (
-              <a
-                className="primary-btn whatsapp whatsapp-btn whatsapp-btn--icon"
-                href={whatsappHref}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t('common.whatsapp')}
-              >
+              <a className="primary-btn whatsapp whatsapp-btn" href={whatsappHref} target="_blank" rel="noreferrer">
                 <WhatsAppIcon size={16} className="whatsapp-btn__icon" />
+                {t('common.whatsapp')}
               </a>
             ) : (
-              <button
-                className="primary-btn whatsapp whatsapp-btn whatsapp-btn--icon"
-                type="button"
-                disabled
-                aria-label={t('common.whatsapp')}
-              >
+              <button className="primary-btn whatsapp whatsapp-btn" type="button" disabled>
                 <WhatsAppIcon size={16} className="whatsapp-btn__icon" />
+                {t('common.whatsapp')}
               </button>
             )}
           </div>
