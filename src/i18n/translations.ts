@@ -1867,7 +1867,7 @@ export const translations: Record<Language, TranslationDict> = {
     'about.how.1.body': 'Sipas markës, llojit të karrocerisë, vitit të prodhimit, karburantit dhe kritereve të tjera.',
     'about.how.2.title': 'Shikoni detajet',
     'about.how.2.body': 'Informohuni për specifikat, gjendjen e mjetit dhe vlerësimin e çmimit.',
-    'about.where.title': 'Ku ndodhemi',
+    'about.where.title': 'Ne ndodhemi ne',
     'about.where.kicker': 'Showroom (Tiranë)',
     'about.where.address': 'Rruga Dëshmorët e Kombit, Tiranë 1001',
     'about.where.city': 'Tiranë, Shqipëri',

@@ -37,15 +37,13 @@ export const About: React.FC = () => {
           </ul>
         </section>
 
-        <section className="about-card about-card--map" aria-label="Map of Tirana, Albania">
+        <section className="about-card about-card--map" aria-label={t('about.where.title')}>
           <MapEmbed
             lat={41.3275}
             lng={19.8187}
             height={340}
             title="Tirana map"
-            showOpenLink={true}
-            openLinkText={t('common.openInMap')}
-            className="map-embed--about"
+            showOpenLink={false}
           />
         </section>
       </div>
@@ -62,26 +60,26 @@ export const About: React.FC = () => {
               <strong>{t('about.how.2.title')}</strong>
               <span className="about-muted">{t('about.how.2.body')}</span>
             </li>
-            <li>
-              <strong>{t('about.how.3.title')}</strong>
-              <span className="about-muted">{t('about.how.3.body')}</span>
-            </li>
           </ol>
         </section>
 
-        <section className="about-card">
-          <h3>{t('about.where.title')}</h3>
-          <p className="about-muted">{t('about.where.kicker')}</p>
-          <p className="about-strong">{t('about.where.address')}</p>
-          <p className="about-muted">{t('about.where.city')}</p>
-          <a
-            className="about-link"
-            href="https://www.google.com/maps?q=41.3275,19.8187&z=16"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {t('common.openInMap')}
-          </a>
+        <section className="about-card about-card--contact">
+          <div className="about-contact-head">
+            <span className="about-contact-tag about-contact-tag--left">{t('common.contact')}</span>
+            <p className="about-muted">{t('contact.lead')}</p>
+          </div>
+          <div className="about-contact-grid">
+            <a className="about-contact-card" href="mailto:dailydrive.platform@gmail.com">
+              <span className="about-contact-label">{t('contact.support.email')}</span>
+              <span className="about-contact-value">dailydrive.platform@gmail.com</span>
+              <span className="about-contact-action">{t('common.sendMessage')}</span>
+            </a>
+            <a className="about-contact-card" href="tel:+355685555104">
+              <span className="about-contact-label">{t('contact.support.phone')}</span>
+              <span className="about-contact-value">+355685555104</span>
+              <span className="about-contact-action">{t('common.contact')}</span>
+            </a>
+          </div>
         </section>
       </div>
     </div>

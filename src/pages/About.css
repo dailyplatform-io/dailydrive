@@ -5,9 +5,13 @@
   font-size: 16px;
 }
 
+.about-page .about-card .about-steps {
+  margin-top: 18px;
+}
+
 .about-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
   gap: 12px;
   margin-top: 14px;
 }
@@ -28,6 +32,79 @@
 .about-card--map {
   padding: 0;
   overflow: hidden;
+}
+
+.about-card--contact {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.about-contact-head {
+  display: grid;
+  gap: 8px;
+}
+
+.about-contact-tag {
+  background: #f0f4ff;
+  color: #2f80ed;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #d9e5ff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.about-contact-tag--left {
+  align-self: start;
+  justify-self: start;
+}
+
+.about-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.about-contact-card {
+  border: 1px solid #e6eef8;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #f8fbff;
+  display: grid;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+.about-contact-card:hover {
+  border-color: #b9d2ff;
+  box-shadow: 0 10px 20px rgba(47, 128, 237, 0.12);
+  transform: translateY(-1px);
+}
+
+.about-contact-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #6b7686;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.about-contact-value {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1f2b3d;
+  word-break: break-word;
+}
+
+.about-contact-action {
+  font-size: 12px;
+  font-weight: 800;
+  color: #2f80ed;
 }
 
 .about-muted {
@@ -111,6 +188,14 @@
   }
 
   .about-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .about-grid--secondary {
+    grid-template-columns: 1fr;
+  }
+
+  .about-contact-grid {
     grid-template-columns: 1fr;
   }
 }

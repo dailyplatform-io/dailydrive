@@ -74,7 +74,6 @@ export const Navbar: React.FC = () => {
       ...(features.auctions ? [{ to: '/auctions', label: 'Auctions' }] : []),
       { to: '/favorites', key: 'nav.favorites' },
       { to: '/about', key: 'nav.about' },
-      { to: '/contact', key: 'nav.contact' },
     ];
     return links;
   }, [isSellerSlug]);

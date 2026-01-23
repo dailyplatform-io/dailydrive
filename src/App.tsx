@@ -9,7 +9,6 @@ import { LanguageProvider } from './context/LanguageContext';
 import { features } from './config/features';
 import { About } from './pages/About';
 import { CarDetailsPage } from './pages/CarDetailsPage';
-import { Contact } from './pages/Contact';
 import { Favorites } from './pages/Favorites';
 import { Home } from './pages/Home';
 import { AuctionsPage } from './pages/AuctionsPage';
@@ -89,7 +88,6 @@ function AppRoutes({ defaultBrowsePath }: { defaultBrowsePath: string }) {
         <Route path="/cars/:id" element={<CarDetailsPage />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
 
         <Route path="/login" element={<OwnerLogin />} />
         <Route path="/register" element={<OwnerRegister />} />
