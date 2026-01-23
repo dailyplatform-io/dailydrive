@@ -361,7 +361,7 @@ export const translations: Record<Language, TranslationDict> = {
     'home.collection.buy.badge': 'Buy',
     'home.collection.buy.title': 'Get your next car',
     'home.collection.buy.desc': 'Low-mileage favorites with clean history reports, ready for test drives this week.',
-    'home.collection.count': '{count}+ curated picks',
+    'home.collection.count': '{count}+ cars',
     'home.collection.cta': 'See the full lineup →',
 
     'home.assurance.title': 'Confidence built in',
@@ -976,7 +976,7 @@ export const translations: Record<Language, TranslationDict> = {
     'home.collection.buy.badge': 'Acquista',
     'home.collection.buy.title': 'Trova la tua prossima auto',
     'home.collection.buy.desc': 'Preferite a basso chilometraggio con storico pulito, pronte per test drive.',
-    'home.collection.count': '{count}+ scelte curate',
+    'home.collection.count': '{count}+ auto',
     'home.collection.cta': 'Vedi tutta la selezione →',
 
     'home.assurance.title': 'Affidabilità inclusa',
@@ -1580,7 +1580,7 @@ export const translations: Record<Language, TranslationDict> = {
     'home.collection.buy.badge': 'Bli',
     'home.collection.buy.title': 'Gjej makinën tënde të radhës',
     'home.collection.buy.desc': 'Modele me pak kilometra dhe historik të qartë, gati për test drive.',
-    'home.collection.count': '{count}+ oferta',
+    'home.collection.count': '{count}+ makina',
     'home.collection.cta': 'Shiko të gjitha →',
 
     'home.assurance.title': 'Besim i garantuar',
@@ -2180,7 +2180,7 @@ export const translations: Record<Language, TranslationDict> = {
     'home.collection.buy.badge': 'Αγορά',
     'home.collection.buy.title': 'Βρες το επόμενό σου αυτοκίνητο',
     'home.collection.buy.desc': 'Χαμηλά χιλιόμετρα, καθαρό ιστορικό, έτοιμα για test drive.',
-    'home.collection.count': '{count}+ επιλεγμένες επιλογές',
+    'home.collection.count': '{count}+ αυτοκίνητα',
     'home.collection.cta': 'Δες όλα →',
 
     'home.assurance.title': 'Εμπιστοσύνη από την αρχή',
