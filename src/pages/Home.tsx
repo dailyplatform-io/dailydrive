@@ -335,9 +335,10 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
           <div className="assurance-card">
             <p className="assurance-title">{t('home.assurance.title')}</p>
             <ul className="assurance-list">
-              <li>{t('home.assurance.li1')}</li>
+              {features.rent && <li>{t('home.assurance.li1')}</li>}
               <li>{t('home.assurance.li2')}</li>
               <li>{t('home.assurance.li3')}</li>
+              <li>{t('home.assurance.li4')}</li>
             </ul>
           </div>
           <div className="assurance-card assurance-card--outline">

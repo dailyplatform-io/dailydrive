@@ -107,6 +107,102 @@
   color: #2f80ed;
 }
 
+.about-banner {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background:
+    radial-gradient(120% 180% at 0% 0%, rgba(255, 255, 255, 0.8), transparent 55%),
+    linear-gradient(135deg, rgba(255, 200, 99, 0.28), rgba(255, 221, 170, 0.4));
+  border: 1px solid rgba(255, 186, 73, 0.5);
+  color: #7a3e00;
+  box-shadow: 0 18px 40px rgba(255, 186, 73, 0.18);
+  position: relative;
+  overflow: hidden;
+  animation: aboutBannerFloat 5s ease-in-out infinite;
+}
+
+.about-banner__content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.about-banner__badge {
+  background: #ffffff;
+  color: #b45309;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 186, 73, 0.6);
+  box-shadow: 0 6px 14px rgba(255, 186, 73, 0.2);
+}
+
+.about-banner__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.about-banner__body {
+  margin: 0;
+  font-size: 13px;
+  color: #7a3e00;
+}
+
+@keyframes aboutBannerPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 18px 40px rgba(255, 186, 73, 0.18);
+  }
+  50% {
+    transform: scale(1.015);
+    box-shadow: 0 22px 44px rgba(255, 186, 73, 0.24);
+  }
+}
+
+.about-banner::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -30%;
+  width: 30%;
+  height: 200%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: translateX(-120%);
+  animation: aboutBannerShimmer 3.6s ease-in-out infinite;
+}
+
+@keyframes aboutBannerShimmer {
+  0% {
+    transform: translateX(-120%);
+  }
+  55% {
+    transform: translateX(220%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+@keyframes aboutBannerFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
 .about-muted {
   margin: 0;
   color: #6b7686;

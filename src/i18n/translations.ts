@@ -366,7 +366,7 @@ export const translations: Record<Language, TranslationDict> = {
     'home.collection.rent.desc': 'Flexible bookings with clean handoffs, insurance options, and curated city-friendly picks.',
     'home.collection.buy.badge': 'Buy',
     'home.collection.buy.title': 'Get your next car',
-    'home.collection.buy.desc': 'Low-mileage favorites with clean history reports, ready for test drives this week.',
+    'home.collection.buy.desc': 'Low-mileage favorites with clean history reports, ready to be inspected.',
     'home.collection.count': '{count}+ cars',
     'home.collection.cta': 'See the full lineup →',
 
@@ -990,7 +990,7 @@ export const translations: Record<Language, TranslationDict> = {
     'home.collection.rent.desc': 'Prenotazioni flessibili con consegna semplice, opzioni assicurative e scelte curate.',
     'home.collection.buy.badge': 'Acquista',
     'home.collection.buy.title': 'Trova la tua prossima auto',
-    'home.collection.buy.desc': 'Preferite a basso chilometraggio con storico pulito, pronte per test drive.',
+    'home.collection.buy.desc': 'Preferite a basso chilometraggio con storico pulito, pronte per essere controllate.',
     'home.collection.count': '{count}+ auto',
     'home.collection.cta': 'Vedi tutta la selezione →',
 
@@ -1603,15 +1603,15 @@ export const translations: Record<Language, TranslationDict> = {
     'home.collection.rent.desc': 'Rezervim i lehtë, dorëzim i shpejtë dhe çmime të qarta për çdo ditë.',
     'home.collection.buy.badge': 'Bli',
     'home.collection.buy.title': 'Gjej makinën tënde të radhës',
-    'home.collection.buy.desc': 'Modele me pak kilometra dhe historik të qartë, gati për test drive.',
+    'home.collection.buy.desc': 'Modele me pak kilometra dhe historik të qartë, gati për t’u kontrolluar.',
     'home.collection.count': '{count}+ makina',
     'home.collection.cta': 'Shiko të gjitha →',
 
     'home.assurance.title': 'Besim i garantuar',
-    'home.assurance.li1': 'Orar fleksibël për marrje ose dorëzim.',
+    'home.assurance.li1': 'Marrje dhe dorëzim fleksibël, pa stres.',
     'home.assurance.li2': 'Çmime transparente të shfaqura qartë që në fillim.',
-    'home.assurance.li3':
-      'Të preferuarat ruhen dhe sinkronizohen në çdo pajisje, gjithmonë gati kur t’ju duhen.',
+    'home.assurance.li3': 'Të preferuarat ruhen që t’i gjeni sa herë që ktheheni.',
+    'home.assurance.li4': 'Mbështetje e shpejtë për çdo pyetje gjatë procesit.',
     'home.assistance.title': 'Të duhet ndihmë?',
     'home.assistance.body': 'Na trego çfarë kërkon dhe ne do të të sugjerojmë disa alternativa të përshtatshme.',
     'home.assistance.ctaRent': 'Fillo me qira',
@@ -2212,7 +2212,7 @@ export const translations: Record<Language, TranslationDict> = {
     'home.collection.rent.desc': 'Ευέλικτες κρατήσεις, καθαρή παράδοση και προσεγμένες επιλογές.',
     'home.collection.buy.badge': 'Αγορά',
     'home.collection.buy.title': 'Βρες το επόμενό σου αυτοκίνητο',
-    'home.collection.buy.desc': 'Χαμηλά χιλιόμετρα, καθαρό ιστορικό, έτοιμα για test drive.',
+    'home.collection.buy.desc': 'Χαμηλά χιλιόμετρα, καθαρό ιστορικό, έτοιμα για έλεγχο.',
     'home.collection.count': '{count}+ αυτοκίνητα',
     'home.collection.cta': 'Δες όλα →',
 

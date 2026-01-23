@@ -1,6 +1,7 @@
 import './StaticPage.css';
 import './About.css';
 import { useLanguage } from '../context/LanguageContext';
+import { features } from '../config/features';
 import { MapEmbed } from '../components/MapEmbed';
 
 export const About: React.FC = () => {
@@ -9,6 +10,18 @@ export const About: React.FC = () => {
     <div className="static-page about-page">
       <h2>{t('about.title')}</h2>
       <p>{t('about.lead')}</p>
+
+      {!features.rent && (
+        <section className="about-banner">
+          <div className="about-banner__content">
+            <span className="about-banner__badge">New</span>
+            <div>
+              <p className="about-banner__title">Renting is coming soon</p>
+              <p className="about-banner__body">DailyDrive rentals are launching soon. Stay tuned.</p>
+            </div>
+          </div>
+        </section>
+      )}
 
       <div className="about-grid">
         <section className="about-card">
