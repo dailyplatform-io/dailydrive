@@ -32,6 +32,25 @@ export const featureGroupTitleKey = 'options.group.features';
 
 export const selectOptionGroups = [
   {
+    key: 'registration',
+    titleKey: 'options.group.registration',
+    options: [
+      { value: 'with_documents_plate', labelKey: 'options.registration.with_documents_plate' },
+      { value: 'with_plate', labelKey: 'options.registration.with_plate' },
+      { value: 'with_customs', labelKey: 'options.registration.with_customs' },
+      { value: 'without_customs', labelKey: 'options.registration.without_customs' },
+    ],
+  },
+  {
+    key: 'drivetrain',
+    titleKey: 'options.group.drivetrain',
+    options: [
+      { value: 'awd_4matic', labelKey: 'options.drivetrain.awd_4matic' },
+      { value: 'rwd', labelKey: 'options.drivetrain.rwd' },
+      { value: 'fwd', labelKey: 'options.drivetrain.fwd' },
+    ],
+  },
+  {
     key: 'climate',
     titleKey: 'options.group.climate',
     options: [
@@ -46,25 +65,6 @@ export const selectOptionGroups = [
       { value: 'leather', labelKey: 'options.interior.leather' },
       { value: 'fabric', labelKey: 'options.interior.fabric' },
       { value: 'alcantara', labelKey: 'options.interior.alcantara' },
-    ],
-  },
-  {
-    key: 'drivetrain',
-    titleKey: 'options.group.drivetrain',
-    options: [
-      { value: 'awd_4matic', labelKey: 'options.drivetrain.awd_4matic' },
-      { value: 'rwd', labelKey: 'options.drivetrain.rwd' },
-      { value: 'fwd', labelKey: 'options.drivetrain.fwd' },
-    ],
-  },
-  {
-    key: 'registration',
-    titleKey: 'options.group.registration',
-    options: [
-      { value: 'with_documents_plate', labelKey: 'options.registration.with_documents_plate' },
-      { value: 'with_plate', labelKey: 'options.registration.with_plate' },
-      { value: 'with_customs', labelKey: 'options.registration.with_customs' },
-      { value: 'without_customs', labelKey: 'options.registration.without_customs' },
     ],
   },
 ] as const;

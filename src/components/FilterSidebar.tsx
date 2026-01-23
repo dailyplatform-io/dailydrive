@@ -449,7 +449,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
           >
             <span className={selectedModel ? '' : 'search-select__placeholder'}>
               {!selectedMake
-                ? 'Select a make first'
+                ? t('filters.model.selectMakeFirst')
                 : selectedModel?.name || t('filters.model.placeholder')}
             </span>
             <ChevronDownIcon size={16} />
@@ -506,7 +506,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
         </div>
         <div className="range-row">
           <div className="range-input">
-            <label htmlFor="priceFrom">From</label>
+            <label htmlFor="priceFrom">{t('common.from')}</label>
             <input
               id="priceFrom"
               type="number"
@@ -519,7 +519,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
             />
           </div>
           <div className="range-input">
-            <label htmlFor="priceTo">To</label>
+            <label htmlFor="priceTo">{t('common.to')}</label>
             <input
               id="priceTo"
               type="number"
@@ -583,7 +583,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
         </div>
         <div className="range-row">
           <div className="range-input">
-            <label htmlFor="yearFrom">From</label>
+            <label htmlFor="yearFrom">{t('common.from')}</label>
             <input
               id="yearFrom"
               type="number"
@@ -596,7 +596,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
             />
           </div>
           <div className="range-input">
-            <label htmlFor="yearTo">To</label>
+            <label htmlFor="yearTo">{t('common.to')}</label>
             <input
               id="yearTo"
               type="number"
@@ -618,7 +618,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
           </div>
           <div className="range-row">
             <div className="range-input">
-              <label htmlFor="mileageFrom">From</label>
+              <label htmlFor="mileageFrom">{t('common.from')}</label>
               <input
                 id="mileageFrom"
                 type="number"
@@ -631,7 +631,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
               />
             </div>
             <div className="range-input">
-              <label htmlFor="mileageTo">To</label>
+              <label htmlFor="mileageTo">{t('common.to')}</label>
               <input
                 id="mileageTo"
                 type="number"

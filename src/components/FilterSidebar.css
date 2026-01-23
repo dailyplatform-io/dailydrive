@@ -283,7 +283,7 @@
   border-radius: 12px;
   border: 1px solid #dfe6f0;
   background: #f9fbff;
-  font-size: 16px;
+  font-size: 14px;
   color: #1f2b3d;
   cursor: pointer;
   transition: border 0.2s ease, box-shadow 0.2s ease;
@@ -336,7 +336,7 @@
   text-align: left;
   padding: 10px 12px;
   border-radius: 12px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: #1f2b3d;
   cursor: pointer;

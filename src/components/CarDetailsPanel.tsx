@@ -8,6 +8,8 @@ import {
   MapPinIcon,
   NavigationIcon,
   SparklesIcon,
+  PhoneIcon,
+  WhatsAppIcon,
 } from './Icons';
 import './CarDetailsPanel.css';
 import { DateRangePicker } from './DateRangePicker';
@@ -101,6 +103,15 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
     const normalized = car.ownerPhone.replace(/[^+\d]/g, '');
     return normalized ? `tel:${normalized}` : '';
   }, [car?.ownerPhone]);
+  const whatsappHref = useMemo(() => {
+    if (!car?.ownerPhone || !car?.id) return '';
+    const digitsOnly = car.ownerPhone.replace(/\D/g, '');
+    if (!digitsOnly) return '';
+    const path = window.location.pathname.startsWith('/auction/') ? `/auction/${car.id}` : `/cars/${car.id}`;
+    const carLink = `${window.location.origin}${path}`;
+    const message = t('details.whatsappMessage', { link: carLink });
+    return `https://wa.me/${digitsOnly}?text=${encodeURIComponent(message)}`;
+  }, [car?.id, car?.ownerPhone, t]);
 
   const textOrDash = (value?: string | null) => {
     if (!value) return '—';
@@ -112,6 +123,16 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
   const exteriorLabel = getColorLabel(t, car?.exteriorColor ?? car?.color);
   const interiorLabel = getColorLabel(t, car?.interiorColor ?? '');
   const colorLabel = getColorLabel(t, car?.color ?? '');
+  const optionGroupOrder = useMemo(
+    () =>
+      new Map<string, number>([
+        ['options.group.registration', 0],
+        ['options.group.drivetrain', 1],
+        ['options.group.climate', 2],
+        ['options.group.interior', 3],
+      ]),
+    []
+  );
 
   useEffect(() => {
     if (!car) return;
@@ -542,8 +563,8 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
     ratePercent: Number(loanRateInput),
     years: Number(loanYearsInput),
   });
-  const loanTermYears = clampNumber(Number(loanYearsInput) || 5, 2, 25);
-  const loanTermLeft = ((loanTermYears - 2) / (25 - 2)) * 100;
+  const loanTermYears = clampNumber(Number(loanYearsInput) || 5, 2, 10);
+  const loanTermLeft = ((loanTermYears - 2) / (10 - 2)) * 100;
 
   const handleDatesChange = async (newStartDate: Date | null, newEndDate: Date | null) => {
     setStartDate(newStartDate);
@@ -719,26 +740,58 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
         )}
       </div>
       <div className="details-panel__header">
-        <p className="eyebrow">{car.brand.toUpperCase()}</p>
-        <h2>{car.subtitle || `${car.brand} ${car.model}`}</h2>
-        <p className="muted">{car.model} — {car.year}</p>
-      </div>
-
-      <div className="cta-row top-cta">
-        {onOpenFull && car && (
-          <button className="ghost-btn" type="button" onClick={() => onOpenFull(car.id)}>
-            {t('common.viewFullDetails')}
-          </button>
-        )}
-        {contactHref ? (
-          <a className="primary-btn secondary" href={contactHref}>
-            {t('common.contact')}
-          </a>
-        ) : (
-          <button className="primary-btn secondary" type="button" disabled>
-            {t('common.contact')}
-          </button>
-        )}
+        <div className="details-panel__header-row">
+          <div className="details-panel__title">
+            <p className="eyebrow">{car.brand.toUpperCase()}</p>
+            <h2>{car.subtitle || `${car.brand} ${car.model}`}</h2>
+            <p className="muted">{car.model} — {car.year}</p>
+          </div>
+          <div className="cta-row top-cta cta-row--compact">
+            {onOpenFull && car && (
+              <button className="ghost-btn" type="button" onClick={() => onOpenFull(car.id)}>
+                {t('common.viewFullDetails')}
+              </button>
+            )}
+            {contactHref ? (
+              <a
+                className="primary-btn secondary contact-btn contact-btn--icon"
+                href={contactHref}
+                aria-label={t('common.contact')}
+              >
+                <PhoneIcon size={16} className="contact-btn__icon" />
+              </a>
+            ) : (
+              <button
+                className="primary-btn secondary contact-btn contact-btn--icon"
+                type="button"
+                disabled
+                aria-label={t('common.contact')}
+              >
+                <PhoneIcon size={16} className="contact-btn__icon" />
+              </button>
+            )}
+            {whatsappHref ? (
+              <a
+                className="primary-btn whatsapp whatsapp-btn whatsapp-btn--icon"
+                href={whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={t('common.whatsapp')}
+              >
+                <WhatsAppIcon size={16} className="whatsapp-btn__icon" />
+              </a>
+            ) : (
+              <button
+                className="primary-btn whatsapp whatsapp-btn whatsapp-btn--icon"
+                type="button"
+                disabled
+                aria-label={t('common.whatsapp')}
+              >
+                <WhatsAppIcon size={16} className="whatsapp-btn__icon" />
+              </button>
+            )}
+          </div>
+        </div>
       </div>
 
       {showTabs && (
@@ -880,32 +933,57 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
               <div className="options-section">
                 <p className="options-title">{t('details.options.title')}</p>
                 {car.optionsGroups && car.optionsGroups.some((g) => g.items.length > 0) ? (
-                  <div className="options-groups">
-                    {car.optionsGroups
-                      .filter((group) => group.items.length > 0)
-                      .map((group) => {
-                        const titleKey = optionGroupTitleLookup.get(group.title) ?? group.title;
-                        const titleLabel = t(titleKey);
-                        const resolvedTitle = titleLabel === titleKey ? group.title : titleLabel;
-                        return (
-                          <div key={group.title} className="option-group">
-                            <p className="option-group__title">{resolvedTitle}</p>
-                            <div className="option-chip-grid">
-                              {group.items.map((item) => {
-                                const labelKey = optionLabelLookup.get(item) ?? item;
-                                const label = t(labelKey);
-                                const resolved = label === labelKey ? item : label;
-                                return (
-                                  <span key={item} className="option-chip">
-                                    {resolved}
-                                  </span>
-                                );
-                              })}
-                            </div>
+                  (() => {
+                    const groups = car.optionsGroups.filter((group) => group.items.length > 0);
+                    const normalizedGroups = groups.map((group) => {
+                      const titleKey = optionGroupTitleLookup.get(group.title) ?? group.title;
+                      const titleLabel = t(titleKey);
+                      const resolvedTitle = titleLabel === titleKey ? group.title : titleLabel;
+                      return { ...group, titleKey, resolvedTitle };
+                    });
+                    const selectGroups = normalizedGroups
+                      .filter((group) => optionGroupOrder.has(group.titleKey))
+                      .slice()
+                      .sort((a, b) => {
+                        const aOrder = optionGroupOrder.get(a.titleKey) ?? Number.POSITIVE_INFINITY;
+                        const bOrder = optionGroupOrder.get(b.titleKey) ?? Number.POSITIVE_INFINITY;
+                        if (aOrder !== bOrder) return aOrder - bOrder;
+                        return a.titleKey.localeCompare(b.titleKey);
+                      });
+                    const featureGroups = normalizedGroups.filter((group) => group.titleKey === 'options.group.features');
+                    const otherGroups = normalizedGroups.filter(
+                      (group) => !optionGroupOrder.has(group.titleKey) && group.titleKey !== 'options.group.features'
+                    );
+                    const renderGroups = (list: typeof normalizedGroups) =>
+                      list.map((group) => (
+                        <div key={group.title} className="option-group">
+                          <p className="option-group__title">{group.resolvedTitle}</p>
+                          <div className="option-chip-grid">
+                            {group.items.map((item) => {
+                              const labelKey = optionLabelLookup.get(item) ?? item;
+                              const label = t(labelKey);
+                              const resolved = label === labelKey ? item : label;
+                              return (
+                                <span key={item} className="option-chip">
+                                  {resolved}
+                                </span>
+                              );
+                            })}
                           </div>
-                        );
-                      })}
-                  </div>
+                        </div>
+                      ));
+                    return (
+                      <>
+                        {selectGroups.length > 0 && (
+                          <div className="options-groups options-groups--select">{renderGroups(selectGroups)}</div>
+                        )}
+                        {otherGroups.length > 0 && <div className="options-groups">{renderGroups(otherGroups)}</div>}
+                        {featureGroups.length > 0 && (
+                          <div className="options-groups options-groups--features">{renderGroups(featureGroups)}</div>
+                        )}
+                      </>
+                    );
+                  })()
                 ) : (
                   <p className="muted">{t('details.options.empty')}</p>
                 )}
@@ -968,7 +1046,7 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
                       <input
                         type="range"
                         min={2}
-                        max={25}
+                        max={10}
                         step={1}
                         value={loanTermYears}
                         onChange={(e) => setLoanYearsInput(e.target.value)}

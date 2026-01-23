@@ -1381,37 +1381,6 @@ function CarEditorModal({
 
           <div className="owner-options">
             <p className="owner-options__title">{t('dashboard.form.options')}</p>
-            <div className="owner-options__grid owner-options__grid--select">
-              {selectOptionGroups.map((group) => {
-                const selected = resolveGroupItems(group.titleKey)?.[0] ?? '';
-                return (
-                  <label key={group.titleKey} className="owner-field">
-                    <span>{t(group.titleKey)}</span>
-                    <select
-                      value={selected}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setDraft((d) => {
-                          const groups = d.optionsGroups ?? [];
-                          const rest = groups.filter(
-                            (g) => g.title !== group.titleKey && optionGroupTitleLookup.get(g.title) !== group.titleKey
-                          );
-                          const nextItems = value ? [value] : [];
-                          return { ...d, optionsGroups: [...rest, { title: group.titleKey, items: nextItems }] };
-                        });
-                      }}
-                    >
-                      <option value="">{t('dashboard.form.select')}</option>
-                      {group.options.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {t(opt.labelKey)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                );
-              })}
-            </div>
             {featureOptionGroups.map((group) => {
               const current = resolveGroupItems(group.titleKey);
               return (
@@ -1449,6 +1418,37 @@ function CarEditorModal({
                 </div>
               );
             })}
+            <div className="owner-options__grid owner-options__grid--select">
+              {selectOptionGroups.map((group) => {
+                const selected = resolveGroupItems(group.titleKey)?.[0] ?? '';
+                return (
+                  <label key={group.titleKey} className="owner-field">
+                    <span>{t(group.titleKey)}</span>
+                    <select
+                      value={selected}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setDraft((d) => {
+                          const groups = d.optionsGroups ?? [];
+                          const rest = groups.filter(
+                            (g) => g.title !== group.titleKey && optionGroupTitleLookup.get(g.title) !== group.titleKey
+                          );
+                          const nextItems = value ? [value] : [];
+                          return { ...d, optionsGroups: [...rest, { title: group.titleKey, items: nextItems }] };
+                        });
+                      }}
+                    >
+                      <option value="">{t('dashboard.form.select')}</option>
+                      {group.options.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {t(opt.labelKey)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                );
+              })}
+            </div>
           </div>
 
       <div className="owner-form__actions">
