@@ -9,6 +9,7 @@ import { Field } from './Field';
 import { ImagesField } from './ImagesField';
 import { bodyStyleOptions, fuelTypeOptions, transmissionOptions, featureOptionGroups, selectOptionGroups } from './dashboardUtils';
 import { optionGroupTitleLookup } from '../../constants/optionCatalog';
+import { getColorLabel, getFuelLabel, getTransmissionLabel } from '../../utils/vehicleLabels';
 import '../OwnerDashboard.css';
 
 interface CarEditorModalProps {
@@ -376,7 +377,7 @@ export const CarEditorModal: React.FC<CarEditorModalProps> = ({
               <select value={draft.fuelType} onChange={(e) => setField('fuelType', e.target.value as FuelType)}>
                 {fuelTypeOptions.map((fuel) => (
                   <option key={fuel} value={fuel}>
-                    {fuel}
+                    {getFuelLabel(t, fuel)}
                   </option>
                 ))}
               </select>
@@ -385,7 +386,7 @@ export const CarEditorModal: React.FC<CarEditorModalProps> = ({
               <select value={draft.transmission} onChange={(e) => setField('transmission', e.target.value as Transmission)}>
                 {transmissionOptions.map((gear) => (
                   <option key={gear} value={gear}>
-                    {gear}
+                    {getTransmissionLabel(t, gear)}
                   </option>
                 ))}
               </select>
@@ -441,7 +442,7 @@ export const CarEditorModal: React.FC<CarEditorModalProps> = ({
                 <option value="">{t('dashboard.form.select')}</option>
                 {colorOptions.map((c) => (
                   <option key={c} value={c}>
-                    {c}
+                    {getColorLabel(t, c)}
                   </option>
                 ))}
               </select>
@@ -451,7 +452,7 @@ export const CarEditorModal: React.FC<CarEditorModalProps> = ({
                 <option value="">{t('dashboard.form.select')}</option>
                 {colorOptions.map((c) => (
                   <option key={c} value={c}>
-                    {c}
+                    {getColorLabel(t, c)}
                   </option>
                 ))}
               </select>

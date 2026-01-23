@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { Car } from '../models/Car';
 import { formatPrice } from '../utils/formatting';
 import { useLanguage } from '../context/LanguageContext';
+import { getFuelLabel, getTransmissionLabel } from '../utils/vehicleLabels';
 import { HeartIcon } from './Icons';
 import { getImageUrl } from '../service/imageService';
 import './CarCard.css';
@@ -266,8 +267,8 @@ export const CarCard: React.FC<CarCardProps> = ({ car, selected, onSelect, onTog
         </h3>
         <div className="car-card__badges">
           <span className="badge">{car.bodyStyle}</span>
-          <span className="badge">{car.transmission}</span>
-          <span className="badge">{car.fuelType}</span>
+          <span className="badge">{getTransmissionLabel(t, car.transmission)}</span>
+          <span className="badge">{getFuelLabel(t, car.fuelType)}</span>
           <span className="badge">{`${car.seats} vende`}</span>
           {car.engineVolumeL ? <span className="badge">Vëllimi i motorit: {car.engineVolumeL}L</span> : null}
         </div>

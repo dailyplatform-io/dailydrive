@@ -12,6 +12,7 @@ import {
 import { CarEditorModal } from './CarEditorModal';
 import { emptyCarDraft, getOwnerBillingCount } from './dashboardUtils';
 import { slugifySellerName } from '../../utils/slug';
+import { getFuelLabel } from '../../utils/vehicleLabels';
 import { features } from '../../config/features';
 import '../OwnerDashboard.css';
 
@@ -318,7 +319,8 @@ export const DashboardCars: React.FC = () => {
                     <span className={`status-pill status-${car.listingStatus ?? 'active'}`}>{car.listingStatus ?? 'active'}</span>
                   </div>
                   <p className="muted">
-                    {car.isForRent ? t('dashboard.car.type.rent') : t('dashboard.car.type.buy')} • {car.bodyStyle} • {car.fuelType}
+                    {car.isForRent ? t('dashboard.car.type.rent') : t('dashboard.car.type.buy')} • {car.bodyStyle} •{' '}
+                    {getFuelLabel(t, car.fuelType)}
                   </p>
                   <p className="owner-car-card__price">
                     {car.isForRent ? `${car.rentPricePerDay ?? '—'}€ / day` : `${car.salePrice ?? '—'}€`}

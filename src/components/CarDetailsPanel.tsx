@@ -3,6 +3,7 @@ import { Car } from '../models/Car';
 import { formatPrice } from '../utils/formatting';
 import { useLanguage } from '../context/LanguageContext';
 import { optionGroupTitleLookup, optionLabelLookup } from '../constants/optionCatalog';
+import { getColorLabel, getFuelLabel, getTransmissionLabel } from '../utils/vehicleLabels';
 import {
   MapPinIcon,
   NavigationIcon,
@@ -105,6 +106,12 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
     if (!value) return '—';
     return value.trim() ? value : '—';
   };
+
+  const fuelLabel = getFuelLabel(t, car?.fuelType);
+  const transmissionLabel = getTransmissionLabel(t, car?.transmission);
+  const exteriorLabel = getColorLabel(t, car?.exteriorColor ?? car?.color);
+  const interiorLabel = getColorLabel(t, car?.interiorColor ?? '');
+  const colorLabel = getColorLabel(t, car?.color ?? '');
 
   useEffect(() => {
     if (!car) return;
@@ -809,7 +816,7 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
               <InfoItem label={t('details.info.brand')} value={car.brand} />
               <InfoItem label={t('details.info.model')} value={car.model} />
               <InfoItem label={t('details.info.year')} value={car.year} />
-              <InfoItem label={t('details.info.exterior')} value={car.color} />
+              <InfoItem label={t('details.info.exterior')} value={exteriorLabel || textOrDash(car.color)} />
               <InfoItem label={t('details.info.doors')} value={`${car.doors}`} />
               <InfoItem label={t('details.info.seats')} value={`${car.seats}`} />
             </div>
@@ -817,8 +824,8 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
 
           {activeTab === 'Specifications' && (
             <div className="info-grid">
-              <InfoItem label={t('details.info.fuel')} value={car.fuelType} />
-              <InfoItem label={t('details.info.transmission')} value={car.transmission} />
+              <InfoItem label={t('details.info.fuel')} value={fuelLabel || textOrDash(car.fuelType)} />
+              <InfoItem label={t('details.info.transmission')} value={transmissionLabel || textOrDash(car.transmission)} />
               <InfoItem label={t('details.info.mileage')} value={`${car.mileageKm.toLocaleString()} km`} />
               <InfoItem label={t('details.info.body')} value={car.bodyStyle} />
               <InfoItem label={t('details.specs.rental')} value={car.isForRent ? t('details.specs.availableForRent') : '—'} />
@@ -832,8 +839,8 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
               <InfoItem label={t('details.info.model')} value={car.model} />
               <InfoItem label={t('details.info.year')} value={car.year} />
               <InfoItem label={t('details.info.body')} value={car.bodyStyle} />
-              <InfoItem label={t('details.info.fuel')} value={car.fuelType} />
-              <InfoItem label={t('details.info.transmission')} value={car.transmission} />
+              <InfoItem label={t('details.info.fuel')} value={fuelLabel || textOrDash(car.fuelType)} />
+              <InfoItem label={t('details.info.transmission')} value={transmissionLabel || textOrDash(car.transmission)} />
               <InfoItem
                 label={t('details.info.enginePower')}
                 value={typeof car.enginePowerHp === 'number' ? `${car.enginePowerHp} hp` : '—'}
@@ -844,8 +851,8 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
               />
               <InfoItem label={t('details.info.mileage')} value={`${car.mileageKm.toLocaleString()} km`} />
               <InfoItem label={t('details.info.seatsDoors')} value={`${car.seats} / ${car.doors}`} />
-              <InfoItem label={t('details.info.exterior')} value={car.exteriorColor ?? car.color} />
-              <InfoItem label={t('details.info.interior')} value={car.interiorColor ?? '—'} />
+              <InfoItem label={t('details.info.exterior')} value={exteriorLabel || textOrDash(car.exteriorColor ?? car.color)} />
+              <InfoItem label={t('details.info.interior')} value={interiorLabel || textOrDash(car.interiorColor ?? '—')} />
             </div>
           )}
 
@@ -1054,11 +1061,11 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
             <InfoItem label={t('details.info.model')} value={car.model} />
             <InfoItem label={t('details.info.year')} value={car.year} />
             <InfoItem label={t('details.info.body')} value={car.bodyStyle} />
-            <InfoItem label={t('details.info.fuel')} value={car.fuelType} />
-            <InfoItem label={t('details.info.transmission')} value={car.transmission} />
+            <InfoItem label={t('details.info.fuel')} value={fuelLabel || textOrDash(car.fuelType)} />
+            <InfoItem label={t('details.info.transmission')} value={transmissionLabel || textOrDash(car.transmission)} />
             <InfoItem label={t('details.info.mileage')} value={`${car.mileageKm.toLocaleString()} km`} />
             <InfoItem label={t('details.info.seatsDoors')} value={`${car.seats} / ${car.doors}`} />
-            <InfoItem label={t('details.info.exterior')} value={car.color} />
+            <InfoItem label={t('details.info.exterior')} value={colorLabel || textOrDash(car.color)} />
             <InfoItem
               label={t('details.location.availability')}
               value={

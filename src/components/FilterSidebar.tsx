@@ -6,6 +6,7 @@ import { FilterBounds, FilterState } from '../hooks/useFilters';
 import { ChevronDownIcon, CloseIcon } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
 import { selectOptionGroups } from '../constants/optionCatalog';
+import { getColorLabel, getFuelLabel, getTransmissionLabel } from '../utils/vehicleLabels';
 import './FilterSidebar.css';
 
 interface FilterSidebarProps {
@@ -39,7 +40,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
 }) => {
   const { t } = useLanguage();
   const bodyStyleOptions: BodyStyle[] = ['Hatchback', 'SUV', 'Sedan', 'Sport coupe'];
-  const fuelTypeOptions: FuelType[] = ['Gasoline', 'Diesel', 'Hybrid', 'Electric'];
+  const fuelTypeOptions: FuelType[] = ['Gasoline', 'Diesel', 'Hybrid', 'Electric', 'Gas', 'Gasoline/Gas'];
   const transmissionOptions: Transmission[] = ['Manual', 'Automatic', 'CVT'];
   const fuelsToRender = (() => {
     const filtered = fuelTypeOptions.filter((fuel) => fuelTypes.includes(fuel));
@@ -658,7 +659,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
               onClick={() => onUpdate('selectedFuelTypes', toggleArrayValue(filters.selectedFuelTypes, fuel))}
               type="button"
             >
-              {fuel}
+              {getFuelLabel(t, fuel)}
             </button>
           ))}
         </div>
@@ -676,7 +677,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
               onClick={() => onUpdate('selectedTransmissions', toggleArrayValue(filters.selectedTransmissions, gear))}
               type="button"
             >
-              {gear}
+              {getTransmissionLabel(t, gear)}
             </button>
           ))}
         </div>
@@ -698,7 +699,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   }
                   type="button"
                 >
-                  {color}
+                  {getColorLabel(t, color)}
                 </button>
               ))}
             </div>
@@ -718,7 +719,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   }
                   type="button"
                 >
-                  {color}
+                  {getColorLabel(t, color)}
                 </button>
               ))}
             </div>

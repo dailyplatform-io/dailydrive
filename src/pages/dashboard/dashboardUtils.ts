@@ -5,7 +5,7 @@ import { featureGroupTitleKey, featureOptions, selectOptionGroups as selectCatal
 export type CarsSubtab = 'all' | 'active' | 'inactive' | 'deleted' | 'sold';
 
 export const bodyStyleOptions: BodyStyle[] = ['Hatchback', 'SUV', 'Sedan', 'Sport coupe'];
-export const fuelTypeOptions: FuelType[] = ['Gasoline', 'Diesel', 'Hybrid', 'Electric'];
+export const fuelTypeOptions: FuelType[] = ['Gasoline', 'Diesel', 'Hybrid', 'Electric', 'Gas', 'Gasoline/Gas'];
 export const transmissionOptions: Transmission[] = ['Manual', 'Automatic', 'CVT'];
 
 export const featureOptionGroups: { titleKey: string; items: { value: string; labelKey: string }[] }[] = [

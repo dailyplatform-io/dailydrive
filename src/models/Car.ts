@@ -1,6 +1,6 @@
 export type RentalType = 'any' | 'per_day' | 'per_hour';
 
-export type FuelType = 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid';
+export type FuelType = 'Gasoline' | 'Diesel' | 'Electric' | 'Hybrid' | 'Gas' | 'Gasoline/Gas';
 
 export type Transmission = 'Manual' | 'Automatic' | 'CVT';
 

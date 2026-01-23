@@ -8,6 +8,7 @@ import {
   useAuth,
 } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getFuelLabel } from '../utils/vehicleLabels';
 import { useTrialManagement } from '../hooks/useTrialManagement';
 import { TrialStatusBanner, SubscriptionStatus } from '../components/TrialStatus';
 import { Car, BodyStyle, FuelType, Transmission } from '../models/Car';
@@ -42,7 +43,7 @@ type DashboardTab = 'cars' | 'reservations' | 'profile' | 'logout';
 type CarsSubtab = 'all' | 'active' | 'inactive' | 'deleted' | 'sold';
 
 const bodyStyleOptions: BodyStyle[] = ['Hatchback', 'SUV', 'Sedan', 'Sport coupe'];
-const fuelTypeOptions: FuelType[] = ['Gasoline', 'Diesel', 'Hybrid', 'Electric'];
+const fuelTypeOptions: FuelType[] = ['Gasoline', 'Diesel', 'Hybrid', 'Electric', 'Gas', 'Gasoline/Gas'];
 const transmissionOptions: Transmission[] = ['Manual', 'Automatic', 'CVT'];
 
 const featureOptionGroups: { titleKey: string; items: { value: string; labelKey: string }[] }[] = [
@@ -537,7 +538,7 @@ export const OwnerDashboard: React.FC = () => {
                       <span className={`status-pill status-${car.listingStatus ?? 'active'}`}>{car.listingStatus ?? 'active'}</span>
                     </div>
                     <p className="muted">
-                      {car.isForRent ? t('dashboard.car.type.rent') : t('dashboard.car.type.buy')} • {car.bodyStyle} • {car.fuelType}
+                    {car.isForRent ? t('dashboard.car.type.rent') : t('dashboard.car.type.buy')} • {car.bodyStyle} • {getFuelLabel(t, car.fuelType)}
                     </p>
                     <p className="owner-car-card__price">
                       {car.isForRent ? `${car.rentPricePerDay ?? '—'}€ / day` : `${car.salePrice ?? '—'}€`}
