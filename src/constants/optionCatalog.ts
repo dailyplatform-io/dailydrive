@@ -135,4 +135,5 @@ export const optionGroupTitleLookup = new Map<string, string>([
   ['Sallon', 'options.group.interior'],
   ['Traksioni', 'options.group.drivetrain'],
   ['Leje/Targa', 'options.group.registration'],
+  ['Dokumentacioni', 'options.group.registration'],
 ]);

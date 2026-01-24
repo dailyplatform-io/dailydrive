@@ -198,8 +198,7 @@
 .panel-card {
   background: #f7f9fd;
   border: 1px solid #e6eef8;
-  border-radius: 40px;
-  corner-shape: squircle;
+  border-radius: 15px;
   padding: 10px;
   display: grid;
   grid-template-columns: 1fr;

@@ -438,7 +438,7 @@
   display: inline-flex;
   align-items: center;
   padding: 8px 10px;
-  border-radius: 999px;
+  border-radius: 15px;
   border: 1px solid #dfe6f0;
   background: #f7f9fd;
   color: #4b5b75;
