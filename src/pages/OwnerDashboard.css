@@ -515,6 +515,17 @@
     padding: 6px 10px;
     font-size: 12px;
   }
+
+  .owner-panel__actions {
+    gap: 8px;
+  }
+
+  .owner-panel__actions > button {
+    flex: 1;
+    min-height: 36px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
 }
 
 .owner-mini--danger {

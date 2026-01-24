@@ -53,15 +53,22 @@
 }
 
 .filter-panel__label {
-  font-weight: 700;
+  font-weight: 800;
   color: #3a4a63;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .filter-panel__label-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.filter-panel__label-row .filter-panel__label {
+  font-weight: 600;
+  color: #6b7686;
+  font-size: 14px;
+  font-family: inherit;
 }
 
 .pill-row {
@@ -103,7 +110,23 @@
 }
 
 .filter-panel select {
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7686;
+  font-family: inherit;
+}
+
+.filter-panel select option {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7686;
+  font-family: inherit;
+}
+
+.filter-panel select[multiple] {
+  min-height: 120px;
+  padding: 10px 12px;
+  background-image: none;
 }
 
 .filter-panel input:focus,
@@ -277,14 +300,16 @@
 
 .search-select {
   position: relative;
+  width: 100%;
 }
 
 .search-select__button {
   width: 100%;
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 10px;
+  max-width: 100%;
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid #dfe6f0;
@@ -293,6 +318,19 @@
   color: #1f2b3d;
   cursor: pointer;
   transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-select__button span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.search-select__button svg {
+  margin-left: auto;
 }
 
 .search-select__button:focus-visible {
@@ -335,6 +373,10 @@
   overflow: auto;
 }
 
+.search-select__options .search-select__option {
+  font-size: 13px;
+}
+
 .search-select__option {
   width: 100%;
   border: none;
@@ -347,6 +389,17 @@
   color: #1f2b3d;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
+}
+
+.search-select__option--checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-select__option--checkbox input {
+  width: 16px;
+  height: 16px;
 }
 
 .search-select__option:hover {
@@ -456,4 +509,12 @@
   border: 1px dashed #c8d6ea;
   background: #f7f9fd;
   margin: 0;
+}
+
+@media (max-width: 768px) {
+  .filter-panel input[type='text'],
+  .filter-panel input[type='number'],
+  .filter-panel select {
+    font-size: 16px;
+  }
 }

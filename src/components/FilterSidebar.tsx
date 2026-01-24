@@ -66,6 +66,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   const [mileageToInput, setMileageToInput] = useState<string>('');
   const [brandOpen, setBrandOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
+  const [registrationOpen, setRegistrationOpen] = useState(false);
   const [brandQuery, setBrandQuery] = useState('');
   const [modelQuery, setModelQuery] = useState('');
   const [carMakes, setCarMakes] = useState<CarMake[]>([]);
@@ -74,12 +75,25 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   const [loadingModels, setLoadingModels] = useState(false);
   const brandPickerRef = useRef<HTMLDivElement | null>(null);
   const modelPickerRef = useRef<HTMLDivElement | null>(null);
+  const registrationPickerRef = useRef<HTMLDivElement | null>(null);
   const selectedMakeId = filters.selectedMakeIds?.[0];
   const selectedModelId = filters.selectedModelIds?.[0];
   const selectedMake = carMakes.find(make => make.id === selectedMakeId);
   const selectedModel = carModels.find(model => model.id === selectedModelId);
   const priceMax = mode === 'buy' ? bounds.priceMaxBuy : bounds.priceMaxRent;
   const registrationGroup = selectOptionGroups.find((group) => group.key === 'registration');
+  const registrationLabels = registrationGroup
+    ? registrationGroup.options
+        .filter((option) => filters.selectedRegistration.includes(option.value))
+        .map((option) => t(option.labelKey))
+    : [];
+  const registrationLabelText = (() => {
+    if (!registrationGroup) return '';
+    if (registrationLabels.length === 0) return '';
+    if (registrationLabels.length === registrationGroup.options.length) return t('common.any');
+    if (registrationLabels.length <= 2) return registrationLabels.join(', ');
+    return `${registrationLabels.slice(0, 2).join(', ')} ...`;
+  })();
 
   // Load car makes on component mount
   useEffect(() => {
@@ -252,19 +266,29 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   }, [carModels, normalizedModelQuery]);
 
   useEffect(() => {
-    if (!brandOpen && !modelOpen) return;
+    if (!brandOpen && !modelOpen && !registrationOpen) return;
 
     const onPointerDown = (event: PointerEvent) => {
       if (brandOpen && brandPickerRef.current && event.target instanceof Node && brandPickerRef.current.contains(event.target)) return;
       if (modelOpen && modelPickerRef.current && event.target instanceof Node && modelPickerRef.current.contains(event.target)) return;
+      if (
+        registrationOpen &&
+        registrationPickerRef.current &&
+        event.target instanceof Node &&
+        registrationPickerRef.current.contains(event.target)
+      ) {
+        return;
+      }
       setBrandOpen(false);
       setModelOpen(false);
+      setRegistrationOpen(false);
     };
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setBrandOpen(false);
         setModelOpen(false);
+        setRegistrationOpen(false);
       }
     };
 
@@ -274,7 +298,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
       window.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [brandOpen, modelOpen]);
+  }, [brandOpen, modelOpen, registrationOpen]);
 
   const selectMake = (makeId: number | null) => {
     if (!makeId) {
@@ -321,7 +345,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
         </button>
       )}
 
-      <div className="filter-panel__group">
+      <div className="filter-panel__group filter-panel__group--seats">
         <label className="filter-panel__label" htmlFor="search">
           {t('common.search')}
         </label>
@@ -732,41 +756,49 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
           <div className="filter-panel__label-row">
             <span className="filter-panel__label">{t(registrationGroup.titleKey)}</span>
           </div>
-          <div className="chip-grid">
-            {registrationGroup.options.map((option) => (
-              <button
-                key={option.value}
-                className={`chip ${filters.selectedRegistration.includes(option.value) ? 'is-active' : ''}`}
-                onClick={() =>
-                  onUpdate('selectedRegistration', toggleArrayValue(filters.selectedRegistration, option.value))
-                }
-                type="button"
-              >
-                {t(option.labelKey)}
-              </button>
-            ))}
+          <div className="search-select" ref={registrationPickerRef}>
+            <button
+              type="button"
+              className="search-select__button"
+              onClick={() => setRegistrationOpen((open) => !open)}
+              aria-expanded={registrationOpen}
+              aria-haspopup="listbox"
+            >
+              <span className={registrationLabels.length ? undefined : 'search-select__placeholder'}>
+                {registrationLabels.length ? registrationLabelText : t('common.any')}
+              </span>
+              <ChevronDownIcon size={16} />
+            </button>
+            {registrationOpen && (
+              <div className="search-select__popover" role="listbox">
+                <div className="search-select__options">
+                  {registrationGroup.options.map((option) => {
+                    const isSelected = filters.selectedRegistration.includes(option.value);
+                    return (
+                      <label
+                        key={option.value}
+                        className={`search-select__option search-select__option--checkbox ${isSelected ? 'is-selected' : ''}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() =>
+                            onUpdate(
+                              'selectedRegistration',
+                              toggleArrayValue(filters.selectedRegistration, option.value)
+                            )
+                          }
+                        />
+                        <span>{t(option.labelKey)}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
-
-      <div className="filter-panel__group">
-        <div className="filter-panel__label-row">
-          <span className="filter-panel__label">{t('filters.minSeats')}</span>
-        </div>
-        <div className="select-row">
-          <select
-            value={filters.minSeats}
-            onChange={(e) => onUpdate('minSeats', Number(e.target.value))}
-            aria-label="Minimum seats"
-          >
-            {[0, 2, 4, 5, 6, 7].map((seat) => (
-              <option key={seat} value={seat}>
-                {seat === 0 ? t('common.any') : `${seat}+`}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
 
       <div className="filter-panel__group">
         <div className="filter-panel__label-row">
