@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CarDetailsPanel } from '../components/CarDetailsPanel';
 import { CarList } from '../components/CarList';
 import { FilterSidebar } from '../components/FilterSidebar';
 import { FacebookIcon, InstagramIcon, PhoneIcon } from '../components/Icons';
@@ -59,19 +58,16 @@ export const SellerCarsPage: React.FC<SellerCarsPageProps> = ({ sellerName }) =>
   const navigate = useNavigate();
   const location = useLocation();
   const { toggleFavorite, isFavorite } = useFavorites();
-  const isMobile = useBreakpoint(1024);
   const isTablet = useBreakpoint(1200);
   const [showFilters, setShowFilters] = useState(!isTablet);
   const [allCars, setAllCars] = useState<Car[]>([]);
   const [carMakes, setCarMakes] = useState<CarMake[]>([]);
   const [carModels, setCarModels] = useState<CarModel[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCarId, setSelectedCarId] = useState<string | undefined>(undefined);
   const [mode, setMode] = useState<'rent' | 'buy'>(() => {
     const searchMode = new URLSearchParams(window.location.search).get('mode');
     return searchMode === 'buy' || searchMode === 'rent' ? searchMode : 'rent';
   });
-  const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const normalizedSellerName = useMemo(() => normalizeSellerSlug(sellerName), [sellerName]);
   const sellerCars = useMemo(
@@ -135,14 +131,6 @@ export const SellerCarsPage: React.FC<SellerCarsPageProps> = ({ sellerName }) =>
   }, [isTablet]);
 
   useEffect(() => {
-    return () => {
-      if (clickTimerRef.current) {
-        clearTimeout(clickTimerRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
     const loadMakesAndModels = async () => {
       try {
         const [makes, models] = await Promise.all([
@@ -185,52 +173,14 @@ export const SellerCarsPage: React.FC<SellerCarsPageProps> = ({ sellerName }) =>
     [filtered, mode]
   );
 
-  useEffect(() => {
-    if (!selectedCarId) return;
-    const exists = filteredByMode.some((car) => car.id === selectedCarId);
-    if (!exists) setSelectedCarId(undefined);
-  }, [filteredByMode, selectedCarId]);
-
-  const selectedCar = filteredByMode.find((c) => c.id === selectedCarId);
-  const showDetails = !!selectedCarId && !isMobile;
-
-  const handleSelect = (carToSelect: Car) => {
-    if (isMobile) {
-      navigate(`/cars/${carToSelect.id}`);
-    } else {
-      setSelectedCarId(carToSelect.id);
-    }
-  };
-
-  const handleDoubleClick = (carToSelect: Car) => {
-    if (!isMobile) {
-      navigate(`/cars/${carToSelect.id}`);
-    }
-  };
-
   const handleCarClick = (carToSelect: Car) => {
-    if (isMobile) {
-      navigate(`/cars/${carToSelect.id}`);
-      return;
-    }
-
-    if (clickTimerRef.current) {
-      clearTimeout(clickTimerRef.current);
-      clickTimerRef.current = null;
-      handleDoubleClick(carToSelect);
-    } else {
-      clickTimerRef.current = setTimeout(() => {
-        clickTimerRef.current = null;
-        handleSelect(carToSelect);
-      }, 250);
-    }
+    navigate(`/cars/${carToSelect.id}`);
   };
 
   const handleModeChange = (nextMode: 'rent' | 'buy') => {
     if (nextMode === mode) return;
     setMode(nextMode);
     navigate(`/dealer/${encodeURIComponent(sellerName)}?mode=${nextMode}`, { replace: true });
-    setSelectedCarId(undefined);
   };
 
   const contactItems = useMemo(() => {
@@ -312,7 +262,7 @@ export const SellerCarsPage: React.FC<SellerCarsPageProps> = ({ sellerName }) =>
         </div>
       </section>
 
-      <div className={`layout__grid ${showDetails ? '' : 'no-details'}`}>
+      <div className="layout__grid no-details">
         <div className={`layout__col filters ${isTablet && !showFilters ? 'is-collapsed' : ''}`}>
           <FilterSidebar
             filters={filters}
@@ -337,7 +287,6 @@ export const SellerCarsPage: React.FC<SellerCarsPageProps> = ({ sellerName }) =>
           ) : (
             <CarList
               cars={filteredByMode}
-              selectedId={selectedCarId}
               onSelect={handleCarClick}
               onToggleFavorite={toggleFavorite}
               isFavorite={isFavorite}
@@ -346,16 +295,6 @@ export const SellerCarsPage: React.FC<SellerCarsPageProps> = ({ sellerName }) =>
             />
           )}
         </div>
-        {showDetails && selectedCar && (
-          <div className="layout__col details">
-            <CarDetailsPanel
-              car={selectedCar}
-              onOpenFull={(id) => navigate(`/cars/${id}`)}
-              showTabs={false}
-              onClose={() => setSelectedCarId(undefined)}
-            />
-          </div>
-        )}
       </div>
     </main>
   );

@@ -39,7 +39,7 @@ export const CarCard: React.FC<CarCardProps> = ({ car, selected, onSelect, onTog
       try {
         const urls: string[] = [];
         // Only take first 3 images
-        const imageIdsToLoad = car.imageIds!.slice(0, 3);
+        const imageIdsToLoad = car.imageIds!.slice(0, 5);
         
         for (const imageId of imageIdsToLoad) {
           try {
@@ -233,7 +233,7 @@ export const CarCard: React.FC<CarCardProps> = ({ car, selected, onSelect, onTog
             {/* Image dots - only show if more than 1 image */}
             {imageUrls.length > 1 && (
               <div className="car-card__image-dots" onClick={(e) => e.stopPropagation()}>
-                {imageUrls.slice(0, 3).map((_, index) => (
+                {imageUrls.slice(0, 5).map((_, index) => (
                   <button
                     key={index}
                     className={`car-card__image-dot ${index === currentImageIndex ? 'active' : ''}`}
@@ -269,14 +269,11 @@ export const CarCard: React.FC<CarCardProps> = ({ car, selected, onSelect, onTog
           <span className="badge">{car.bodyStyle}</span>
           <span className="badge">{getTransmissionLabel(t, car.transmission)}</span>
           <span className="badge">{getFuelLabel(t, car.fuelType)}</span>
-          <span className="badge">{`${car.seats} vende`}</span>
-          {car.engineVolumeL ? <span className="badge">Vëllimi i motorit: {car.engineVolumeL}L</span> : null}
+          {car.engineVolumeL ? <span className="badge">Motorri: {car.engineVolumeL}L</span> : null}
+          <span className="badge">{mileageLabel}</span>
         </div>
         <div className="car-card__meta">
           <div className="meta-left">
-            <span className="tag">
-              {mileageLabel}
-            </span>
             <span className={`tag ${car.availableNow ? 'tag--success' : 'tag--muted'}`}>
               {car.availableNow
                 ? t('carCard.availableNow')

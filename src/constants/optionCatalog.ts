@@ -26,6 +26,13 @@ export const featureOptions = [
   { value: 'new_tires', labelKey: 'options.feature.new_tires' },
   { value: 'cruise_control', labelKey: 'options.feature.cruise_control' },
   { value: 'eco_mode', labelKey: 'options.feature.eco_mode' },
+  { value: 'apple_carplay', labelKey: 'options.feature.apple_carplay' },
+  { value: 'backup_camera', labelKey: 'options.feature.backup_camera' },
+  { value: 'camera_360', labelKey: 'options.feature.camera_360' },
+  { value: 'heated_steering_wheel', labelKey: 'options.feature.heated_steering_wheel' },
+  { value: 'auto_hold', labelKey: 'options.feature.auto_hold' },
+  { value: 'start_stop', labelKey: 'options.feature.start_stop' },
+  { value: 'memory_seats', labelKey: 'options.feature.memory_seats' },
 ] as const;
 
 export const featureGroupTitleKey = 'options.group.features';
@@ -99,6 +106,13 @@ export const optionLabelLookup = new Map<string, string>([
   ['Goma te Reja', 'options.feature.new_tires'],
   ['Cruise Control', 'options.feature.cruise_control'],
   ['Eco Mode', 'options.feature.eco_mode'],
+  ['Apple CarPlay', 'options.feature.apple_carplay'],
+  ['Kamera Mbrapa', 'options.feature.backup_camera'],
+  ['Kamera 360', 'options.feature.camera_360'],
+  ['Timon me ngrohje', 'options.feature.heated_steering_wheel'],
+  ['Auto Hold', 'options.feature.auto_hold'],
+  ['Start Stop', 'options.feature.start_stop'],
+  ['Sedilje me memorje', 'options.feature.memory_seats'],
   ['2 zona', 'options.climate.2_zone'],
   ['4 zona', 'options.climate.4_zone'],
   ['Sallon Lekure', 'options.interior.leather'],

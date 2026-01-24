@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CarDetailsPanel } from '../components/CarDetailsPanel';
 import { CarList } from '../components/CarList';
 import { FilterSidebar } from '../components/FilterSidebar';
 import { useLanguage } from '../context/LanguageContext';
@@ -20,8 +19,6 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'rent' }) => {
-  const [selectedCarId, setSelectedCarId] = useState<string | undefined>(undefined);
-  const isMobile = useBreakpoint(1024);
   const isTablet = useBreakpoint(1200);
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +27,6 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
   const buyEnabled = features.buy;
   const { toggleFavorite, isFavorite } = useFavorites();
   const [showFilters, setShowFilters] = useState(!isTablet);
-  const showDetails = !!selectedCarId && !isMobile;
   const [allCars, setAllCars] = useState<Car[]>([]);
   const [carMakes, setCarMakes] = useState<CarMake[]>([]);
   const [carModels, setCarModels] = useState<CarModel[]>([]);
@@ -44,15 +40,6 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
     if (defaultMode === 'buy' && !buyEnabled) return rentEnabled ? 'rent' : 'buy';
     return defaultMode;
   });
-  
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (clickTimerRef.current) {
-        clearTimeout(clickTimerRef.current);
-      }
-    };
-  }, []);
   
   // Load car makes and models
   useEffect(() => {
@@ -136,59 +123,13 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
     if (mode === 'buy' && !buyEnabled && rentEnabled) setMode('rent');
   }, [mode, rentEnabled, buyEnabled]);
 
-  useEffect(() => {
-    if (!selectedCarId) return;
-    const exists = filtered.some((car) => car.id === selectedCarId);
-    if (!exists) setSelectedCarId(undefined);
-  }, [filtered, selectedCarId]);
-
   const filteredByMode = useMemo(
     () => filtered.filter((car) => (mode === 'rent' ? car.isForRent : car.isForSale)),
     [filtered, mode]
   );
 
-  useEffect(() => {
-    if (selectedCarId && !filteredByMode.some((c) => c.id === selectedCarId)) {
-      setSelectedCarId(undefined);
-    }
-  }, [filteredByMode, selectedCarId]);
-
-  const selectedCar = filteredByMode.find((c) => c.id === selectedCarId);
-  const clickTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleSelect = (carToSelect: Car) => {
-    if (isMobile) {
-      navigate(`/cars/${carToSelect.id}`);
-    } else {
-      setSelectedCarId(carToSelect.id);
-    }
-  };
-
-  const handleDoubleClick = (carToSelect: Car) => {
-    if (!isMobile) {
-      navigate(`/cars/${carToSelect.id}`);
-    }
-  };
-
   const handleCarClick = (carToSelect: Car) => {
-    if (isMobile) {
-      navigate(`/cars/${carToSelect.id}`);
-      return;
-    }
-
-    // Handle double-click detection for desktop
-    if (clickTimerRef.current) {
-      // Double click detected
-      clearTimeout(clickTimerRef.current);
-      clickTimerRef.current = null;
-      handleDoubleClick(carToSelect);
-    } else {
-      // Single click - set timer to wait for potential second click
-      clickTimerRef.current = setTimeout(() => {
-        clickTimerRef.current = null;
-        handleSelect(carToSelect);
-      }, 250); // 250ms delay to detect double click
-    }
+    navigate(`/cars/${carToSelect.id}`);
   };
 
   const handleModeChange = (nextMode: 'rent' | 'buy') => {
@@ -196,7 +137,6 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
     if (nextMode === 'buy' && !buyEnabled) return;
     setMode(nextMode);
     navigate(nextMode === 'rent' ? '/rent' : '/buy', { replace: true });
-    setSelectedCarId(undefined);
   };
 
   const rentHighlights = useMemo(() => allCars.filter((c) => c.isForRent).slice(0, 3), [allCars]);
@@ -357,7 +297,7 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
 
   return (
     <main className="layout">
-      <div className={`layout__grid ${showDetails ? '' : 'no-details'}`}>
+      <div className="layout__grid no-details">
         <div className={`layout__col filters ${isTablet && !showFilters ? 'is-collapsed' : ''}`}>
           <FilterSidebar
             filters={filters}
@@ -382,7 +322,6 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
           ) : (
             <CarList
               cars={filteredByMode}
-              selectedId={selectedCarId}
               onSelect={handleCarClick}
               onToggleFavorite={toggleFavorite}
               isFavorite={isFavorite}
@@ -390,16 +329,6 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
             />
           )}
         </div>
-        {showDetails && selectedCar && (
-          <div className="layout__col details">
-            <CarDetailsPanel
-              car={selectedCar}
-              onOpenFull={(id) => navigate(`/cars/${id}`)}
-              showTabs={false}
-              onClose={() => setSelectedCarId(undefined)}
-            />
-          </div>
-        )}
       </div>
     </main>
   );

@@ -24,6 +24,7 @@ interface CarDetailsPanelProps {
   onOpenFull?: (id: string) => void;
   showTabs?: boolean;
   onClose?: () => void;
+  compactCtas?: boolean;
 }
 
 type TabKey =
@@ -35,7 +36,13 @@ type TabKey =
   | 'Pricing'
   | 'Location';
 
-export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFull, showTabs = true, onClose }) => {
+export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({
+  car,
+  onOpenFull,
+  showTabs = true,
+  onClose,
+  compactCtas = false,
+}) => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<TabKey>('Info & Specifications');
@@ -117,12 +124,17 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
     if (!value) return '—';
     return value.trim() ? value : '—';
   };
+  const hasText = (value?: string | null) => Boolean(value && value.trim());
+  const hasPositiveNumber = (value?: number | null) => typeof value === 'number' && value > 0;
 
   const fuelLabel = getFuelLabel(t, car?.fuelType);
   const transmissionLabel = getTransmissionLabel(t, car?.transmission);
   const exteriorLabel = getColorLabel(t, car?.exteriorColor ?? car?.color);
   const interiorLabel = getColorLabel(t, car?.interiorColor ?? '');
   const colorLabel = getColorLabel(t, car?.color ?? '');
+  const exteriorValue = exteriorLabel || car?.exteriorColor || car?.color || '';
+  const interiorValue = interiorLabel || car?.interiorColor || '';
+  const colorValue = colorLabel || car?.color || '';
   const optionGroupOrder = useMemo(
     () =>
       new Map<string, number>([
@@ -612,7 +624,7 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
 
   if (!car) {
     return (
-      <aside className="details-panel">
+      <aside className={`details-panel ${compactCtas ? 'details-panel--compact-cta' : ''}`}>
         <div className="details-panel__placeholder">
           <SparklesIcon size={22} />
           <p>{t('details.placeholder')}</p>
@@ -622,7 +634,7 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
   }
 
   return (
-    <aside className="details-panel">
+    <aside className={`details-panel ${compactCtas ? 'details-panel--compact-cta' : ''}`}>
       {onClose && (
         <button className="details-panel__close" type="button" aria-label="Close details" onClick={onClose}>
           <span aria-hidden>×</span>
@@ -743,10 +755,36 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
         <div className="details-panel__header-row">
           <div className="details-panel__title">
             <p className="eyebrow">{car.brand.toUpperCase()}</p>
-            <h2>{car.subtitle || `${car.brand} ${car.model}`}</h2>
+            <div className="details-panel__title-row">
+              <h2>{car.subtitle || `${car.brand} ${car.model}`}</h2>
+              <div className="cta-row top-cta cta-row--compact cta-row--mobile">
+                {contactHref ? (
+                  <a className="primary-btn secondary contact-btn" href={contactHref}>
+                    <PhoneIcon size={16} className="contact-btn__icon" />
+                    <span className="cta-label">{t('common.contact')}</span>
+                  </a>
+                ) : (
+                  <button className="primary-btn secondary contact-btn" type="button" disabled>
+                    <PhoneIcon size={16} className="contact-btn__icon" />
+                    <span className="cta-label">{t('common.contact')}</span>
+                  </button>
+                )}
+                {whatsappHref ? (
+                  <a className="primary-btn whatsapp whatsapp-btn" href={whatsappHref} target="_blank" rel="noreferrer">
+                    <WhatsAppIcon size={16} className="whatsapp-btn__icon" />
+                    <span className="cta-label">{t('common.whatsapp')}</span>
+                  </a>
+                ) : (
+                  <button className="primary-btn whatsapp whatsapp-btn" type="button" disabled>
+                    <WhatsAppIcon size={16} className="whatsapp-btn__icon" />
+                    <span className="cta-label">{t('common.whatsapp')}</span>
+                  </button>
+                )}
+              </div>
+            </div>
             <p className="muted">{car.model} — {car.year}</p>
           </div>
-          <div className="cta-row top-cta cta-row--compact">
+          <div className="cta-row top-cta cta-row--compact cta-row--desktop">
             {onOpenFull && car && (
               <button className="ghost-btn" type="button" onClick={() => onOpenFull(car.id)}>
                 {t('common.viewFullDetails')}
@@ -755,23 +793,23 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
             {contactHref ? (
               <a className="primary-btn secondary contact-btn" href={contactHref}>
                 <PhoneIcon size={16} className="contact-btn__icon" />
-                {t('common.contact')}
+                <span className="cta-label">{t('common.contact')}</span>
               </a>
             ) : (
               <button className="primary-btn secondary contact-btn" type="button" disabled>
                 <PhoneIcon size={16} className="contact-btn__icon" />
-                {t('common.contact')}
+                <span className="cta-label">{t('common.contact')}</span>
               </button>
             )}
             {whatsappHref ? (
               <a className="primary-btn whatsapp whatsapp-btn" href={whatsappHref} target="_blank" rel="noreferrer">
                 <WhatsAppIcon size={16} className="whatsapp-btn__icon" />
-                {t('common.whatsapp')}
+                <span className="cta-label">{t('common.whatsapp')}</span>
               </a>
             ) : (
               <button className="primary-btn whatsapp whatsapp-btn" type="button" disabled>
                 <WhatsAppIcon size={16} className="whatsapp-btn__icon" />
-                {t('common.whatsapp')}
+                <span className="cta-label">{t('common.whatsapp')}</span>
               </button>
             )}
           </div>
@@ -853,9 +891,9 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
               <InfoItem label={t('details.info.brand')} value={car.brand} />
               <InfoItem label={t('details.info.model')} value={car.model} />
               <InfoItem label={t('details.info.year')} value={car.year} />
-              <InfoItem label={t('details.info.exterior')} value={exteriorLabel || textOrDash(car.color)} />
-              <InfoItem label={t('details.info.doors')} value={`${car.doors}`} />
-              <InfoItem label={t('details.info.seats')} value={`${car.seats}`} />
+              {hasText(exteriorValue) && <InfoItem label={t('details.info.exterior')} value={exteriorValue} />}
+              {hasPositiveNumber(car.doors) && <InfoItem label={t('details.info.doors')} value={`${car.doors}`} />}
+              {hasPositiveNumber(car.seats) && <InfoItem label={t('details.info.seats')} value={`${car.seats}`} />}
             </div>
           )}
 
@@ -863,7 +901,9 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
             <div className="info-grid">
               <InfoItem label={t('details.info.fuel')} value={fuelLabel || textOrDash(car.fuelType)} />
               <InfoItem label={t('details.info.transmission')} value={transmissionLabel || textOrDash(car.transmission)} />
-              <InfoItem label={t('details.info.mileage')} value={`${car.mileageKm.toLocaleString()} km`} />
+              {hasPositiveNumber(car.mileageKm) && (
+                <InfoItem label={t('details.info.mileage')} value={`${car.mileageKm.toLocaleString()} km`} />
+              )}
               <InfoItem label={t('details.info.body')} value={car.bodyStyle} />
               <InfoItem label={t('details.specs.rental')} value={car.isForRent ? t('details.specs.availableForRent') : '—'} />
               <InfoItem label={t('details.specs.sale')} value={car.isForSale ? t('details.specs.availableForSale') : '—'} />
@@ -878,27 +918,32 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
               <InfoItem label={t('details.info.body')} value={car.bodyStyle} />
               <InfoItem label={t('details.info.fuel')} value={fuelLabel || textOrDash(car.fuelType)} />
               <InfoItem label={t('details.info.transmission')} value={transmissionLabel || textOrDash(car.transmission)} />
-              <InfoItem
-                label={t('details.info.enginePower')}
-                value={typeof car.enginePowerHp === 'number' ? `${car.enginePowerHp} hp` : '—'}
-              />
+              {hasPositiveNumber(car.enginePowerHp) && (
+                <InfoItem label={t('details.info.enginePower')} value={`${car.enginePowerHp} hp`} />
+              )}
               <InfoItem
                 label={t('details.info.engineVolume')}
                 value={typeof car.engineVolumeL === 'number' ? `${car.engineVolumeL.toFixed(1)} L` : '—'}
               />
-              <InfoItem label={t('details.info.mileage')} value={`${car.mileageKm.toLocaleString()} km`} />
-              <InfoItem label={t('details.info.seatsDoors')} value={`${car.seats} / ${car.doors}`} />
-              <InfoItem label={t('details.info.exterior')} value={exteriorLabel || textOrDash(car.exteriorColor ?? car.color)} />
-              <InfoItem label={t('details.info.interior')} value={interiorLabel || textOrDash(car.interiorColor ?? '—')} />
+              {hasPositiveNumber(car.mileageKm) && (
+                <InfoItem label={t('details.info.mileage')} value={`${car.mileageKm.toLocaleString()} km`} />
+              )}
+              {hasPositiveNumber(car.seats) && hasPositiveNumber(car.doors) && (
+                <InfoItem label={t('details.info.seatsDoors')} value={`${car.seats} / ${car.doors}`} />
+              )}
+              {hasText(exteriorValue) && <InfoItem label={t('details.info.exterior')} value={exteriorValue} />}
+              {hasText(interiorValue) && <InfoItem label={t('details.info.interior')} value={interiorValue} />}
             </div>
           )}
 
           {activeTab === 'Condition & options' && (
             <div className="rent-section">
-              <div className="condition-description">
-                <p className="muted">{t('details.condition.description')}</p>
-                <p className="condition-description__text">{textOrDash(car.description)}</p>
-              </div>
+              {hasText(car.description) && (
+                <div className="condition-description">
+                  <p className="muted">{t('details.condition.description')}</p>
+                  <p className="condition-description__text">{car.description}</p>
+                </div>
+              )}
 
               <div className="condition-metrics">
                 <InfoItem
@@ -909,7 +954,9 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
                   label={t('details.condition.accidents')}
                   value={typeof car.accidentsCount === 'number' ? `${car.accidentsCount}` : '—'}
                 />
-                <InfoItem label={t('details.condition.serviceHistory')} value={textOrDash(car.serviceHistory)} />
+                {hasText(car.serviceHistory) && (
+                  <InfoItem label={t('details.condition.serviceHistory')} value={car.serviceHistory} />
+                )}
               </div>
 
               <div className="details-separator" role="separator" aria-hidden="true" />
@@ -979,22 +1026,18 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
             <div className="rent-section">
               <div className="info-grid">
                 <InfoItem label={t('details.pricing.salePrice')} value={car.salePrice ? formatPrice(car.salePrice) : '—'} />
-                <InfoItem
-                  label={t('details.pricing.yearlyInsurance')}
-                  value={typeof car.fees === 'number' ? formatPrice(car.fees) : '—'}
-                />
-                <InfoItem
-                  label={t('details.pricing.yearlyTaxes')}
-                  value={typeof car.taxes === 'number' ? formatPrice(car.taxes) : '—'}
-                />
-                <InfoItem
-                  label={t('details.pricing.yearlyTotal')}
-                  value={
-                    typeof car.fees === 'number' || typeof car.taxes === 'number'
-                      ? formatPrice((car.fees ?? 0) + (car.taxes ?? 0))
-                      : '—'
-                  }
-                />
+                {hasPositiveNumber(car.fees) && (
+                  <InfoItem label={t('details.pricing.yearlyInsurance')} value={formatPrice(car.fees)} />
+                )}
+                {hasPositiveNumber(car.taxes) && (
+                  <InfoItem label={t('details.pricing.yearlyTaxes')} value={formatPrice(car.taxes)} />
+                )}
+                {(hasPositiveNumber(car.fees) || hasPositiveNumber(car.taxes)) && (
+                  <InfoItem
+                    label={t('details.pricing.yearlyTotal')}
+                    value={formatPrice((car.fees ?? 0) + (car.taxes ?? 0))}
+                  />
+                )}
               </div>
 
               <div className="loan-box">
@@ -1111,8 +1154,9 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
               <NavigationIcon size={18} />
             </div>
             <div className="map-preview__info">
-              <p className="muted">{t('details.rent.pickup')}</p>
-              <strong>{car.location.mapLabel}</strong>
+              <p className="muted">
+                {compactCtas ? t('details.location.selected') : t('details.rent.pickup')}
+              </p>
               <span>
                 <MapPinIcon size={14} /> {car.location.fullAddress}
               </span>
@@ -1125,9 +1169,13 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({ car, onOpenFul
             <InfoItem label={t('details.info.body')} value={car.bodyStyle} />
             <InfoItem label={t('details.info.fuel')} value={fuelLabel || textOrDash(car.fuelType)} />
             <InfoItem label={t('details.info.transmission')} value={transmissionLabel || textOrDash(car.transmission)} />
-            <InfoItem label={t('details.info.mileage')} value={`${car.mileageKm.toLocaleString()} km`} />
-            <InfoItem label={t('details.info.seatsDoors')} value={`${car.seats} / ${car.doors}`} />
-            <InfoItem label={t('details.info.exterior')} value={colorLabel || textOrDash(car.color)} />
+            {hasPositiveNumber(car.mileageKm) && (
+              <InfoItem label={t('details.info.mileage')} value={`${car.mileageKm.toLocaleString()} km`} />
+            )}
+            {hasPositiveNumber(car.seats) && hasPositiveNumber(car.doors) && (
+              <InfoItem label={t('details.info.seatsDoors')} value={`${car.seats} / ${car.doors}`} />
+            )}
+            {hasText(colorValue) && <InfoItem label={t('details.info.exterior')} value={colorValue} />}
             <InfoItem
               label={t('details.location.availability')}
               value={

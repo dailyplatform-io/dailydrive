@@ -26,12 +26,35 @@ export const ImagesField: React.FC<ImagesFieldProps> = ({
   const { t } = useLanguage();
   const { token, refreshToken } = useAuth();
   const [busy, setBusy] = useState(false);
+  const [orderedIds, setOrderedIds] = useState<string[]>(imageIds);
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const previewUrlsRef = useRef<Record<string, string>>({});
+  const orderedIdsRef = useRef<string[]>(imageIds);
+  const [uploadingIds, setUploadingIds] = useState<Set<string>>(new Set());
+  const tempCounterRef = useRef(0);
+
+  const isTempId = (id: string) => id.startsWith('temp:');
+  const nextTempId = () => {
+    tempCounterRef.current += 1;
+    return `temp:${Date.now()}-${tempCounterRef.current}`;
+  };
 
   useEffect(() => {
     previewUrlsRef.current = previews;
   }, [previews]);
+
+  useEffect(() => {
+    orderedIdsRef.current = orderedIds;
+  }, [orderedIds]);
+
+  useEffect(() => {
+    setOrderedIds((current) => {
+      const tempIds = current.filter((id) => isTempId(id));
+      const next = [...imageIds, ...tempIds.filter((id) => !imageIds.includes(id))];
+      orderedIdsRef.current = next;
+      return next;
+    });
+  }, [imageIds]);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,7 +88,7 @@ export const ImagesField: React.FC<ImagesFieldProps> = ({
   }, [imageIds, previews, token]);
 
   useEffect(() => {
-    const removed = Object.keys(previews).filter((id) => !imageIds.includes(id));
+    const removed = Object.keys(previews).filter((id) => !imageIds.includes(id) && !isTempId(id));
     if (!removed.length) return;
     setPreviews((current) => {
       const next = { ...current };
@@ -97,44 +120,83 @@ export const ImagesField: React.FC<ImagesFieldProps> = ({
     if (!selected.length) return;
     setBusy(true);
     try {
-      const uploaded: ImageUploadResult[] = [];
-      for (const file of selected) {
+      const tempIds = selected.map(() => nextTempId());
+      setOrderedIds((current) => {
+        const next = [...current, ...tempIds];
+        orderedIdsRef.current = next;
+        return next;
+      });
+      setUploadingIds((current) => new Set([...current, ...tempIds]));
+
+      const localPreviews: Record<string, string> = {};
+      tempIds.forEach((id, index) => {
+        const previewUrl = URL.createObjectURL(selected[index]);
+        localPreviews[id] = previewUrl;
+      });
+      setPreviews((current) => ({ ...current, ...localPreviews }));
+
+      for (let i = 0; i < selected.length; i += 1) {
+        const file = selected[i];
+        const tempId = tempIds[i];
         try {
           const result = await uploadImageToServer(file, currentToken);
-          uploaded.push(result);
+          setPreviews((current) => {
+            const next = { ...current };
+            if (next[tempId]) {
+              revokeObjectUrl(next[tempId]);
+              delete next[tempId];
+            }
+            next[result.id] = result.url;
+            return next;
+          });
+
+          const nextOrdered = orderedIdsRef.current.map((id) => (id === tempId ? result.id : id));
+          orderedIdsRef.current = nextOrdered;
+          setOrderedIds(nextOrdered);
+
+          setUploadingIds((current) => {
+            const next = new Set(current);
+            next.delete(tempId);
+            return next;
+          });
+
+          const nextIds = nextOrdered.filter((id) => !isTempId(id)).slice(0, 15);
+          const nextCoverId = coverImageId || nextIds[0];
+
+          let coverThumbnailDataUrl: string | undefined;
+          if (nextCoverId === result.id) {
+            coverThumbnailDataUrl = await createImageThumbnailDataUrl(file);
+          }
+
+          onChange({ imageIds: nextIds, coverImageId: nextCoverId, coverThumbnailDataUrl });
         } catch (error) {
           console.error('Failed to upload image:', error);
-          // Continue with other files
+          setUploadingIds((current) => {
+            const next = new Set(current);
+            next.delete(tempId);
+            return next;
+          });
+          setOrderedIds((current) => {
+            const next = current.filter((id) => id !== tempId);
+            orderedIdsRef.current = next;
+            return next;
+          });
+          setPreviews((current) => {
+            const next = { ...current };
+            if (next[tempId]) {
+              revokeObjectUrl(next[tempId]);
+              delete next[tempId];
+            }
+            return next;
+          });
         }
       }
-
-      const nextIds = [...imageIds, ...uploaded.map((u) => u.id)].slice(0, 15);
-      const nextCoverId = coverImageId || nextIds[0];
-
-      const nextPreviewEntries: Record<string, string> = {};
-      uploaded.forEach(({ id, url }) => {
-        nextPreviewEntries[id] = url;
-      });
-      setPreviews((current) => ({ ...current, ...nextPreviewEntries }));
-
-      // Create thumbnail from the cover image
-      let coverThumbnailDataUrl: string | undefined;
-      const coverUpload = uploaded.find((u) => u.id === nextCoverId);
-      if (coverUpload) {
-        // Use the original file for thumbnail if it was just uploaded
-        const coverFile = selected[uploaded.indexOf(coverUpload)];
-        if (coverFile) {
-          coverThumbnailDataUrl = await createImageThumbnailDataUrl(coverFile);
-        }
-      }
-
-      onChange({ imageIds: nextIds, coverImageId: nextCoverId, coverThumbnailDataUrl });
     } finally {
       setBusy(false);
     }
   };
 
-  const replaceAt = async (index: number, file: File) => {
+  const replaceAt = async (index: number, file: File, oldId: string) => {
     // Refresh token state to ensure we have the latest token from storage
     const currentToken = refreshToken();
     
@@ -145,9 +207,8 @@ export const ImagesField: React.FC<ImagesFieldProps> = ({
     }
 
     setBusy(true);
+    setUploadingIds((current) => new Set([...current, oldId]));
     try {
-      const oldId = imageIds[index];
-      
       // Upload new image
       const result = await uploadImageToServer(file, currentToken);
       
@@ -166,15 +227,26 @@ export const ImagesField: React.FC<ImagesFieldProps> = ({
         return next;
       });
 
-      const nextIds = imageIds.map((id, i) => (i === index ? result.id : id));
+      const nextOrdered = orderedIdsRef.current.map((id) => (id === oldId ? result.id : id));
+      orderedIdsRef.current = nextOrdered;
+      setOrderedIds(nextOrdered);
+      const nextIds = nextOrdered.filter((id) => !isTempId(id));
       const nextCoverId = coverImageId === oldId ? result.id : coverImageId || nextIds[0];
       
       const coverThumbnailDataUrl = nextCoverId === result.id ? await createImageThumbnailDataUrl(file) : undefined;
       onChange({ imageIds: nextIds, coverImageId: nextCoverId, coverThumbnailDataUrl });
     } finally {
+      setUploadingIds((current) => {
+        const next = new Set(current);
+        next.delete(oldId);
+        return next;
+      });
       setBusy(false);
     }
   };
+
+  const displayIds = orderedIds;
+  const effectiveCoverId = coverImageId || imageIds[0];
 
   return (
     <div className="owner-images">
@@ -200,15 +272,17 @@ export const ImagesField: React.FC<ImagesFieldProps> = ({
       </div>
 
       <div className="owner-images__grid">
-        {imageIds.map((id, idx) => {
+        {displayIds.map((id, idx) => {
           const src = previews[id] || '';
-          const isCover = coverImageId ? coverImageId === id : idx === 0;
+          const isCover = effectiveCoverId === id;
+          const isUploading = uploadingIds.has(id);
+          const isTemp = isTempId(id);
           return (
-            <div key={id} className={`owner-image ${isCover ? 'is-cover' : ''}`}>
+            <div key={id} className={`owner-image ${isCover ? 'is-cover' : ''} ${isUploading ? 'is-uploading' : ''}`}>
               {isCover && <div className="owner-image__badge">{t('dashboard.form.images.coverBadge')}</div>}
               {src ? <img src={src} alt={`Upload ${idx + 1}`} loading="lazy" /> : <div className="owner-image__empty" />}
               <div className="owner-image__actions">
-                {!isCover && (
+                {!isCover && !isTemp && (
                   <button
                     type="button"
                     className="owner-mini"
@@ -230,6 +304,7 @@ export const ImagesField: React.FC<ImagesFieldProps> = ({
                       
                       onChange({ imageIds, coverImageId: id, coverThumbnailDataUrl });
                     }}
+                    disabled={isUploading}
                   >
                     {t('dashboard.form.images.setCover')}
                   </button>
@@ -240,10 +315,13 @@ export const ImagesField: React.FC<ImagesFieldProps> = ({
                     accept="image/*"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file) void replaceAt(idx, file);
+                      if (file && !isTemp) {
+                        const realIndex = imageIds.indexOf(id);
+                        if (realIndex !== -1) void replaceAt(realIndex, file, id);
+                      }
                       e.currentTarget.value = '';
                     }}
-                    disabled={busy}
+                    disabled={busy || isTemp}
                   />
                   {t('dashboard.form.images.replace')}
                 </label>
@@ -251,12 +329,16 @@ export const ImagesField: React.FC<ImagesFieldProps> = ({
                   type="button"
                   className="owner-mini owner-mini--danger"
                   onClick={async () => {
+                    if (isTemp) return;
                     if (!token) {
                       console.error('No authentication token available for image deletion');
                       return;
                     }
 
-                    const nextIds = imageIds.filter((_, i) => i !== idx);
+                    const nextOrdered = orderedIdsRef.current.filter((currentId) => currentId !== id);
+                    orderedIdsRef.current = nextOrdered;
+                    setOrderedIds(nextOrdered);
+                    const nextIds = nextOrdered.filter((currentId) => !isTempId(currentId));
                     
                     // Delete from server
                     try {
@@ -291,6 +373,7 @@ export const ImagesField: React.FC<ImagesFieldProps> = ({
                     
                     onChange({ imageIds: nextIds, coverImageId: nextCoverId, coverThumbnailDataUrl });
                   }}
+                  disabled={isUploading}
                 >
                   {t('dashboard.form.images.delete')}
                 </button>

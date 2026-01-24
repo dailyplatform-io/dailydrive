@@ -71,13 +71,13 @@ function emptyCarDraft(profileType: OwnerProfileType, ownerId: string, ownerAddr
     bodyStyle: 'Sedan',
     fuelType: 'Gasoline',
     transmission: 'Automatic',
-    enginePowerHp: 120,
+    enginePowerHp: undefined,
     engineVolumeL: 2.0,
-    seats: 5,
-    doors: 4,
-    color: 'Black',
-    exteriorColor: 'Black',
-    interiorColor: 'Black',
+    seats: 0,
+    doors: 0,
+    color: '',
+    exteriorColor: '',
+    interiorColor: '',
     mileageKm: 0,
     isForRent,
     isForSale,
@@ -91,8 +91,8 @@ function emptyCarDraft(profileType: OwnerProfileType, ownerId: string, ownerAddr
       ...featureOptionGroups.map((g) => ({ title: g.titleKey, items: [] })),
       ...selectOptionGroups.map((g) => ({ title: g.titleKey, items: [] })),
     ],
-    fees: 0,
-    taxes: 0,
+    fees: undefined,
+    taxes: undefined,
     rating: 4.8,
     reviewsCount: 0,
     distanceMeters: 0,
@@ -128,6 +128,12 @@ export const OwnerDashboard: React.FC = () => {
   const [loadingCars, setLoadingCars] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [successMessage, setSuccessMessage] = useState<string>('');
+
+  const formatNumberInput = (value?: number) => (value && value > 0 ? value.toLocaleString() : '');
+  const parseNumberInput = (value: string) => {
+    const digits = value.replace(/[^\d]/g, '');
+    return digits ? Number(digits) : 0;
+  };
   
   const { 
     trial, 
@@ -785,12 +791,20 @@ function CarEditorModal({
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
+  const saveErrorTimerRef = useRef<number | null>(null);
   const [useCustomAddress, setUseCustomAddress] = useState(() => {
     return (
       initial.location.fullAddress.trim() !== ownerAddress.address.trim() ||
       initial.location.city.trim() !== ownerAddress.city.trim()
     );
   });
+
+  useEffect(() => {
+    document.body.classList.add('owner-modal--open');
+    return () => {
+      document.body.classList.remove('owner-modal--open');
+    };
+  }, []);
 
   // Car makes and models from API
   const [carMakes, setCarMakes] = useState<CarMake[]>([]);
@@ -906,6 +920,10 @@ function CarEditorModal({
     const requiredNumber = (value: number | undefined, key: string, { min }: { min: number }) => {
       if (typeof value !== 'number' || Number.isNaN(value) || value < min) next[key] = t('dashboard.form.required');
     };
+    const optionalNumber = (value: number | undefined, key: string, { min }: { min: number }) => {
+      if (value === undefined || value === null || value === 0) return;
+      if (Number.isNaN(value) || value < min) next[key] = t('dashboard.form.required');
+    };
 
     requiredText(nextDraft.brand, 'brand');
     requiredText(nextDraft.model, 'model');
@@ -917,14 +935,11 @@ function CarEditorModal({
     if (!nextDraft.transmission) next.transmission = t('dashboard.form.required');
 
     requiredNumber(nextDraft.year, 'year', { min: 1990 });
-    requiredNumber(nextDraft.enginePowerHp, 'enginePowerHp', { min: 1 });
     requiredNumber(nextDraft.engineVolumeL, 'engineVolumeL', { min: 0 });
-    requiredNumber(nextDraft.seats, 'seats', { min: 1 });
-    requiredNumber(nextDraft.doors, 'doors', { min: 2 });
-    requiredNumber(nextDraft.mileageKm, 'mileageKm', { min: 0 });
-
-    requiredText(nextDraft.exteriorColor, 'exteriorColor');
-    requiredText(nextDraft.interiorColor, 'interiorColor');
+    optionalNumber(nextDraft.enginePowerHp, 'enginePowerHp', { min: 1 });
+    optionalNumber(nextDraft.seats, 'seats', { min: 1 });
+    optionalNumber(nextDraft.doors, 'doors', { min: 2 });
+    optionalNumber(nextDraft.mileageKm, 'mileageKm', { min: 0 });
 
     requiredNumber(nextDraft.accidentsCount ?? 0, 'accidentsCount', { min: 0 });
     requiredNumber(nextDraft.ownersCount ?? 0, 'ownersCount', { min: 0 });
@@ -977,17 +992,29 @@ function CarEditorModal({
   const save = async () => {
     const nextErrors = validateDraft(draft);
     setSubmitted(true);
-    if (Object.keys(nextErrors).length) return;
+    if (Object.keys(nextErrors).length) {
+      setSaveError(t('dashboard.form.requiredFields'));
+      if (saveErrorTimerRef.current) window.clearTimeout(saveErrorTimerRef.current);
+      saveErrorTimerRef.current = window.setTimeout(() => setSaveError(''), 4000);
+      return;
+    }
     setSaving(true);
     setSaveError('');
     const imageIds = draft.imageIds ?? [];
     const coverId = draft.coverImageId || imageIds[0] || '';
+    const optionalNumberOrUndefined = (value?: number) => (value && value > 0 ? value : undefined);
     try {
       await onSave({
         ...draft,
         isForRent: profileType === 'rent',
         isForSale: profileType === 'buy',
         color: draft.exteriorColor || draft.color,
+        enginePowerHp: optionalNumberOrUndefined(draft.enginePowerHp),
+        seats: optionalNumberOrUndefined(draft.seats) ?? 0,
+        doors: optionalNumberOrUndefined(draft.doors) ?? 0,
+        mileageKm: optionalNumberOrUndefined(draft.mileageKm) ?? 0,
+        fees: optionalNumberOrUndefined(draft.fees),
+        taxes: optionalNumberOrUndefined(draft.taxes),
         imageIds,
         coverImageId: coverId || undefined,
         imageUrl: draft.imageUrl || '',
@@ -998,6 +1025,8 @@ function CarEditorModal({
     } catch (err) {
       console.error('Failed to save car', err);
       setSaveError(err instanceof Error ? err.message : 'Failed to save car');
+      if (saveErrorTimerRef.current) window.clearTimeout(saveErrorTimerRef.current);
+      saveErrorTimerRef.current = window.setTimeout(() => setSaveError(''), 4000);
     } finally {
       setSaving(false);
     }
@@ -1011,10 +1040,13 @@ function CarEditorModal({
             <p className="owner-modal__title">{t('dashboard.form.title')}</p>
             <p className="muted">{t('dashboard.form.subtitle')}</p>
           </div>
-          <button className="owner-mini" type="button" onClick={onClose}>
-            {t('dashboard.form.close')}
-          </button>
+          <div className="owner-modal__head-actions">
+            <button className="owner-mini" type="button" onClick={onClose}>
+              {t('dashboard.form.close')}
+            </button>
+          </div>
         </div>
+        {saveError && <div className="owner-toast" role="status">{saveError}</div>}
 
         <div className="owner-form">
           <div className="owner-form__grid">
@@ -1113,13 +1145,18 @@ function CarEditorModal({
 
           <div className="owner-form__grid">
             <Field label={t('dashboard.form.enginePower')} error={errors.enginePowerHp}>
-              <input
-                type="number"
-                value={draft.enginePowerHp ?? 0}
-                onChange={(e) => setField('enginePowerHp', Number(e.target.value))}
-                min={0}
-                onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
-              />
+              <div className="owner-field__with-suffix">
+                <input
+                  type="number"
+                  value={draft.enginePowerHp || ''}
+                  onChange={(e) =>
+                    setField('enginePowerHp', e.target.value === '' ? undefined : Number(e.target.value))
+                  }
+                  min={0}
+                  onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
+                />
+                <span className="owner-field__suffix" aria-hidden="true">hp</span>
+              </div>
             </Field>
             <Field label={t('dashboard.form.engineVolume')} error={errors.engineVolumeL}>
               <input
@@ -1134,11 +1171,46 @@ function CarEditorModal({
           </div>
 
           <div className="owner-form__grid">
+            <Field label={t('dashboard.form.mileage')} error={errors.mileageKm}>
+              <div className="owner-field__with-suffix">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={formatNumberInput(draft.mileageKm)}
+                  onChange={(e) => setField('mileageKm', parseNumberInput(e.target.value))}
+                  onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
+                />
+                <span className="owner-field__suffix" aria-hidden="true">km</span>
+              </div>
+            </Field>
+
+            <Field
+              label={profileType === 'rent' ? t('dashboard.form.pricePerDay') : t('dashboard.form.salePrice')}
+              error={errors.price}
+            >
+              <div className="owner-field__with-suffix">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={formatNumberInput(profileType === 'rent' ? draft.rentPricePerDay : draft.salePrice)}
+                  onChange={(e) => {
+                    const next = parseNumberInput(e.target.value);
+                    if (profileType === 'rent') setField('rentPricePerDay', next);
+                    else setField('salePrice', next);
+                  }}
+                  onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
+                />
+                <span className="owner-field__suffix" aria-hidden="true">€</span>
+              </div>
+            </Field>
+          </div>
+
+          <div className="owner-form__grid">
             <Field label={t('dashboard.form.seats')} error={errors.seats}>
               <input
                 type="number"
-                value={draft.seats}
-                onChange={(e) => setField('seats', Number(e.target.value))}
+                value={draft.seats || ''}
+                onChange={(e) => setField('seats', e.target.value === '' ? 0 : Number(e.target.value))}
                 min={1}
                 onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
               />
@@ -1146,8 +1218,8 @@ function CarEditorModal({
             <Field label={t('dashboard.form.doors')} error={errors.doors}>
               <input
                 type="number"
-                value={draft.doors}
-                onChange={(e) => setField('doors', Number(e.target.value))}
+                value={draft.doors || ''}
+                onChange={(e) => setField('doors', e.target.value === '' ? 0 : Number(e.target.value))}
                 min={2}
                 onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
               />
@@ -1156,7 +1228,7 @@ function CarEditorModal({
 
           <div className="owner-form__grid">
             <Field label={t('dashboard.form.exteriorColor')} error={errors.exteriorColor}>
-              <select value={draft.exteriorColor} onChange={(e) => setField('exteriorColor', e.target.value)}>
+              <select value={draft.exteriorColor ?? ''} onChange={(e) => setField('exteriorColor', e.target.value)}>
                 <option value="">{t('dashboard.form.select')}</option>
                 {colorOptions.map((c) => (
                   <option key={c} value={c}>
@@ -1166,7 +1238,7 @@ function CarEditorModal({
               </select>
             </Field>
             <Field label={t('dashboard.form.interiorColor')} error={errors.interiorColor}>
-              <select value={draft.interiorColor} onChange={(e) => setField('interiorColor', e.target.value)}>
+              <select value={draft.interiorColor ?? ''} onChange={(e) => setField('interiorColor', e.target.value)}>
                 <option value="">{t('dashboard.form.select')}</option>
                 {colorOptions.map((c) => (
                   <option key={c} value={c}>
@@ -1177,92 +1249,16 @@ function CarEditorModal({
             </Field>
           </div>
 
-          <Field label={t('dashboard.form.mileage')} error={errors.mileageKm}>
-            <input
-              type="number"
-              value={draft.mileageKm}
-              onChange={(e) => setField('mileageKm', Number(e.target.value))}
-              min={0}
-              onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
-            />
-          </Field>
-
-          <Field label={profileType === 'rent' ? t('dashboard.form.pricePerDay') : t('dashboard.form.salePrice')} error={errors.price}>
-            <input
-              type="number"
-              value={profileType === 'rent' ? draft.rentPricePerDay ?? '' : draft.salePrice ?? ''}
-              onChange={(e) => {
-                const next = e.target.value === '' ? undefined : Number(e.target.value);
-                if (profileType === 'rent') setField('rentPricePerDay', next);
-                else setField('salePrice', next);
-              }}
-              min={0}
-              onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
-            />
-          </Field>
-
-          <div className="owner-form__grid">
-            <Field label={t('dashboard.form.accidents')} error={errors.accidentsCount}>
-              <select
-                value={(draft.accidentsCount ?? 0) >= 5 ? '5+' : String(draft.accidentsCount ?? 0)}
-                onChange={(e) => setField('accidentsCount', e.target.value === '5+' ? 5 : Number(e.target.value))}
-              >
-                {accidentsOptions.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t('dashboard.form.owners')} error={errors.ownersCount}>
-              <select
-                value={(draft.ownersCount ?? 1) >= 5 ? '5+' : String(draft.ownersCount ?? 1)}
-                onChange={(e) => setField('ownersCount', e.target.value === '5+' ? 5 : Number(e.target.value))}
-              >
-                {ownersOptions.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </div>
-
-          <Field label={t('dashboard.form.serviceHistory')} error={errors.serviceHistory}>
-            <input value={draft.serviceHistory ?? ''} onChange={(e) => setField('serviceHistory', e.target.value)} />
-          </Field>
-
           <Field label={t('dashboard.form.description')} error={errors.description}>
             <textarea value={draft.description ?? ''} onChange={(e) => setField('description', e.target.value)} rows={4} />
           </Field>
-
-          <div className="owner-form__grid">
-            <Field label={t('dashboard.form.yearlyInsurance')} error={errors.fees}>
-              <input
-                type="number"
-                value={draft.fees ?? 0}
-                onChange={(e) => setField('fees', Number(e.target.value))}
-                min={0}
-                onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
-              />
-            </Field>
-            <Field label={t('dashboard.form.yearlyTaxes')} error={errors.taxes}>
-              <input
-                type="number"
-                value={draft.taxes ?? 0}
-                onChange={(e) => setField('taxes', Number(e.target.value))}
-                min={0}
-                onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
-              />
-            </Field>
-          </div>
 
           <div className="owner-address">
             <div className="owner-address__top">
               <div>
                 <p className="owner-options__title">{t('dashboard.form.addressTitle')}</p>
                 {!useCustomAddress && (
-                  <p className="muted">{t('dashboard.form.addressHint', { address: ownerAddress.address })}</p>
+                  <p className="muted">{t('dashboard.form.addressHint')}</p>
                 )}
               </div>
               <label className="owner-check">
@@ -1319,10 +1315,13 @@ function CarEditorModal({
             )}
 
             {!useCustomAddress && (
-              <Field label={t('dashboard.form.address')} error={errors.address}>
-                <input value={draft.location.fullAddress || ownerAddress.address} readOnly />
-              </Field>
+              <label className="owner-field owner-field--no-label">
+                <span>{t('dashboard.form.address')}</span>
+                <input value={ownerAddress.address} readOnly />
+                {errors.address && <p className="owner-field__error">{errors.address}</p>}
+              </label>
             )}
+
           </div>
 
           <ImagesField
@@ -1355,15 +1354,6 @@ function CarEditorModal({
               />
               <span>{t('dashboard.form.availableNow')}</span>
             </label>
-            <label className="owner-check">
-              <input
-                type="checkbox"
-                checked={draft.availableNow && (draft.listingStatus ?? 'active') !== 'inactive'}
-                disabled={!draft.availableNow}
-                onChange={(e) => setField('listingStatus', e.target.checked ? 'active' : 'inactive')}
-              />
-              <span>{t('dashboard.form.active')}</span>
-            </label>
           </div>
 
           {!draft.availableNow && (
@@ -1381,6 +1371,37 @@ function CarEditorModal({
 
           <div className="owner-options">
             <p className="owner-options__title">{t('dashboard.form.options')}</p>
+            <div className="owner-options__grid owner-options__grid--select">
+              {selectOptionGroups.map((group) => {
+                const selected = resolveGroupItems(group.titleKey)?.[0] ?? '';
+                return (
+                  <label key={group.titleKey} className="owner-field">
+                    <span>{t(group.titleKey)}</span>
+                    <select
+                      value={selected}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setDraft((d) => {
+                          const groups = d.optionsGroups ?? [];
+                          const rest = groups.filter(
+                            (g) => g.title !== group.titleKey && optionGroupTitleLookup.get(g.title) !== group.titleKey
+                          );
+                          const nextItems = value ? [value] : [];
+                          return { ...d, optionsGroups: [...rest, { title: group.titleKey, items: nextItems }] };
+                        });
+                      }}
+                    >
+                      <option value="">{t('dashboard.form.select')}</option>
+                      {group.options.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {t(opt.labelKey)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                );
+              })}
+            </div>
             {featureOptionGroups.map((group) => {
               const current = resolveGroupItems(group.titleKey);
               return (
@@ -1418,42 +1439,69 @@ function CarEditorModal({
                 </div>
               );
             })}
-            <div className="owner-options__grid owner-options__grid--select">
-              {selectOptionGroups.map((group) => {
-                const selected = resolveGroupItems(group.titleKey)?.[0] ?? '';
-                return (
-                  <label key={group.titleKey} className="owner-field">
-                    <span>{t(group.titleKey)}</span>
-                    <select
-                      value={selected}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setDraft((d) => {
-                          const groups = d.optionsGroups ?? [];
-                          const rest = groups.filter(
-                            (g) => g.title !== group.titleKey && optionGroupTitleLookup.get(g.title) !== group.titleKey
-                          );
-                          const nextItems = value ? [value] : [];
-                          return { ...d, optionsGroups: [...rest, { title: group.titleKey, items: nextItems }] };
-                        });
-                      }}
-                    >
-                      <option value="">{t('dashboard.form.select')}</option>
-                      {group.options.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {t(opt.labelKey)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                );
-              })}
+            <div className="owner-form__grid owner-form__grid--spaced">
+              <Field label={t('dashboard.form.accidents')} error={errors.accidentsCount}>
+                <select
+                  value={(draft.accidentsCount ?? 0) >= 5 ? '5+' : String(draft.accidentsCount ?? 0)}
+                  onChange={(e) => setField('accidentsCount', e.target.value === '5+' ? 5 : Number(e.target.value))}
+                >
+                  {accidentsOptions.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label={t('dashboard.form.owners')} error={errors.ownersCount}>
+                <select
+                  value={(draft.ownersCount ?? 1) >= 5 ? '5+' : String(draft.ownersCount ?? 1)}
+                  onChange={(e) => setField('ownersCount', e.target.value === '5+' ? 5 : Number(e.target.value))}
+                >
+                  {ownersOptions.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            </div>
+
+            <div className="owner-field__spaced">
+              <Field label={t('dashboard.form.serviceHistory')} error={errors.serviceHistory}>
+                <input value={draft.serviceHistory ?? ''} onChange={(e) => setField('serviceHistory', e.target.value)} />
+              </Field>
+            </div>
+
+            <div className="owner-form__grid owner-form__grid--spaced">
+            <Field label={t('dashboard.form.yearlyInsurance')} error={errors.fees}>
+              <div className="owner-field__with-suffix">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={formatNumberInput(draft.fees)}
+                  onChange={(e) => setField('fees', parseNumberInput(e.target.value))}
+                  onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
+                />
+                <span className="owner-field__suffix" aria-hidden="true">€</span>
+              </div>
+            </Field>
+            <Field label={t('dashboard.form.yearlyTaxes')} error={errors.taxes}>
+              <div className="owner-field__with-suffix">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={formatNumberInput(draft.taxes)}
+                  onChange={(e) => setField('taxes', parseNumberInput(e.target.value))}
+                  onWheel={(e) => (e.currentTarget as HTMLInputElement).blur()}
+                />
+                <span className="owner-field__suffix" aria-hidden="true">€</span>
+              </div>
+            </Field>
             </div>
           </div>
 
       <div className="owner-form__actions">
         {errors.limit && <p className="owner-field__error">{errors.limit}</p>}
-        {saveError && <p className="owner-field__error">{saveError}</p>}
         <button className="owner-mini" type="button" onClick={onClose}>
           {t('dashboard.form.cancel')}
         </button>

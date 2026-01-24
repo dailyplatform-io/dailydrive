@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { CarFrontIcon, CloseIcon, GlobeIcon, LogOutIcon, MenuIcon } from './Icons';
+import { CarFrontIcon, CloseIcon, GlobeIcon, LogInIcon, LogOutIcon, MenuIcon } from './Icons';
 import { useLanguage } from '../context/LanguageContext';
 import { features } from '../config/features';
 import type { Language } from '../i18n/translations';
@@ -34,6 +34,7 @@ export const Navbar: React.FC = () => {
   const isAuctionPage = location.pathname.startsWith('/auctions') || location.pathname.startsWith('/auction/');
 
   const isOwnerDashboard = location.pathname.startsWith('/dashboard');
+  const showLoginButton = !isOwnerDashboard && !isSellerSlug;
   const ownerLinks = useMemo<OwnerNavItem[]>(() => {
     if (!isOwnerDashboard) return [];
     const base: OwnerNavItem[] = [
@@ -231,6 +232,19 @@ export const Navbar: React.FC = () => {
           );
         })}
 
+        {showLoginButton && (
+          <NavLink
+            to="/login"
+            className={({ isActive }) => `navbar__link navbar__link--login ${isActive ? 'is-active' : ''}`}
+            onClick={() => {
+              setOpen(false);
+              setLangOpen(false);
+            }}
+          >
+            <LogInIcon size={16} className="navbar__link-icon" />
+            {t('login.submit')}
+          </NavLink>
+        )}
         <div className="navbar__lang-dropdown" ref={langMenuRef}>
           <button
             className="navbar__lang-button"
