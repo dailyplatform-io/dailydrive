@@ -5,6 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import type { Language } from '../i18n/translations';
 import { features } from '../config/features';
 import { authService } from '../service/authService';
+import { reverseGeocodeAddress } from '../service/geocodingService';
 import { validatePassword } from '../utils/passwordValidator';
 import { MapEmbed } from '../components/MapEmbed';
 import { PhoneInput } from '../components/PhoneInput';
@@ -141,11 +142,14 @@ export const OwnerRegister: React.FC = () => {
       }
 
       navigator.geolocation.getCurrentPosition(
-        (pos) => {
+        async (pos) => {
           setLat(String(pos.coords.latitude));
           setLng(String(pos.coords.longitude));
           setUseLocationInstead(true);
           setAddress(''); // Clear manual address when using location
+          const reversed = await reverseGeocodeAddress(pos.coords.latitude, pos.coords.longitude);
+          if (reversed?.fullAddress) setAddress(reversed.fullAddress);
+          if (reversed?.city) setCity(reversed.city);
         },
         (error) => {
           console.error('Geolocation error:', error);

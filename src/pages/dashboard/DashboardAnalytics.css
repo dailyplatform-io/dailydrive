@@ -12,7 +12,8 @@
 .dashboard-analytics__card {
   background: #ffffff;
   border: 1px solid #e6eef8;
-  border-radius: 16px;
+  border-radius: 40px;
+  corner-shape: squircle;
   padding: 16px;
   box-shadow: 0 12px 30px rgba(24, 49, 86, 0.08);
 }

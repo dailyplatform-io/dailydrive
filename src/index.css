@@ -4,6 +4,7 @@
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color: #1f2b3d;
   background-color: #f5f7fb;
+  --card-squircle: 22px;
 }
 
 * {

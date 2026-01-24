@@ -9,6 +9,11 @@ type NominatimResult = {
   address?: Record<string, string>;
 };
 
+type NominatimReverseResult = {
+  display_name?: string;
+  address?: Record<string, string>;
+};
+
 /**
  * Default coordinates for Albania (Tirana)
  */
@@ -86,6 +91,50 @@ function getAddressVariations(address: string, city?: string): string[] {
   
   // Remove duplicates while preserving order
   return Array.from(new Set(variations));
+}
+
+function getCityFromAddress(address?: Record<string, string>) {
+  if (!address) return '';
+  return address.city || address.town || address.village || address.county || address.state || '';
+}
+
+function formatCompactAddress(address?: Record<string, string>, displayName?: string) {
+  if (address) {
+    const road =
+      address.road ||
+      address.pedestrian ||
+      address.footway ||
+      address.cycleway ||
+      address.path ||
+      address.residential ||
+      '';
+    const locality =
+      address.village ||
+      address.hamlet ||
+      address.suburb ||
+      address.neighbourhood ||
+      address.quarter ||
+      '';
+    const city =
+      address.city ||
+      address.town ||
+      address.village ||
+      address.municipality ||
+      address.county ||
+      address.state ||
+      address.region ||
+      '';
+    const country = address.country || '';
+    const parts = [road, locality, city, country].filter(Boolean);
+    if (parts.length >= 2) return parts.join(', ');
+  }
+
+  if (displayName) {
+    const trimmed = displayName.split(',').slice(0, 2).map((part) => part.trim()).filter(Boolean);
+    if (trimmed.length) return trimmed.join(', ');
+  }
+
+  return '';
 }
 
 /**
@@ -176,6 +225,41 @@ export async function geocodeAddress(
 
   console.error(`[Geocoding] Failed to geocode address after trying ${variations.length} variations. Address: "${address}", City: "${city || 'N/A'}".`);
   return null;
+}
+
+/**
+ * Reverse geocode coordinates to a compact address and city.
+ */
+export async function reverseGeocodeAddress(
+  lat: number,
+  lng: number
+): Promise<{ fullAddress: string; city: string } | null> {
+  try {
+    const url = new URL('https://nominatim.openstreetmap.org/reverse');
+    url.searchParams.set('format', 'jsonv2');
+    url.searchParams.set('addressdetails', '1');
+    url.searchParams.set('lat', String(lat));
+    url.searchParams.set('lon', String(lng));
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        Accept: 'application/json',
+        'User-Agent': 'DailyRide/1.0 (https://github.com/juxhinxhihani/dailyride)',
+      },
+    });
+
+    if (!response.ok) return null;
+
+    const result = (await response.json()) as NominatimReverseResult;
+    const fullAddress = formatCompactAddress(result.address, result.display_name);
+    const city = getCityFromAddress(result.address);
+
+    if (!fullAddress && !city) return null;
+    return { fullAddress, city };
+  } catch (error) {
+    console.error('[Geocoding] Reverse geocode failed', error);
+    return null;
+  }
 }
 
 /**

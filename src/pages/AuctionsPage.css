@@ -110,7 +110,8 @@
 .auction-card {
   background: #0f152d;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
+  border-radius: 40px;
+  corner-shape: squircle;
   display: grid;
   grid-template-columns: 160px 1fr;
   overflow: hidden;
@@ -179,7 +180,8 @@
 .auction-detail {
   background: #0f152d;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 18px;
+  border-radius: 40px;
+  corner-shape: squircle;
   padding: 1.2rem;
   display: flex;
   flex-direction: column;

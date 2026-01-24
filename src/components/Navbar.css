@@ -276,6 +276,13 @@
   gap: 6px;
 }
 
+.navbar__link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
 .navbar__link--logout {
   color: #dc3545;
 }
@@ -292,6 +299,13 @@
 
 .navbar__link:hover {
   color: #2f80ed;
+}
+
+.navbar__link--login {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: -2px;
 }
 
 .navbar__toggle {

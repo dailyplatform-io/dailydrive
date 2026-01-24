@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
+import L, { type LatLngExpression, type LeafletMouseEvent } from 'leaflet';
 import markerIcon2xUrl from 'leaflet/dist/images/marker-icon-2x.png?url';
 import markerIconUrl from 'leaflet/dist/images/marker-icon.png?url';
 import markerShadowUrl from 'leaflet/dist/images/marker-shadow.png?url';
@@ -30,6 +30,45 @@ function getCityFromAddress(address?: Record<string, string>) {
   return address.city || address.town || address.village || address.county || address.state || '';
 }
 
+function formatCompactAddress(address?: Record<string, string>, displayName?: string) {
+  if (address) {
+    const road =
+      address.road ||
+      address.pedestrian ||
+      address.footway ||
+      address.cycleway ||
+      address.path ||
+      address.residential ||
+      '';
+    const locality =
+      address.village ||
+      address.hamlet ||
+      address.suburb ||
+      address.neighbourhood ||
+      address.quarter ||
+      '';
+    const city =
+      address.city ||
+      address.town ||
+      address.village ||
+      address.municipality ||
+      address.county ||
+      address.state ||
+      address.region ||
+      '';
+    const country = address.country || '';
+    const parts = [road, locality, city, country].filter(Boolean);
+    if (parts.length >= 2) return parts.join(', ');
+  }
+
+  if (displayName) {
+    const trimmed = displayName.split(',').slice(0, 2).map((part) => part.trim()).filter(Boolean);
+    if (trimmed.length) return trimmed.join(', ');
+  }
+
+  return '';
+}
+
 async function nominatimSearch(query: string, signal: AbortSignal): Promise<Suggestion[]> {
   const url = new URL('https://nominatim.openstreetmap.org/search');
   url.searchParams.set('format', 'jsonv2');
@@ -54,7 +93,7 @@ async function nominatimReverse(lat: number, lng: number, signal: AbortSignal) {
 
 function MapClicker({ onPick }: { onPick: (pos: { lat: number; lng: number }) => void }) {
   useMapEvents({
-    click: (e) => onPick({ lat: e.latlng.lat, lng: e.latlng.lng }),
+    click: (e: LeafletMouseEvent) => onPick({ lat: e.latlng.lat, lng: e.latlng.lng }),
   });
   return null;
 }
@@ -136,7 +175,9 @@ export function AddressPicker({
     setLoading(true);
     try {
       const reversed = await nominatimReverse(next.lat, next.lng, controller.signal);
-      const fullAddress = reversed?.display_name || `${next.lat.toFixed(5)}, ${next.lng.toFixed(5)}`;
+      const fullAddress =
+        formatCompactAddress(reversed?.address, reversed?.display_name) ||
+        `${next.lat.toFixed(5)}, ${next.lng.toFixed(5)}`;
       const city = getCityFromAddress(reversed?.address) || value.city || '';
       onChange({ fullAddress, city, lat: next.lat, lng: next.lng });
     } finally {
@@ -171,12 +212,13 @@ export function AddressPicker({
                     const lat = Number(s.lat);
                     const lng = Number(s.lon);
                     const city = getCityFromAddress(s.address) || value.city || '';
-                    onChange({ fullAddress: s.display_name, city, lat, lng });
-                    setQuery(s.display_name);
+                    const fullAddress = formatCompactAddress(s.address, s.display_name) || s.display_name;
+                    onChange({ fullAddress, city, lat, lng });
+                    setQuery(fullAddress);
                     setOpen(false);
                   }}
                 >
-                  {s.display_name}
+                  {formatCompactAddress(s.address, s.display_name) || s.display_name}
                 </button>
               ))}
             </div>
@@ -190,10 +232,14 @@ export function AddressPicker({
       </div>
 
       <div className="address-picker__map">
-        <MapContainer center={[position.lat, position.lng]} zoom={15} scrollWheelZoom={true}>
+        <MapContainer
+          center={[position.lat, position.lng] as LatLngExpression}
+          zoom={15}
+          scrollWheelZoom={true}
+        >
           <TileLayer attribution="" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <MapClicker onPick={pickCoords} />
-          <Marker position={[position.lat, position.lng]} icon={defaultMarkerIcon} />
+          <Marker position={[position.lat, position.lng] as LatLngExpression} icon={defaultMarkerIcon} />
         </MapContainer>
         <div className="address-picker__mapHint">
           {mapHint}{loading ? '…' : ''}

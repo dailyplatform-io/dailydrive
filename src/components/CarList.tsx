@@ -41,12 +41,50 @@ export const CarList: React.FC<CarListProps> = ({
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
   const { t } = useLanguage();
+
+  useEffect(() => {
+    if (!navigator.geolocation || userCoords) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+      },
+      () => {
+        setUserCoords(null);
+      },
+      { enableHighAccuracy: false, maximumAge: 300000, timeout: 8000 }
+    );
+  }, [userCoords]);
 
   const sortedCars = useMemo(() => {
     const copy = [...cars];
-    const rentalOrSale = (car: Car) =>
-      car.rentPricePerDay ?? car.rentPricePerHour ?? car.salePrice ?? Number.POSITIVE_INFINITY;
+    const rentalOrSale = (car: Car) => {
+      const raw = mode === 'buy'
+        ? car.salePrice
+        : car.rentPricePerDay ?? car.rentPricePerHour;
+      const price = typeof raw === 'number' ? raw : Number(raw);
+      return Number.isFinite(price) && price > 0 ? price : Number.POSITIVE_INFINITY;
+    };
+    const distanceValue = (car: Car) => {
+      const distance = typeof car.distanceMeters === 'number' ? car.distanceMeters : Number(car.distanceMeters);
+      return Number.isFinite(distance) && distance > 0 ? distance : Number.POSITIVE_INFINITY;
+    };
+    const distanceFromUser = (car: Car) => {
+      if (!userCoords) return distanceValue(car);
+      const lat = car.location?.lat;
+      const lng = car.location?.lng;
+      if (typeof lat !== 'number' || typeof lng !== 'number') return distanceValue(car);
+      const toRad = (value: number) => (value * Math.PI) / 180;
+      const r = 6371000;
+      const dLat = toRad(lat - userCoords.lat);
+      const dLng = toRad(lng - userCoords.lng);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(userCoords.lat)) * Math.cos(toRad(lat)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return r * c;
+    };
     switch (sort) {
       case 'lowest':
         return copy.sort((a, b) => rentalOrSale(a) - rentalOrSale(b));
@@ -55,9 +93,9 @@ export const CarList: React.FC<CarListProps> = ({
       case 'newest':
         return copy.sort((a, b) => b.year - a.year);
       default:
-        return copy.sort((a, b) => a.distanceMeters - b.distanceMeters);
+        return copy.sort((a, b) => distanceFromUser(a) - distanceFromUser(b));
     }
-  }, [cars, sort]);
+  }, [cars, mode, sort, userCoords]);
 
   useEffect(() => {
     if (!notifyOpen) return;
