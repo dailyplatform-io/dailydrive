@@ -91,7 +91,12 @@ export const CarList: React.FC<CarListProps> = ({
       case 'highest':
         return copy.sort((a, b) => rentalOrSale(b) - rentalOrSale(a));
       case 'newest':
-        return copy.sort((a, b) => b.year - a.year);
+        return copy.sort((a, b) => {
+          const aTime = Date.parse(a.createdAt ?? '') || 0;
+          const bTime = Date.parse(b.createdAt ?? '') || 0;
+          if (aTime !== bTime) return bTime - aTime;
+          return b.year - a.year;
+        });
       default:
         return copy.sort((a, b) => distanceFromUser(a) - distanceFromUser(b));
     }
