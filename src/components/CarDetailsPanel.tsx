@@ -9,6 +9,7 @@ import {
   NavigationIcon,
   SparklesIcon,
   PhoneIcon,
+  ShareIcon,
   WhatsAppIcon,
 } from './Icons';
 import './CarDetailsPanel.css';
@@ -119,6 +120,23 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({
     const message = t('details.whatsappMessage', { link: carLink });
     return `https://wa.me/${digitsOnly}?text=${encodeURIComponent(message)}`;
   }, [car?.id, car?.ownerPhone, t]);
+
+  const handleShare = async () => {
+    if (!car?.id) return;
+    const path = window.location.pathname.startsWith('/auction/') ? `/auction/${car.id}` : `/cars/${car.id}`;
+    const url = `${window.location.origin}${path}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `${car.brand} ${car.model}`, url });
+        return;
+      }
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+      }
+    } catch (error) {
+      console.error('Share failed', error);
+    }
+  };
 
   const textOrDash = (value?: string | null) => {
     if (!value) return '—';
@@ -780,6 +798,9 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({
                     <span className="cta-label">{t('common.whatsapp')}</span>
                   </button>
                 )}
+                <button className="primary-btn share-btn" type="button" onClick={handleShare} aria-label="Share car">
+                  <ShareIcon size={16} className="share-btn__icon" />
+                </button>
               </div>
             </div>
             <p className="muted">{car.model} — {car.year}</p>
@@ -812,6 +833,9 @@ export const CarDetailsPanel: React.FC<CarDetailsPanelProps> = ({
                 <span className="cta-label">{t('common.whatsapp')}</span>
               </button>
             )}
+            <button className="primary-btn share-btn" type="button" onClick={handleShare} aria-label="Share car">
+              <ShareIcon size={16} className="share-btn__icon" />
+            </button>
           </div>
         </div>
       </div>

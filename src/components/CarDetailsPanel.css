@@ -717,6 +717,18 @@
   box-shadow: 0 12px 24px rgba(18, 140, 71, 0.24);
 }
 
+.primary-btn.share-btn {
+  background: #f8fafc;
+  color: #1f2b3d;
+  border: 1px solid #dfe6f0;
+  box-shadow: none;
+  padding: 8px;
+}
+
+.share-btn__icon {
+  color: #1f2b3d;
+}
+
 .whatsapp-btn {
   display: inline-flex;
   align-items: center;
@@ -751,10 +763,13 @@
     gap: 8px;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: nowrap;
   }
 
   .cta-row.cta-row--mobile {
     display: flex;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
   }
 
   .cta-row.cta-row--desktop {
