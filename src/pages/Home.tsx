@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CarList } from '../components/CarList';
 import { FilterSidebar } from '../components/FilterSidebar';
-import { useLanguage } from '../context/LanguageContext';
+import { LandingPage } from '../components/LandingPage';
 import { features, getDefaultMode } from '../config/features';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { useFilters } from '../hooks/useFilters';
@@ -22,7 +22,6 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
   const isTablet = useBreakpoint(1200);
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useLanguage();
   const rentEnabled = features.rent;
   const buyEnabled = features.buy;
   const { toggleFavorite, isFavorite } = useFavorites();
@@ -139,8 +138,6 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
     navigate(nextMode === 'rent' ? '/rent' : '/buy', { replace: true });
   };
 
-  const rentHighlights = useMemo(() => allCars.filter((c) => c.isForRent).slice(0, 3), [allCars]);
-  const buyHighlights = useMemo(() => allCars.filter((c) => c.isForSale).slice(0, 8), [allCars]);
   const totals = useMemo(
     () => {
       const rentCars = allCars.filter((c) => c.isForRent).length;
@@ -173,125 +170,13 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
 
   if (variant === 'home') {
     return (
-      <main className="layout layout--home">
-        <section className="home-hero">
-          <div className="hero-copy">
-            <h1>{t(rentEnabled && buyEnabled ? 'home.hero.title' : 'home.hero.title.general')}</h1>
-            <p className="hero-subtitle">
-              {t(rentEnabled && buyEnabled ? 'home.hero.subtitle' : 'home.hero.subtitle.general')}
-            </p>
-            <div className="hero-actions">
-              {rentEnabled && (
-                <button className="hero-button hero-button--primary" onClick={() => handleModeChange('rent')}>
-                  {t('home.hero.browseRentals')}
-                </button>
-              )}
-              {buyEnabled && (
-                <button className="hero-button hero-button--ghost" onClick={() => handleModeChange('buy')}>
-                  {t('home.hero.shopToOwn')}
-                </button>
-              )}
-            </div>
-
-            <div className="hero-extras">
-              <p className="hero-extras__title">{t('home.hero.popular')}</p>
-              <div className="hero-chips">
-                {['home.hero.chip.suv', 'home.hero.chip.sedan', 'home.hero.chip.electric', 'home.hero.chip.hybrid'].map(
-                  (key) => (
-                    <button
-                      key={key}
-                      type="button"
-                      className="hero-chip"
-                      onClick={() => navigate(buyEnabled ? '/buy' : rentEnabled ? '/rent' : '/')}
-                    >
-                      {t(key)}
-                    </button>
-                  )
-                )}
-              </div>
-            </div>
-
-            <div className="hero-stats">
-              <Stat label={t('home.hero.statBuy')} value={t('home.hero.valueCars', { count: `${totals.total}+` })} />
-            </div>
-          </div>
-          {buyEnabled && (
-            <div className="hero-panel">
-              <div className="panel-head">
-                <div>
-                  <p className="panel-kicker">{t('home.spotlight.kicker')}</p>
-                  <p className="panel-title">{t('home.spotlight.title')}</p>
-                </div>
-                <span className="panel-tag">{t('home.spotlight.tag')}</span>
-              </div>
-              <div className={`panel-grid panel-grid--wide panel-grid--count-${buyHighlights.length}`}>
-                {buyHighlights.map((car) => (
-                  <div
-                    key={car.id}
-                    className="panel-card panel-card--accent"
-                    onClick={() => navigate(`/cars/${car.id}`)}
-                  >
-                    <p className="panel-pill panel-pill--green">{t('home.spotlight.badgeBuy')}</p>
-                    <div className="panel-card__content">
-                      <img src={car.imageUrl} alt={car.model} />
-                      <div>
-                        <p className="panel-name">
-                          {car.brand} {car.model}
-                        </p>
-                        {car.subtitle && <p className="panel-meta">{car.subtitle}</p>}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
-
-        <section className="home-collections">
-          {rentEnabled && (
-            <CollectionCard
-              title={t('home.collection.rent.title')}
-              badge={t('home.collection.rent.badge')}
-              tone="blue"
-              description={t('home.collection.rent.desc')}
-              countLabel={t('home.collection.count', { count: totals.rent })}
-              onClick={() => handleModeChange('rent')}
-            />
-          )}
-          {buyEnabled && (
-            <CollectionCard
-              title={t('home.collection.buy.title')}
-              badge={t('home.collection.buy.badge')}
-              tone="green"
-              description={t('home.collection.buy.desc')}
-              countLabel={t('home.collection.count', { count: totals.buy })}
-              onClick={() => handleModeChange('buy')}
-            />
-          )}
-        </section>
-
-        <section className="home-assurances">
-          <div className="assurance-card">
-            <p className="assurance-title">{t('home.assurance.title')}</p>
-            <ul className="assurance-list">
-              {features.rent && <li>{t('home.assurance.li1')}</li>}
-              <li>{t('home.assurance.li2')}</li>
-              <li>{t('home.assurance.li3')}</li>
-              <li>{t('home.assurance.li4')}</li>
-            </ul>
-          </div>
-          <div className="assurance-card assurance-card--outline">
-            <p className="assurance-title">{t('home.assistance.title')}</p>
-            <p className="assurance-body">{t('home.assistance.body')}</p>
-            <div className="hero-actions">
-              <button className="hero-button hero-button--primary" onClick={() => navigate('/about')}>
-                {t('common.contact')}
-              </button>
-            </div>
-          </div>
-        </section>
-      </main>
+      <LandingPage
+        totalCars={totals.total}
+        rentCars={totals.rent}
+        buyCars={totals.buy}
+        onNavigateToRent={() => handleModeChange('rent')}
+        onNavigateToBuy={() => handleModeChange('buy')}
+      />
     );
   }
 
@@ -333,34 +218,3 @@ export const Home: React.FC<HomeProps> = ({ variant = 'home', defaultMode = 'ren
     </main>
   );
 };
-
-const CollectionCard: React.FC<{
-  title: string;
-  badge: string;
-  tone: 'blue' | 'green';
-  description: string;
-  onClick: () => void;
-  countLabel?: string;
-}> = ({ title, badge, tone, description, onClick, countLabel }) => {
-  const { t } = useLanguage();
-  return (
-    <article className={`collection-card collection-card--${tone}`} onClick={onClick}>
-      <div className="collection-head">
-        <span className={`pill ${tone === 'blue' ? 'pill--blue' : 'pill--green'}`}>{badge}</span>
-        <p className="collection-title">{title}</p>
-        <p className="collection-description">{description}</p>
-      </div>
-      <div className="collection-footer">
-        {countLabel && <span className="collection-count">{countLabel}</span>}
-        <span className="collection-cta">{t('home.collection.cta')}</span>
-      </div>
-    </article>
-  );
-};
-
-const Stat: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div className="hero-stat">
-    <p className="hero-stat__value">{value}</p>
-    <p className="hero-stat__label">{label}</p>
-  </div>
-);
