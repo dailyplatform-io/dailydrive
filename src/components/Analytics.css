@@ -1,0 +1,581 @@
+.analytics-page {
+  padding: 2rem;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+/* Stats Cards */
+.analytics-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.stat-card--tracking {
+  flex-direction: column;
+  gap: 0;
+}
+
+.stat-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.stat-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-card--revenue .stat-card__icon {
+  background: linear-gradient(135deg, rgba(47, 128, 237, 0.1), rgba(47, 128, 237, 0.05));
+  color: #2f80ed;
+}
+
+.stat-card--available .stat-card__icon {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+  color: #10b981;
+}
+
+.stat-card--rented .stat-card__icon {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+  color: #f59e0b;
+}
+
+.stat-card--tracking .stat-card__icon {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
+  color: #8b5cf6;
+}
+
+.stat-card__content {
+  flex: 1;
+}
+
+.stat-card__label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card__value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.2;
+}
+
+/* Live Tracking Card */
+.tracking-map {
+  width: 100%;
+  height: 140px;
+  background: #f9fafb;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.tracking-map__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #d1d5db;
+  gap: 0.5rem;
+}
+
+.tracking-map__placeholder p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.tracking-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tracking-today {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tracking-stats {
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Quick Analytics Chart Section */
+.analytics-chart-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 2rem;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.chart-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+}
+
+.chart-controls {
+  display: flex;
+  gap: 0.5rem;
+  background: #f9fafb;
+  padding: 0.25rem;
+  border-radius: 10px;
+}
+
+.chart-control-btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chart-control-btn:hover {
+  color: #374151;
+}
+
+.chart-control-btn.active {
+  background: white;
+  color: #2f80ed;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.chart-container {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+}
+
+.chart-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 600;
+  min-width: 40px;
+  text-align: right;
+}
+
+.chart-content {
+  flex: 1;
+  position: relative;
+}
+
+.chart-svg {
+  width: 100%;
+  height: 300px;
+}
+
+.chart-x-axis {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.chart-tooltip {
+  position: absolute;
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  min-width: 160px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.chart-tooltip__day {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+.chart-tooltip__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.chart-tooltip__item:last-child {
+  margin-bottom: 0;
+}
+
+.chart-tooltip__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.chart-tooltip__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.chart-tooltip__dot--revenue {
+  background: #2f80ed;
+}
+
+.chart-tooltip__dot--goals {
+  background: #64748b;
+}
+
+.chart-tooltip__value {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Popular Vehicles Section */
+.popular-vehicles-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 1.5rem 0;
+}
+
+.popular-vehicles-table {
+  width: 100%;
+}
+
+.popular-vehicles-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #f3f4f6;
+  margin-bottom: 0.5rem;
+}
+
+.pv-col {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.popular-vehicles-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.popular-vehicle-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  align-items: center;
+}
+
+.popular-vehicle-row:hover {
+  background: #f9fafb;
+}
+
+.pv-vehicle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pv-vehicle-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(47, 128, 237, 0.1), rgba(47, 128, 237, 0.05));
+  color: #2f80ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.5rem;
+}
+
+.pv-vehicle-info {
+  flex: 1;
+}
+
+.pv-vehicle-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.pv-vehicle-price {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.pv-col--type {
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.pv-avg-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: #f3f4f6;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+/* Booking List Section */
+.booking-list-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.booking-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.filter-btn {
+  padding: 0.75rem 1.25rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.booking-table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.booking-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.booking-table thead {
+  background: #f9fafb;
+}
+
+.booking-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.booking-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: all 0.2s ease;
+}
+
+.booking-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.booking-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.booking-table td {
+  padding: 1.25rem 1rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.booking-id {
+  font-weight: 700;
+  color: #111827;
+}
+
+.phone-number {
+  color: #6b7280;
+  font-size: 0.8125rem;
+}
+
+.payment {
+  font-weight: 700;
+  color: #111827;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  text-transform: capitalize;
+}
+
+.status-confirmed {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.status-waiting {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.status-completed {
+  background: rgba(100, 116, 139, 0.1);
+  color: #475569;
+}
+
+.status-canceled {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .analytics-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-card--tracking {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .analytics-page {
+    padding: 1.5rem;
+  }
+
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .popular-vehicle-row {
+    grid-template-columns: 1fr;
+  }
+
+  .popular-vehicles-header {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .analytics-page {
+    padding: 1rem;
+  }
+
+  .analytics-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card--tracking {
+    grid-column: 1;
+  }
+
+  .analytics-chart-section,
+  .popular-vehicles-section,
+  .booking-list-section {
+    padding: 1.5rem;
+  }
+
+  .booking-table-wrapper {
+    overflow-x: scroll;
+  }
+
+  .booking-table {
+    min-width: 900px;
+  }
+}
