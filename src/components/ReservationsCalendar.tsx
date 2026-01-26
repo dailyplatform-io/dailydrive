@@ -8,6 +8,131 @@ import { CalendarReservation, getOwnerCalendarReservations } from '../service/re
 import { ReservationForm } from './ReservationCalendarFolder/ReservationForm';
 import './ReservationsCalendar.css';
 
+const FAKE_RESERVATIONS: CalendarReservation[] = [
+  {
+    id: '1',
+    carId: 'car-1',
+    carBrand: 'BMW',
+    carModel: 'X5',
+    carColor: '#2563eb',
+    renterName: 'John Doe',
+    startDate: '2026-01-20T08:00:00',
+    endDate: '2026-01-25T18:00:00',
+    status: 'Confirmed',
+    totalPrice: 150,
+  },
+  {
+    id: '2',
+    carId: 'car-2',
+    carBrand: 'Tesla',
+    carModel: 'Model 3',
+    carColor: '#10b981',
+    renterName: 'Anna Smith',
+    startDate: '2026-01-20T10:00:00',
+    endDate: '2026-01-25T12:00:00',
+    status: 'Pending',
+    totalPrice: 240,
+  },
+  {
+    id: '3',
+    carId: 'car-1',
+    carBrand: 'BMW',
+    carModel: 'X5',
+    carColor: '#2563eb',
+    renterName: 'Mark Wilson',
+    startDate: '2026-01-21T09:00:00',
+    endDate: '2026-01-25T20:00:00',
+    status: 'InProgress',
+    totalPrice: 390,
+  },
+  {
+    id: '4',
+    carId: 'car-3',
+    carBrand: 'Audi',
+    carModel: 'A6',
+    carColor: '#ef4444',
+    renterName: 'Laura Green',
+    startDate: '2026-01-20T14:00:00',
+    endDate: '2026-01-25T19:00:00',
+    status: 'Confirmed',
+    totalPrice: 120,
+  },
+  {
+    id: '5',
+    carId: 'car-2',
+    carBrand: 'Tesla',
+    carModel: 'Model 3',
+    carColor: '#10b981',
+    renterName: 'Chris Brown',
+    startDate: '2026-01-20T08:00:00',
+    endDate: '2026-01-25T08:00:00',
+    status: 'Completed',
+    totalPrice: 300,
+  },
+  {
+    id: '6',
+    carId: 'car-4',
+    carBrand: 'Mercedes',
+    carModel: 'C-Class',
+    carColor: '#6b7280',
+    renterName: 'Emily Stone',
+    startDate: '2026-01-22T11:00:00',
+    endDate: '2026-01-22T17:00:00',
+    status: 'Confirmed',
+    totalPrice: 110,
+  },
+  {
+    id: '7',
+    carId: 'car-1',
+    carBrand: 'BMW',
+    carModel: 'X5',
+    carColor: '#2563eb',
+    renterName: 'Daniel White',
+    startDate: '2026-01-23T09:00:00',
+    endDate: '2026-01-24T18:00:00',
+    status: 'Pending',
+    totalPrice: 420,
+  },
+  {
+    id: '8',
+    carId: 'car-3',
+    carBrand: 'Audi',
+    carModel: 'A6',
+    carColor: '#ef4444',
+    renterName: 'Sophia Lee',
+    startDate: '2026-01-24T07:00:00',
+    endDate: '2026-01-24T12:00:00',
+    status: 'Cancelled',
+    totalPrice: 0,
+  },
+  {
+    id: '9',
+    carId: 'car-4',
+    carBrand: 'Mercedes',
+    carModel: 'C-Class',
+    carColor: '#6b7280',
+    renterName: 'Michael King',
+    startDate: '2026-01-24T13:00:00',
+    endDate: '2026-01-25T16:00:00',
+    status: 'InProgress',
+    totalPrice: 360,
+  },
+  {
+    id: '10',
+    carId: 'car-2',
+    carBrand: 'Tesla',
+    carModel: 'Model 3',
+    carColor: '#10b981',
+    renterName: 'Olivia Perez',
+    startDate: '2026-01-25T09:00:00',
+    endDate: '2026-01-25T20:00:00',
+    status: 'Confirmed',
+    totalPrice: 190,
+  },
+];
+
+
+
 interface ReservationsCalendarProps {
   ownerId: string;
 }
@@ -103,6 +228,16 @@ End: ${new Date(event.end).toLocaleString()}
     setSelectedDate('');
   };
 
+  useEffect(() => {
+  setLoading(true);
+
+  setTimeout(() => {
+    setReservations(FAKE_RESERVATIONS);
+    setLoading(false);
+  }, 500); // simulate network delay
+}, []);
+
+
   const handleCreateReservation = async (data: any) => {
     try {
       // TODO: Call API to create reservation
@@ -175,7 +310,8 @@ End: ${new Date(event.end).toLocaleString()}
           editable={false}
           selectable={true}
           selectMirror={true}
-          dayMaxEvents={true}
+          dayMaxEvents={3}
+          moreLinkClick="popover"
           weekends={true}
           height="auto"
           eventDisplay="block"
