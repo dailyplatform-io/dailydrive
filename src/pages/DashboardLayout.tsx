@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useTrialManagement } from '../hooks/useTrialManagement';
 import { TrialStatusBanner, SubscriptionStatus } from '../components/TrialStatus';
+import { DashboardSidebar } from '../components/DashboardSidebar';
 import { features } from '../config/features';
 import './OwnerDashboard.css';
 
@@ -35,37 +36,41 @@ export const DashboardLayout: React.FC = () => {
   if (!user || isLoading) return null;
 
   return (
-    <main className="owner-dashboard">
-      <header className="owner-dashboard__top">
-        <div>
-          <h2 className="owner-dashboard__title">{t('dashboard.title')}</h2>
-          <p className="owner-dashboard__subtitle">
-            {t('dashboard.welcome', { name: `${user.name} ${user.surname}` })}
-          </p>
-        </div>
-      </header>
-      
-      {successMessage && (
-        <div className="owner-auth-success" style={{ marginBottom: '20px' }}>
-          {successMessage}
-        </div>
-      )}
-      
-      {features.subscriptions && subscription.hasActiveSubscription && (
-        <SubscriptionStatus
-          subscriptionTier={subscription.subscriptionTier}
-          paymentMethod={subscription.paymentMethod}
-        />
-      )}
-      
-      {features.subscriptions && features.trial && trial.isInTrial && trial.daysLeft > 0 && (
-        <TrialStatusBanner
-          daysLeft={trial.daysLeft}
-          onUpgradeClick={() => navigateToPayment(false)}
-        />
-      )}
+    <div className="dashboard-container">
+      <DashboardSidebar />
 
-      <Outlet />
-    </main>
+      <main className="owner-dashboard">
+        <header className="owner-dashboard__top">
+          <div>
+            <h2 className="owner-dashboard__title">{t('dashboard.title')}</h2>
+            <p className="owner-dashboard__subtitle">
+              {t('dashboard.welcome', { name: `${user.name} ${user.surname}` })}
+            </p>
+          </div>
+        </header>
+
+        {successMessage && (
+          <div className="owner-auth-success" style={{ marginBottom: '20px' }}>
+            {successMessage}
+          </div>
+        )}
+
+        {features.subscriptions && subscription.hasActiveSubscription && (
+          <SubscriptionStatus
+            subscriptionTier={subscription.subscriptionTier}
+            paymentMethod={subscription.paymentMethod}
+          />
+        )}
+
+        {features.subscriptions && features.trial && trial.isInTrial && trial.daysLeft > 0 && (
+          <TrialStatusBanner
+            daysLeft={trial.daysLeft}
+            onUpgradeClick={() => navigateToPayment(false)}
+          />
+        )}
+
+        <Outlet />
+      </main>
+    </div>
   );
 };
