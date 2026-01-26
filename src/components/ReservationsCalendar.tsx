@@ -1,5 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import listPlugin from '@fullcalendar/list';
 import { CalendarReservation, getOwnerCalendarReservations } from '../service/reservationService';
+import { ReservationForm } from './ReservationCalendarFolder/ReservationForm';
 import './ReservationsCalendar.css';
 
 interface ReservationsCalendarProps {
@@ -7,20 +13,25 @@ interface ReservationsCalendarProps {
 }
 
 export const ReservationsCalendar: React.FC<ReservationsCalendarProps> = ({ ownerId }) => {
+  const calendarRef = useRef<FullCalendar>(null);
   const [reservations, setReservations] = useState<CalendarReservation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>('');
 
   useEffect(() => {
     loadReservations();
-  }, [ownerId, currentDate, viewMode]);
+  }, [ownerId]);
 
   const loadReservations = async () => {
     setLoading(true);
     try {
-      const startDate = getViewStartDate();
-      const endDate = getViewEndDate();
+      // Load reservations for the next 6 months
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - 1);
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 6);
+
       const data = await getOwnerCalendarReservations(ownerId, startDate, endDate);
       setReservations(data);
     } catch (error) {
@@ -30,106 +41,6 @@ export const ReservationsCalendar: React.FC<ReservationsCalendarProps> = ({ owne
     }
   };
 
-  const getViewStartDate = () => {
-    if (viewMode === 'week') {
-      const start = new Date(currentDate);
-      start.setDate(currentDate.getDate() - currentDate.getDay());
-      start.setHours(0, 0, 0, 0);
-      return start;
-    } else {
-      const start = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      return start;
-    }
-  };
-
-  const getViewEndDate = () => {
-    if (viewMode === 'week') {
-      const end = new Date(currentDate);
-      end.setDate(currentDate.getDate() + (6 - currentDate.getDay()));
-      end.setHours(23, 59, 59, 999);
-      return end;
-    } else {
-      const end = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-      end.setHours(23, 59, 59, 999);
-      return end;
-    }
-  };
-
-  const goToPrevious = () => {
-    const newDate = new Date(currentDate);
-    if (viewMode === 'week') {
-      newDate.setDate(currentDate.getDate() - 7);
-    } else {
-      newDate.setMonth(currentDate.getMonth() - 1);
-    }
-    setCurrentDate(newDate);
-  };
-
-  const goToNext = () => {
-    const newDate = new Date(currentDate);
-    if (viewMode === 'week') {
-      newDate.setDate(currentDate.getDate() + 7);
-    } else {
-      newDate.setMonth(currentDate.getMonth() + 1);
-    }
-    setCurrentDate(newDate);
-  };
-
-  const goToToday = () => {
-    setCurrentDate(new Date());
-  };
-
-  const getMonthDays = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startDayOfWeek = firstDay.getDay();
-
-    const days: (Date | null)[] = [];
-
-    // Add empty cells for days before the start of the month
-    for (let i = 0; i < startDayOfWeek; i++) {
-      days.push(null);
-    }
-
-    // Add all days in the month
-    for (let day = 1; day <= daysInMonth; day++) {
-      days.push(new Date(year, month, day));
-    }
-
-    return days;
-  };
-
-  const getWeekDays = () => {
-    const days: Date[] = [];
-    const startDate = getViewStartDate();
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(startDate);
-      day.setDate(startDate.getDate() + i);
-      days.push(day);
-    }
-    return days;
-  };
-
-  const getReservationsForDate = (date: Date) => {
-    return reservations.filter((res) => {
-      const resStart = new Date(res.startDate);
-      const resEnd = new Date(res.endDate);
-      return date >= resStart && date <= resEnd;
-    });
-  };
-
-  const formatMonthYear = () => {
-    return currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  };
-
-  const formatWeekRange = () => {
-    const start = getViewStartDate();
-    const end = getViewEndDate();
-    return `${start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -145,6 +56,66 @@ export const ReservationsCalendar: React.FC<ReservationsCalendarProps> = ({ owne
         return '#ef4444';
       default:
         return '#6b7280';
+    }
+  };
+
+  // Transform reservations to FullCalendar events
+  const events = reservations.map((res) => ({
+    id: res.id,
+    title: `${res.carBrand} ${res.carModel} - ${res.renterName}`,
+    start: res.startDate,
+    end: res.endDate,
+    backgroundColor: getStatusColor(res.status),
+    borderColor: getStatusColor(res.status),
+    extendedProps: {
+      carBrand: res.carBrand,
+      carModel: res.carModel,
+      renterName: res.renterName,
+      totalPrice: res.totalPrice,
+      status: res.status,
+      carId: res.carId,
+      carColor: res.carColor,
+    },
+  }));
+
+  const handleEventClick = (info: any) => {
+    const event = info.event;
+    const props = event.extendedProps;
+
+    alert(`
+Reservation Details:
+Car: ${props.carBrand} ${props.carModel}
+Renter: ${props.renterName}
+Status: ${props.status}
+Total Price: €${props.totalPrice.toFixed(2)}
+Start: ${new Date(event.start).toLocaleString()}
+End: ${new Date(event.end).toLocaleString()}
+    `.trim());
+  };
+
+  const handleDateClick = (info: any) => {
+    setSelectedDate(info.dateStr);
+    setIsDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+    setSelectedDate('');
+  };
+
+  const handleCreateReservation = async (data: any) => {
+    try {
+      // TODO: Call API to create reservation
+      console.log('Creating reservation:', data);
+
+      // For now, just show success message
+      alert('Reservation created successfully!');
+
+      // Reload reservations
+      await loadReservations();
+    } catch (error) {
+      console.error('Failed to create reservation:', error);
+      throw error;
     }
   };
 
@@ -165,40 +136,12 @@ export const ReservationsCalendar: React.FC<ReservationsCalendarProps> = ({ owne
 
   return (
     <div className="reservations-calendar">
-      <div className="calendar-header">
+      <div className="calendar-header-modern">
         <div className="calendar-header-left">
           <h2 className="calendar-title">Reservations Calendar</h2>
-          <p className="calendar-subtitle">{reservations.length} reservation{reservations.length !== 1 ? 's' : ''}</p>
-        </div>
-        <div className="calendar-header-right">
-          <div className="calendar-view-toggle">
-            <button
-              className={`view-toggle-btn ${viewMode === 'month' ? 'active' : ''}`}
-              onClick={() => setViewMode('month')}
-            >
-              Month
-            </button>
-            <button
-              className={`view-toggle-btn ${viewMode === 'week' ? 'active' : ''}`}
-              onClick={() => setViewMode('week')}
-            >
-              Week
-            </button>
-          </div>
-          <div className="calendar-navigation">
-            <button className="nav-btn" onClick={goToPrevious}>
-              ←
-            </button>
-            <button className="nav-btn today-btn" onClick={goToToday}>
-              Today
-            </button>
-            <span className="calendar-current-period">
-              {viewMode === 'month' ? formatMonthYear() : formatWeekRange()}
-            </span>
-            <button className="nav-btn" onClick={goToNext}>
-              →
-            </button>
-          </div>
+          <p className="calendar-subtitle">
+            {reservations.length} reservation{reservations.length !== 1 ? 's' : ''}
+          </p>
         </div>
       </div>
 
@@ -216,88 +159,79 @@ export const ReservationsCalendar: React.FC<ReservationsCalendarProps> = ({ owne
         </div>
       )}
 
-      {viewMode === 'month' ? (
-        <div className="calendar-month-view">
-          <div className="calendar-weekdays">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-              <div key={day} className="calendar-weekday">
-                {day}
+      <div className="fullcalendar-wrapper">
+        <FullCalendar
+          ref={calendarRef}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+          initialView="dayGridMonth"
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+          }}
+          events={events}
+          eventClick={handleEventClick}
+          dateClick={handleDateClick}
+          editable={false}
+          selectable={true}
+          selectMirror={true}
+          dayMaxEvents={true}
+          weekends={true}
+          height="auto"
+          eventDisplay="block"
+          eventTimeFormat={{
+            hour: '2-digit',
+            minute: '2-digit',
+            meridiem: false
+          }}
+          slotLabelFormat={{
+            hour: '2-digit',
+            minute: '2-digit',
+            meridiem: false
+          }}
+          views={{
+            dayGridMonth: {
+              titleFormat: { year: 'numeric', month: 'long' }
+            },
+            timeGridWeek: {
+              titleFormat: { year: 'numeric', month: 'short', day: 'numeric' }
+            },
+            timeGridDay: {
+              titleFormat: { year: 'numeric', month: 'long', day: 'numeric' }
+            }
+          }}
+          buttonText={{
+            today: 'Today',
+            month: 'Month',
+            week: 'Week',
+            day: 'Day',
+            list: 'List'
+          }}
+          eventContent={(eventInfo) => {
+            return (
+              <div className="fc-event-custom">
+                <div className="fc-event-time">
+                  {eventInfo.timeText}
+                </div>
+                <div className="fc-event-title-custom">
+                  {eventInfo.event.extendedProps.carBrand} {eventInfo.event.extendedProps.carModel}
+                </div>
+                <div className="fc-event-subtitle">
+                  {eventInfo.event.extendedProps.renterName}
+                </div>
               </div>
-            ))}
-          </div>
-          <div className="calendar-days">
-            {getMonthDays().map((day, index) => {
-              if (!day) {
-                return <div key={`empty-${index}`} className="calendar-day empty" />;
-              }
-              const dayReservations = getReservationsForDate(day);
-              const isToday =
-                day.toDateString() === new Date().toDateString();
+            );
+          }}
+        />
+      </div>
 
-              return (
-                <div key={day.toISOString()} className={`calendar-day ${isToday ? 'today' : ''}`}>
-                  <div className="day-number">{day.getDate()}</div>
-                  <div className="day-reservations">
-                    {dayReservations.slice(0, 3).map((res) => (
-                      <div
-                        key={res.id}
-                        className="reservation-item"
-                        style={{ backgroundColor: getStatusColor(res.status) }}
-                        title={`${res.carBrand} ${res.carModel} - ${res.renterName}`}
-                      >
-                        <div className="reservation-item-text">
-                          {res.carBrand} {res.carModel}
-                        </div>
-                      </div>
-                    ))}
-                    {dayReservations.length > 3 && (
-                      <div className="reservation-more">
-                        +{dayReservations.length - 3} more
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ) : (
-        <div className="calendar-week-view">
-          <div className="week-header">
-            {getWeekDays().map((day) => (
-              <div key={day.toISOString()} className="week-header-cell">
-                <div className="week-day-name">{day.toLocaleDateString('en-US', { weekday: 'short' })}</div>
-                <div className={`week-day-number ${day.toDateString() === new Date().toDateString() ? 'today' : ''}`}>
-                  {day.getDate()}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="week-grid">
-            {getWeekDays().map((day) => {
-              const dayReservations = getReservationsForDate(day);
-              return (
-                <div key={day.toISOString()} className="week-day-column">
-                  {dayReservations.map((res) => (
-                    <div
-                      key={res.id}
-                      className="week-reservation-card"
-                      style={{ borderLeftColor: getStatusColor(res.status) }}
-                    >
-                      <div className="week-res-car">{res.carBrand} {res.carModel}</div>
-                      <div className="week-res-renter">{res.renterName}</div>
-                      <div className="week-res-price">€{res.totalPrice.toFixed(2)}</div>
-                      <div className="week-res-status" style={{ color: getStatusColor(res.status) }}>
-                        {res.status}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      {/* Reservation Form */}
+      <ReservationForm
+        isOpen={isDrawerOpen}
+        onClose={closeDrawer}
+        initialDate={selectedDate}
+        onSubmit={handleCreateReservation}
+      />
     </div>
   );
 };
