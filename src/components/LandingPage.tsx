@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { features } from '../config/features';
-import { Car, Shield, Zap, Users, CheckCircle, TrendingUp } from 'lucide-react';
+import { Car, Shield, Zap, Users, CheckCircle, TrendingUp, ArrowRight, Calendar, Settings } from 'lucide-react';
 import { LandingHeader } from './LandingHeader';
 import { Footer } from './Footer';
 import './LandingPage.css';
@@ -25,6 +25,90 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const navigate = useNavigate();
   const rentEnabled = features.rent;
   const buyEnabled = features.buy;
+
+  // Dummy car data for showcase
+  const showcaseCars = [
+    {
+      id: '1',
+      brand: 'Tesla',
+      model: 'Model 3',
+      year: 2024,
+      price: 45000,
+      type: 'sale' as const,
+      image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&q=80',
+      specs: { transmission: 'Automatic', seats: 5, fuel: 'Electric' }
+    },
+    {
+      id: '2',
+      brand: 'BMW',
+      model: 'X5',
+      year: 2023,
+      price: 85,
+      type: 'rent' as const,
+      image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&q=80',
+      specs: { transmission: 'Automatic', seats: 7, fuel: 'Diesel' }
+    },
+    {
+      id: '3',
+      brand: 'Mercedes-Benz',
+      model: 'C-Class',
+      year: 2024,
+      price: 55000,
+      type: 'sale' as const,
+      image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&q=80',
+      specs: { transmission: 'Automatic', seats: 5, fuel: 'Petrol' }
+    },
+    {
+      id: '4',
+      brand: 'Audi',
+      model: 'Q7',
+      year: 2023,
+      price: 120,
+      type: 'rent' as const,
+      image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&q=80',
+      specs: { transmission: 'Automatic', seats: 7, fuel: 'Petrol' }
+    },
+    {
+      id: '5',
+      brand: 'Porsche',
+      model: '911 Carrera',
+      year: 2024,
+      price: 125000,
+      type: 'sale' as const,
+      image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80',
+      specs: { transmission: 'Manual', seats: 4, fuel: 'Petrol' }
+    },
+    {
+      id: '6',
+      brand: 'Range Rover',
+      model: 'Sport',
+      year: 2024,
+      price: 150,
+      type: 'rent' as const,
+      image: 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800&q=80',
+      specs: { transmission: 'Automatic', seats: 5, fuel: 'Diesel' }
+    },
+    {
+      id: '7',
+      brand: 'Lexus',
+      model: 'ES 350',
+      year: 2023,
+      price: 48000,
+      type: 'sale' as const,
+      image: 'https://images.unsplash.com/photo-1617654112368-307921291f42?w=800&q=80',
+      specs: { transmission: 'Automatic', seats: 5, fuel: 'Hybrid' }
+    },
+    {
+      id: '8',
+      brand: 'Ferrari',
+      model: 'F8 Tributo',
+      year: 2024,
+      price: 500,
+      type: 'rent' as const,
+      image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800&q=80',
+      specs: { transmission: 'Automatic', seats: 2, fuel: 'Petrol' }
+    },
+  ];
 
   const featuresList = [
     {
@@ -97,6 +181,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <p className="landing-hero__subtitle">
             {t(rentEnabled && buyEnabled ? 'landing.hero.subtitle' : 'landing.hero.subtitle.general')}
           </p>
+
+          {/* Renting Coming Soon Banner */}
+          {!rentEnabled && (
+            <div className="landing-hero__announcement">
+              <span className="landing-hero__announcement-badge">Coming Soon</span>
+              <div>
+                <p className="landing-hero__announcement-title">Renting is coming soon</p>
+                <p className="landing-hero__announcement-body">DailyDrive rentals are launching soon. Stay tuned for flexible rental options!</p>
+              </div>
+            </div>
+          )}
 
           <div className="landing-hero__actions">
             {rentEnabled && (
@@ -186,6 +281,81 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <p className="landing-step__desc">{step.description}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Car Showcase Section */}
+      <section className="landing-car-showcase">
+        <div className="landing-car-showcase__header">
+          <div>
+            <span className="landing-section-badge">Featured Collection</span>
+            <h2 className="landing-section-title">Discover Your Perfect Ride</h2>
+            <p className="landing-section-subtitle">Explore our curated selection of premium vehicles</p>
+          </div>
+          <button
+            className="landing-button landing-button--primary"
+            onClick={onNavigateToBuy}
+          >
+            View All
+            <ArrowRight size={20} />
+          </button>
+        </div>
+
+        <div className="landing-car-showcase__scroll">
+          <div className="landing-car-showcase__track">
+            {showcaseCars.map((car) => (
+              <div
+                key={car.id}
+                className="landing-car-card"
+                onClick={() => navigate(`/cars/${car.id}`)}
+              >
+                <div className="landing-car-card__image">
+                  <img src={car.image} alt={`${car.brand} ${car.model}`} />
+                  <div className={`landing-car-card__badge landing-car-card__badge--${car.type}`}>
+                    {car.type === 'rent' ? 'For Rent' : 'For Sale'}
+                  </div>
+                </div>
+
+                <div className="landing-car-card__content">
+                  <div className="landing-car-card__title">
+                    <h3>{car.brand}</h3>
+                    <p>{car.model}</p>
+                  </div>
+
+                  <div className="landing-car-card__specs">
+                    <div className="landing-car-card__spec">
+                      <Settings size={14} />
+                      <span>{car.specs.transmission}</span>
+                    </div>
+                    <div className="landing-car-card__spec">
+                      <Users size={14} />
+                      <span>{car.specs.seats} Seats</span>
+                    </div>
+                    <div className="landing-car-card__spec">
+                      <Calendar size={14} />
+                      <span>{car.year}</span>
+                    </div>
+                  </div>
+
+                  <div className="landing-car-card__footer">
+                    <div className="landing-car-card__price">
+                      {car.type === 'rent' ? (
+                        <>
+                          <span className="landing-car-card__price-value">€{car.price}</span>
+                          <span className="landing-car-card__price-period">/day</span>
+                        </>
+                      ) : (
+                        <span className="landing-car-card__price-value">€{car.price.toLocaleString()}</span>
+                      )}
+                    </div>
+                    <button className="landing-car-card__button">
+                      <ArrowRight size={18} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
