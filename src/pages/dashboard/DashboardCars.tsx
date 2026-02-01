@@ -14,7 +14,7 @@ import { emptyCarDraft, getOwnerBillingCount } from './dashboardUtils';
 import { slugifySellerName } from '../../utils/slug';
 import { getFuelLabel } from '../../utils/vehicleLabels';
 import { features } from '../../config/features';
-import '../OwnerDashboard.css';
+import '../owner/OwnerDashboard.css';
 
 type CarsSubtab = 'all' | 'active' | 'inactive' | 'deleted' | 'sold';
 

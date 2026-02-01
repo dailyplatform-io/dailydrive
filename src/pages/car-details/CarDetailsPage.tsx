@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
-import { CarDetailsPanel } from '../components/CarDetailsPanel';
-import { fetchCarByIdFromAPI } from '../service/carService';
+import { CarDetailsPanel } from '../../components/CarDetailsPanel';
+import { fetchCarByIdFromAPI } from '../../service/carService';
 import './CarDetailsPage.css';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../context/LanguageContext';
-import { Car } from '../models/Car';
-import { SellerCarsPage } from './SellerCarsPage';
+import { useLanguage } from '../../context/LanguageContext';
+import { Car } from '../../models/Car';
 
 export const CarDetailsPage: React.FC = () => {
   const navigate = useNavigate();

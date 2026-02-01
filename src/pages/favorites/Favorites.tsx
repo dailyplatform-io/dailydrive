@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { CarCard } from '../components/CarCard';
-import { useFavorites } from '../context/FavoritesContext';
-import { useLanguage } from '../context/LanguageContext';
+import { CarCard } from '../../components/CarCard';
+import { useFavorites } from '../../context/FavoritesContext';
+import { useLanguage } from '../../context/LanguageContext';
 import './Favorites.css';
 
 export const Favorites: React.FC = () => {

@@ -10,7 +10,7 @@ import { ImagesField } from './ImagesField';
 import { bodyStyleOptions, fuelTypeOptions, transmissionOptions, featureOptionGroups, selectOptionGroups } from './dashboardUtils';
 import { optionGroupTitleLookup } from '../../constants/optionCatalog';
 import { getColorLabel, getFuelLabel, getTransmissionLabel } from '../../utils/vehicleLabels';
-import '../OwnerDashboard.css';
+import '../owner/OwnerDashboard.css';
 
 interface CarEditorModalProps {
   initial: Car;

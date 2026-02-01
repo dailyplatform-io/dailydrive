@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Auction, AuctionBid } from '../models/Auction';
-import { fetchAuctions, placeBid } from '../service/auctionService';
-import { formatPrice } from '../utils/formatting';
-import { useAuth } from '../context/AuthContext';
+import { Auction, AuctionBid } from '../../models/Auction';
+import { fetchAuctions, placeBid } from '../../service/auctionService';
+import { formatPrice } from '../../utils/formatting';
+import { useAuth } from '../../context/AuthContext';
 import './AuctionsPage.css';
 
 const ISSUE_LIBRARY = [

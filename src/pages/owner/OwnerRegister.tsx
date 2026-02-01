@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { OwnerProfileType, SubscriptionTier } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
-import type { Language } from '../i18n/translations';
-import { features } from '../config/features';
-import { authService } from '../service/authService';
-import { reverseGeocodeAddress } from '../service/geocodingService';
-import { validatePassword } from '../utils/passwordValidator';
-import { MapEmbed } from '../components/MapEmbed';
-import { PhoneInput } from '../components/PhoneInput';
-import { isValidInstagramHandle, normalizeInstagramHandle } from '../utils/slug';
+import { OwnerProfileType, SubscriptionTier } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
+import type { Language } from '../../i18n/translations';
+import { features } from '../../config/features';
+import { authService } from '../../service/authService';
+import { reverseGeocodeAddress } from '../../service/geocodingService';
+import { validatePassword } from '../../utils/passwordValidator';
+import { MapEmbed } from '../../components/MapEmbed';
+import { PhoneInput } from '../../components/PhoneInput';
+import { isValidInstagramHandle, normalizeInstagramHandle } from '../../utils/slug';
 import './OwnerAuth.css';
 
 const tierLabels: { tier: SubscriptionTier; label: string }[] = [

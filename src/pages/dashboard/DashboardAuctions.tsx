@@ -1,4 +1,4 @@
-import '../OwnerDashboard.css';
+import '../owner/OwnerDashboard.css';
 
 export const DashboardAuctions: React.FC = () => {
   return (

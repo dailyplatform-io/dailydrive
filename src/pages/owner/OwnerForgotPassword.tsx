@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useLanguage } from '../context/LanguageContext';
-import { authService } from '../services/authService';
+import { useLanguage } from '../../context/LanguageContext';
+import { authService } from '../../services/authService';
 import './OwnerAuth.css';
 
 export const OwnerForgotPassword: React.FC = () => {
