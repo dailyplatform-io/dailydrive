@@ -1,14 +1,14 @@
-/* Import FullCalendar core styles */
-/* @import '@fullcalendar/core/main.css'; */
-/* @import '@fullcalendar/daygrid/main.css'; */
-/* @import '@fullcalendar/timegrid/main.css'; */
-/* @import '@fullcalendar/list/main.css'; */
+body {
+  overflow-x: hidden;
+}
 
 .reservations-calendar {
   background: white;
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .calendar-loading {
@@ -28,6 +28,7 @@
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
   gap: 1rem;
+  max-width: 100%;
 }
 
 .calendar-header-left {
@@ -47,16 +48,309 @@
   margin: 0;
 }
 
-/* Legend Styles */
-.calendar-legend {
+/* Timeline Controls */
+.timeline-controls {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
   padding: 1rem;
   background: #f9fafb;
   border-radius: 12px;
   flex-wrap: wrap;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.timeline-btn {
+  padding: 0.5rem 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.timeline-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.timeline-current-month {
+  margin-left: auto;
+  font-weight: 600;
+  color: #111827;
+  font-size: 1rem;
+}
+
+/* Timeline Container */
+.timeline-container {
+  overflow-x: auto;
+  overflow-y: visible;
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  position: relative;
+  box-sizing: border-box;
+  /* Force container to not expand beyond parent */
+  width: 1px;
+  min-width: 100%;
+}
+
+.timeline-grid {
+  display: table;
+  width: auto;
+}
+
+/* Timeline Header */
+.timeline-header {
+  display: flex;
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: max-content;
+}
+
+.timeline-car-header {
+  width: 200px;
+  min-width: 200px;
+  flex-shrink: 0;
+  padding: 1rem;
+  font-weight: 700;
+  color: #374151;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  border-right: 2px solid #e5e7eb;
+  position: sticky;
+  left: 0;
+  background: #f9fafb;
+  z-index: 20;
+}
+
+.timeline-dates-header {
+  display: flex;
+  flex: 1;
+}
+
+.timeline-date-cell {
+  flex: 0 0 80px;
+  min-width: 80px;
+  width: 80px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.timeline-date-cell.timeline-date-today {
+  background: #eff6ff;
+}
+
+.timeline-date-day {
+  font-weight: 700;
+  color: #111827;
+  font-size: 0.9375rem;
+}
+
+.timeline-date-today .timeline-date-day {
+  color: #2563eb;
+}
+
+.timeline-date-weekday {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.timeline-date-today .timeline-date-weekday {
+  color: #2563eb;
+}
+
+/* Timeline Rows */
+.timeline-row {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s ease;
+  width: max-content;
+}
+
+.timeline-row:hover {
+  background: #f9fafb;
+}
+
+.timeline-car-cell {
+  width: 200px;
+  min-width: 200px;
+  flex-shrink: 0;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-right: 2px solid #e5e7eb;
+  background: white;
+  position: sticky;
+  left: 0;
+  z-index: 10;
+}
+
+.timeline-car-indicator {
+  width: 8px;
+  height: 48px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-car-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.timeline-car-brand {
+  font-weight: 700;
+  color: #111827;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timeline-car-model {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin-top: 0.125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Timeline Cells Container */
+.timeline-cells-container {
+  position: relative;
+  flex: 1;
+  min-height: 80px;
+}
+
+.timeline-cells {
+  display: flex;
+  height: 100%;
+}
+
+.timeline-cell {
+  flex: 0 0 80px;
+  min-width: 80px;
+  width: 80px;
+  border-right: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.timeline-cell.timeline-cell-today {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.timeline-cell:hover {
+  background: rgba(47, 128, 237, 0.1);
+}
+
+.timeline-cell.timeline-cell-today:hover {
+  background: rgba(37, 99, 235, 0.15);
+}
+
+.timeline-cell.timeline-cell-drag-over {
+  background: rgba(16, 185, 129, 0.2);
+  border: 2px dashed #10b981;
+  border-radius: 4px;
+}
+
+/* Reservation Blocks */
+.timeline-reservations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.5rem 0;
+  pointer-events: none;
+}
+
+.timeline-reservation {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60px;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  cursor: move;
+  pointer-events: auto;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.timeline-reservation:hover {
+  transform: translateY(-50%) translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.timeline-reservation:active {
+  cursor: grabbing;
+}
+
+.timeline-reservation[draggable="true"] {
+  cursor: grab;
+}
+
+.timeline-reservation:active {
+  cursor: grabbing;
+  opacity: 0.5;
+}
+
+.timeline-reservation-content {
+  width: 100%;
+  color: white;
+  overflow: hidden;
+}
+
+.timeline-reservation-name {
+  font-weight: 700;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.25rem;
+}
+
+.timeline-reservation-dates {
+  font-size: 0.75rem;
+  opacity: 0.95;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Legend Styles */
+.timeline-legend {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  flex-wrap: wrap;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .legend-title {
@@ -87,233 +381,23 @@
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
-/* FullCalendar Wrapper */
-.fullcalendar-wrapper {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-/* FullCalendar Custom Styles */
-.fc {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-}
-
-/* Toolbar Styling */
-.fc .fc-toolbar {
-  padding: 1.5rem;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.fc .fc-toolbar-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #111827;
-}
-
-.fc .fc-button {
-  background: white;
-  border: 1px solid #e5e7eb;
-  color: #374151;
-  padding: 0.5rem 1rem;
-  font-weight: 500;
-  text-transform: capitalize;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.fc .fc-button:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  color: #111827;
-}
-
-.fc .fc-button:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.fc .fc-button-primary:not(:disabled):active,
-.fc .fc-button-primary:not(:disabled).fc-button-active {
-  background: #2f80ed;
-  border-color: #2f80ed;
-  color: white;
-}
-
-.fc .fc-button-primary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Day Grid Styling */
-.fc .fc-daygrid-day {
-  transition: background 0.2s ease;
-}
-
-.fc .fc-daygrid-day:hover {
-  background: #f9fafb;
-}
-
-.fc .fc-daygrid-day.fc-day-today {
-  background: #eff6ff !important;
-}
-
-.fc .fc-daygrid-day-number {
-  padding: 0.5rem;
-  font-weight: 600;
-  color: #374151;
-}
-
-.fc .fc-day-today .fc-daygrid-day-number {
-  background: #2f80ed;
-  color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Event Styling */
-.fc .fc-event {
-  border: none;
-  border-radius: 6px;
-  padding: 4px 6px;
-  margin: 2px 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.fc .fc-event:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.fc-event-custom {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.fc-event-time {
-  font-size: 0.75rem;
-  font-weight: 600;
-  opacity: 0.9;
-}
-
-.fc-event-title-custom {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.fc-event-subtitle {
-  font-size: 0.6875rem;
-  opacity: 0.85;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Time Grid Styling */
-.fc .fc-timegrid-slot {
-  height: 3rem;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.fc .fc-timegrid-slot-label {
-  font-size: 0.75rem;
-  color: #6b7280;
-  font-weight: 500;
-}
-
-.fc .fc-timegrid-event {
-  border-radius: 6px;
-  border-left: 4px solid;
-  padding: 0.25rem 0.5rem;
-}
-
-/* List View Styling */
-.fc .fc-list-event:hover td {
-  background: #f9fafb;
-}
-
-.fc .fc-list-event-title {
-  font-weight: 500;
-}
-
-.fc .fc-list-event-time {
-  color: #6b7280;
-}
-
-.fc .fc-list-day-cushion {
-  background: #f9fafb;
-  font-weight: 600;
-  color: #374151;
-}
-
-/* Column Headers */
-.fc .fc-col-header-cell {
-  padding: 1rem 0.5rem;
-  background: #f9fafb;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  border-color: #e5e7eb;
-}
-
 /* Scrollbar Styling */
-.fc-scroller::-webkit-scrollbar {
-  width: 8px;
+.timeline-container::-webkit-scrollbar {
   height: 8px;
 }
 
-.fc-scroller::-webkit-scrollbar-track {
+.timeline-container::-webkit-scrollbar-track {
   background: #f3f4f6;
   border-radius: 4px;
 }
 
-.fc-scroller::-webkit-scrollbar-thumb {
+.timeline-container::-webkit-scrollbar-thumb {
   background: #d1d5db;
   border-radius: 4px;
 }
 
-.fc-scroller::-webkit-scrollbar-thumb:hover {
+.timeline-container::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
-}
-
-/* More Events Link */
-.fc .fc-more-link {
-  color: #2f80ed;
-  font-weight: 600;
-  font-size: 0.75rem;
-}
-
-.fc .fc-more-link:hover {
-  text-decoration: underline;
-}
-
-/* Popover for "more" events */
-.fc .fc-popover {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-
-.fc .fc-popover-header {
-  background: #f9fafb;
-  padding: 0.75rem 1rem;
-  font-weight: 600;
-  color: #374151;
-  border-bottom: 1px solid #e5e7eb;
 }
 
 /* Responsive Design */
@@ -322,17 +406,13 @@
     padding: 1.5rem;
   }
 
-  .fc .fc-toolbar {
-    padding: 1rem;
+  .timeline-car-header,
+  .timeline-car-cell {
+    width: 160px;
   }
 
-  .fc .fc-toolbar-title {
-    font-size: 1.25rem;
-  }
-
-  .fc .fc-button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.875rem;
+  .timeline-grid {
+    min-width: 1000px;
   }
 }
 
@@ -345,57 +425,63 @@
     font-size: 1.5rem;
   }
 
-  .fc .fc-toolbar {
-    flex-direction: column;
-    gap: 0.75rem;
+  .timeline-controls {
     padding: 0.75rem;
   }
 
-  .fc .fc-toolbar-chunk {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .fc .fc-toolbar-title {
-    font-size: 1.125rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .fc .fc-button {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.8125rem;
-  }
-
-  .fc .fc-daygrid-day-number {
-    padding: 0.25rem;
+  .timeline-btn {
+    padding: 0.4rem 0.8rem;
     font-size: 0.875rem;
   }
 
-  .fc-event-title-custom {
+  .timeline-car-header,
+  .timeline-car-cell {
+    width: 140px;
+  }
+
+  .timeline-car-brand {
+    font-size: 0.8125rem;
+  }
+
+  .timeline-car-model {
     font-size: 0.75rem;
   }
 
-  .fc-event-subtitle {
-    display: none;
+  .timeline-date-day {
+    font-size: 0.875rem;
   }
 
-  .calendar-legend {
+  .timeline-date-weekday {
+    font-size: 0.6875rem;
+  }
+
+  .timeline-reservation {
+    height: 50px;
+  }
+
+  .timeline-reservation-name {
+    font-size: 0.8125rem;
+  }
+
+  .timeline-reservation-dates {
+    font-size: 0.6875rem;
+  }
+
+  .timeline-legend {
     flex-direction: column;
     align-items: flex-start;
   }
 }
 
 @media (max-width: 480px) {
-  .fc .fc-button-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
+  .timeline-controls {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .fc .fc-toolbar-title {
-    font-size: 1rem;
+  .timeline-current-month {
+    margin-left: 0;
+    text-align: center;
   }
 }
 
