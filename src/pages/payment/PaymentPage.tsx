@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PayPalButtons, PayPalScriptProvider, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import type { ReactPayPalScriptOptions } from '@paypal/react-paypal-js';
-import { useLanguage } from '../context/LanguageContext';
-import { useAuth } from '../context/AuthContext';
-import { authService } from '../service/authService';
+import { useLanguage } from '../../context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
+import { authService } from '../../service/authService';
 // import { handleSuccessfulPayment } from '../utils/subscriptionUtils'; // Unused
-import { completePayment } from '../services/paymentService';
-import { TokenErrorTypes } from '../utils/tokenUtils';
+import { completePayment } from '../../services/paymentService';
+import { TokenErrorTypes } from '../../utils/tokenUtils';
 import './PaymentPage.css';
 
 const SUPPORT_PHONE = '+355685555104';

@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CarList } from '../components/CarList';
-import { FilterSidebar } from '../components/FilterSidebar';
-import { LandingPage } from '../components/LandingPage';
-import { features, getDefaultMode } from '../config/features';
-import { useBreakpoint } from '../hooks/useBreakpoint';
-import { useFilters } from '../hooks/useFilters';
-import { useFavorites } from '../context/FavoritesContext';
-import { fetchCarsFromAPI } from '../service/carService';
-import { fetchCarMakes, fetchAllCarModels } from '../service/carMakeModelService';
-import { Car } from '../models/Car';
-import { CarMake, CarModel } from '../models/CarMakeModel';
+import { CarList } from '../../components/CarList';
+import { FilterSidebar } from '../../components/FilterSidebar';
+import { LandingPage } from '../../components/LandingPage';
+import { features, getDefaultMode } from '../../config/features';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { useFilters } from '../../hooks/useFilters';
+import { useFavorites } from '../../context/FavoritesContext';
+import { fetchCarsFromAPI } from '../../service/carService';
+import { fetchCarMakes, fetchAllCarModels } from '../../service/carMakeModelService';
+import { Car } from '../../models/Car';
+import { CarMake, CarModel } from '../../models/CarMakeModel';
 import './Home.css';
 
 interface HomeProps {

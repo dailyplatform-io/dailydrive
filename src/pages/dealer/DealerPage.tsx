@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { SellerCarsPage } from './SellerCarsPage';
+import { SellerCarsPage } from '../seller/SellerCarsPage';
 
 export const DealerPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();

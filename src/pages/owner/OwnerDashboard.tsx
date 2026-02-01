@@ -6,17 +6,17 @@ import {
   maxCarsForTier,
   OwnerProfileType,
   useAuth,
-} from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
-import { getFuelLabel } from '../utils/vehicleLabels';
-import { useTrialManagement } from '../hooks/useTrialManagement';
-import { TrialStatusBanner, SubscriptionStatus } from '../components/TrialStatus';
-import { Car, BodyStyle, FuelType, Transmission } from '../models/Car';
-import { CarMake, CarModel } from '../models/CarMakeModel';
-import { fetchCarMakes, fetchCarModelsByMake } from '../service/carMakeModelService';
-import { featureGroupTitleKey, featureOptions, selectOptionGroups as selectCatalog, optionGroupTitleLookup } from '../constants/optionCatalog';
-import { PasswordValidator } from '../utils/passwordValidator';
-import { TokenErrorTypes, detectTokenExpirationFromResponse } from '../utils/tokenUtils';
+} from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { getFuelLabel } from '../../utils/vehicleLabels';
+import { useTrialManagement } from '../../hooks/useTrialManagement';
+import { TrialStatusBanner, SubscriptionStatus } from '../../components/TrialStatus';
+import { Car, BodyStyle, FuelType, Transmission } from '../../models/Car';
+import { CarMake, CarModel } from '../../models/CarMakeModel';
+import { fetchCarMakes, fetchCarModelsByMake } from '../../service/carMakeModelService';
+import { featureGroupTitleKey, featureOptions, selectOptionGroups as selectCatalog, optionGroupTitleLookup } from '../../constants/optionCatalog';
+import { PasswordValidator } from '../../utils/passwordValidator';
+import { TokenErrorTypes, detectTokenExpirationFromResponse } from '../../utils/tokenUtils';
 import {
   createCarInAPI,
   fetchOwnerCarsFromAPI,
@@ -24,9 +24,9 @@ import {
   getOwnerCars,
   setOwnerCars as persistOwnerCars,
   updateCarInAPI,
-} from '../service/carService';
-import { AddressPicker } from '../components/AddressPicker';
-import { ImagesField } from './dashboard/ImagesField';
+} from '../../service/carService';
+import { AddressPicker } from '../../components/AddressPicker';
+import { ImagesField } from '../dashboard/ImagesField';
 import {
   blobToObjectUrl,
   createImageThumbnailDataUrl,
@@ -35,8 +35,8 @@ import {
   getImageBlob,
   putImageBlob,
   revokeObjectUrl,
-} from '../service/imageStore';
-import { ReservationsCalendar } from '../components/ReservationsCalendar';
+} from '../../service/imageStore';
+import { ReservationsCalendar } from '../../components/ReservationsCalendar';
 import './OwnerDashboard.css';
 
 type DashboardTab = 'cars' | 'reservations' | 'profile' | 'logout';

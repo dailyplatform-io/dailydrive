@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useLanguage } from '../context/LanguageContext';
-import { authService } from '../services/authService';
-import { validatePassword } from '../utils/passwordValidator';
+import { useLanguage } from '../../context/LanguageContext';
+import { authService } from '../../services/authService';
+import { validatePassword } from '../../utils/passwordValidator';
 import './OwnerAuth.css';
 
 type ResetLocationState = {

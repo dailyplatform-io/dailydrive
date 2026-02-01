@@ -1,7 +1,7 @@
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { ReservationsCalendar } from '../../components/ReservationsCalendar';
-import '../OwnerDashboard.css';
+import '../owner/OwnerDashboard.css';
 
 export const DashboardReservations: React.FC = () => {
   const { t } = useLanguage();

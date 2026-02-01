@@ -1,8 +1,8 @@
-import './StaticPage.css';
-import './About.css';
-import { useLanguage } from '../context/LanguageContext';
-import { MapEmbed } from '../components/MapEmbed';
+import { useLanguage } from '../../context/LanguageContext';
+import { MapEmbed } from '../../components/MapEmbed';
 import { Zap, Shield, Search, Mail, Phone, MapPin, CheckCircle, Car } from 'lucide-react';
+import '../StaticPage.css';
+import './About.css';
 
 export const About: React.FC = () => {
   const { t } = useLanguage();

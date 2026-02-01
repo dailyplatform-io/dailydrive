@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CarList } from '../components/CarList';
-import { FilterSidebar } from '../components/FilterSidebar';
-import { FacebookIcon, InstagramIcon, PhoneIcon } from '../components/Icons';
-import { useFavorites } from '../context/FavoritesContext';
-import { useLanguage } from '../context/LanguageContext';
-import { useBrand } from '../context/BrandContext';
-import { useAuth } from '../context/AuthContext';
-import { useBreakpoint } from '../hooks/useBreakpoint';
-import { useFilters } from '../hooks/useFilters';
-import { fetchCarsFromAPI } from '../service/carService';
-import { fetchCarMakes, fetchAllCarModels } from '../service/carMakeModelService';
-import { Car } from '../models/Car';
-import { CarMake, CarModel } from '../models/CarMakeModel';
-import { slugifySellerName } from '../utils/slug';
 import './SellerCarsPage.css';
+import { CarList } from '../../components/CarList';
+import { slugifySellerName } from '../../utils/slug';
+import { FilterSidebar } from '../../components/FilterSidebar';
+import { FacebookIcon, InstagramIcon, PhoneIcon } from '../../components/Icons';
+import { Car } from '../../models/Car';
+import { fetchCarsFromAPI } from '../../service/carService';
+import { fetchAllCarModels, fetchCarMakes } from '../../service/carMakeModelService';
+import { useFilters } from '../../hooks/useFilters';
+import { CarMake, CarModel } from '../../models/CarMakeModel';
+import { useFavorites } from '../../context/FavoritesContext';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
+import { useAuth } from '../../context/AuthContext';
+import { useBrand } from '../../context/BrandContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface SellerCarsPageProps {
   sellerName: string;

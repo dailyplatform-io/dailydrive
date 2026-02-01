@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { OwnerAccount, OwnerProfileType, SubscriptionTier, annualPriceEur, useAuth } from '../context/AuthContext';
-import { useLanguage } from '../context/LanguageContext';
-import type { Language } from '../i18n/translations';
-import { features } from '../config/features';
-import { authService } from '../services/authService';
-import { slugifySellerName } from '../utils/slug';
-import { getCurrentAuthToken } from '../utils/tokenUtils';
+import { OwnerAccount, OwnerProfileType, SubscriptionTier, annualPriceEur, useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
+import type { Language } from '../../i18n/translations';
+import { features } from '../../config/features';
+import { authService } from '../../services/authService';
+import { slugifySellerName } from '../../utils/slug';
+import { getCurrentAuthToken } from '../../utils/tokenUtils';
 import './OwnerAuth.css';
 
 export const OwnerLogin: React.FC = () => {

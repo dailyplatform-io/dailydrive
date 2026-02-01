@@ -8,7 +8,7 @@ import { SubscriptionManager } from './SubscriptionManager';
 import { getOwnerBillingCount } from './dashboardUtils';
 import { useDashboardCars } from './useDashboardCars';
 import { features } from '../../config/features';
-import '../OwnerDashboard.css';
+import '../owner/OwnerDashboard.css';
 
 export const DashboardProfile: React.FC = () => {
   const { t } = useLanguage();

@@ -6,7 +6,7 @@ import { useTrialManagement } from '../hooks/useTrialManagement';
 import { TrialStatusBanner, SubscriptionStatus } from '../components/TrialStatus';
 import { DashboardSidebar } from '../components/DashboardSidebar';
 import { features } from '../config/features';
-import './OwnerDashboard.css';
+import './owner/OwnerDashboard.css';
 
 export const DashboardLayout: React.FC = () => {
   const { t } = useLanguage();

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useLanguage } from '../context/LanguageContext';
-import { authService } from '../service/authService';
+import { useLanguage } from '../../context/LanguageContext';
+import { authService } from '../../service/authService';
 import './OwnerAuth.css';
 
 type LocationState = {
